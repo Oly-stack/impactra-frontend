@@ -1,47 +1,85 @@
 <!DOCTYPE html>
-<htm lang="en">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IMPARTRA - Register</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPARTRA - Register</title>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<>
-  <div class="auth-card">
-    <h2>Create Account</h2>
-    <form id="registerForm">
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" required placeholder="John Doe">
-      </div>
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" required placeholder="john@example.com">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" required placeholder="••••••••">
-      </div>
-      <div class="form-group">
-        <label for="role">Account Type</label>
-        <select id="role" required>
-          <option value="volunteer">Volunteer</option>
-          <option value="ngo">NGO Admin</option>
-        </select>
-      </div>
-      <button type="submit">Sign Up</button>
-    </form>
-    <div id="alertMessage" class="alert"></div>
-    <p class="auth-link">Already have an account? <a href="login.html">Login here</a></p>
-  </div>
 
-  <script src="js/api.js"></script>
-  <script src="js/register.js"></script>
+<body>
 
-  <!-- 1. Load shared helper first -->
-  <script src="js/api.js"></script>
-  
-  <!-- 2. Load page-specific logic second -->
-  <script src="js/register.js"></script>
+    <div class="auth-card">
+        <h2>Create Account</h2>
+
+        <form id="registerForm">
+
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="John Doe"
+                >
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="john@example.com"
+                >
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    placeholder="Enter your password"
+                >
+            </div>
+
+            <!-- Account Type -->
+            <div class="form-group">
+                <label for="role">Account Type</label>
+                <select id="role" name="role" required>
+                    <option value="volunteer">Volunteer</option>
+                    <option value="ngo">NGO Admin</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Sign Up</button>
+
+        </form>
+
+        <!-- Alert message -->
+        <div id="alertMessage" class="alert"></div>
+
+        <!-- Login link -->
+        <p class="auth-link">
+            Already have an account?
+            <a href="login.html">Login here</a>
+        </p>
+    </div>
+
+    <!-- JavaScript files -->
+    <!-- Load API helper before registration logic -->
+    <script src="js/api.js"></script>
+    <script src="js/register.js"></script>
+
 </body>
 </html>
