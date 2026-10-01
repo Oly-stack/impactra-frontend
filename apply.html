@@ -1,85 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPARTRA - Register</title>
-
-    <!-- Main stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Opportunity | IMPACTRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="shortcut icon" href="img/leaf-logo.png" type="image/x-icon" />
 </head>
+<body class="min-h-screen font-['Inter'] bg-[#f7f9f6] text-[#172026] flex flex-col justify-between">
 
-<body>
+  <!-- Header  -->
+  <header class="bg-white border-b border-[#E3E9E5] px-4 py-3 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-wider text-[#08783E] shrink-0">
+        <img class="w-7 h-7 sm:w-8 sm:h-8" src="img/leaf-logo.png" alt="Logo" />
+        <span>IMPACTRA</span>
+      </a>
 
-    <div class="auth-card">
-        <h2>Create Account</h2>
+      <!-- Desktop Navigation -->
+      <nav aria-label="Main navigation" class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="index.html" class="text-gray-600 hover:text-[#08783E]">Home</a>
+        <a href="opportunities.html" class="text-gray-600 hover:text-[#08783E]">Opportunities</a>
+        <a href="log-hours.html" class="text-gray-600 hover:text-[#08783E]">Log Hours</a>
+      </nav>
 
-        <form id="registerForm">
+      <!-- Mobile Button -->
+      <button id="menuToggle" type="button" class="md:hidden text-[#08783E] p-1 focus:outline-none" aria-label="Toggle Navigation">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
 
-            <!-- Full Name -->
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    placeholder="John Doe"
-                >
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <nav id="mobileMenu" class="hidden md:hidden flex-col gap-3 pt-3 pb-2 border-t border-gray-100 mt-2 text-sm font-medium text-gray-700">
+      <a href="index.html" class="hover:text-[#08783E] py-1">Home</a>
+      <a href="opportunities.html" class="hover:text-[#08783E] py-1">Opportunities</a>
+      <a href="log-hours.html" class="hover:text-[#08783E] py-1">Log Hours</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl w-full mx-auto px-4 py-6 sm:py-8 lg:py-12">
+    
+    <div class="mb-6">
+      <a href="opportunities.html" class="inline-flex items-center gap-1 text-xs font-bold text-[#08783E] hover:underline mb-2">
+        ← Back to all opportunities
+      </a>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-[#172026]">Submit Your Application</h1>
+      <p class="text-gray-600 text-xs sm:text-sm mt-1">Review role details and share why you'd be a great fit.</p>
+    </div>
+
+    <!-- Responsive Layout: Form First on Mobile, Sidebar Right on Desktop -->
+    <div class="flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-8">
+
+      <!-- Form Section -->
+      <section class="w-full lg:col-span-2">
+        <div class="bg-white border border-[#E3E9E5] rounded-2xl p-4 sm:p-8 shadow-sm">
+          
+          <form id="applyForm" class="space-y-4 sm:space-y-5">
+            <!-- Opportunity Select Field -->
+            <div>
+              <label for="opportunitySelect" class="block text-xs font-bold text-gray-700 mb-1">Selected Opportunity *</label>
+              <select id="opportunitySelect" class="w-full h-11 border border-gray-300 rounded-lg px-3 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#08783E] text-ellipsis overflow-hidden">
+                <option value="sample-1" data-org="Bright Steps Initiative" data-cat="Education" data-loc="Lagos (On-site)" data-commit="2 hours / week" data-duration="3 Months" data-desc="Support children with reading practice in a friendly weekend learning group located in Lagos.">Help young readers build confidence — Bright Steps Initiative</option>
+                <option value="sample-2" data-org="Green Neighbourhood Project" data-cat="Environment" data-loc="Abuja (On-site)" data-commit="3 hours / week" data-duration="6 Months" data-desc="Join local volunteers to plant, maintain and care for a shared green space.">Bring a community garden to life — Green Neighbourhood</option>
+                <option value="sample-3" data-org="Kindred Community Network" data-cat="Digital skills" data-loc="Anywhere (Remote)" data-commit="2–4 hours / week" data-duration="Ongoing" data-desc="Use your design skills to make community information clearer and easier to share.">Design for a community cause — Kindred Network</option>
+                <option value="sample-4" data-org="Neighbour Care Collective" data-cat="Community support" data-loc="Ibadan (On-site)" data-commit="4 hours / event" data-duration="1 Month" data-desc="Help a community team organise donated supplies for local households.">Support a neighbourhood food drive — Neighbour Care</option>
+                <option value="sample-5" data-org="Open Learning Circle" data-cat="Education" data-loc="Enugu (On-site)" data-commit="2 hours / week" data-duration="2 Months" data-desc="Help beginners become more comfortable using everyday computer tools.">Introduce learners to digital basics — Open Learning Circle</option>
+                <option value="sample-6" data-org="Shared Purpose Initiative" data-cat="Digital skills" data-loc="Anywhere (Remote)" data-commit="3 hours / week" data-duration="Ongoing" data-desc="Turn volunteer updates into clear stories that celebrate community participation.">Help tell stories of community action — Shared Purpose</option>
+              </select>
             </div>
 
-            <!-- Email -->
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    placeholder="john@example.com"
-                >
+            <!-- Full Name & Email -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="fullName" class="block text-xs font-bold text-gray-700 mb-1">Full Name *</label>
+                <input id="fullName" type="text" required placeholder="John Doe" class="w-full h-11 border border-gray-300 rounded-lg px-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#08783E]" />
+              </div>
+              <div>
+                <label for="email" class="block text-xs font-bold text-gray-700 mb-1">Email Address *</label>
+                <input id="email" type="email" required placeholder="john@example.com" class="w-full h-11 border border-gray-300 rounded-lg px-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#08783E]" />
+              </div>
             </div>
 
-            <!-- Password -->
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    required
-                    placeholder="Enter your password"
-                >
+            <!-- Motivation -->
+            <div>
+              <label for="motivation" class="block text-xs font-bold text-gray-700 mb-1">Why are you interested in this role? *</label>
+              <textarea id="motivation" rows="4" required placeholder="Share your motivation, skills, or experience..." class="w-full border border-gray-300 rounded-lg p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#08783E]"></textarea>
             </div>
 
-            <!-- Account Type -->
-            <div class="form-group">
-                <label for="role">Account Type</label>
-                <select id="role" name="role" required>
-                    <option value="volunteer">Volunteer</option>
-                    <option value="ngo">NGO Admin</option>
-                </select>
+            <!-- Checkbox Screening -->
+            <div class="pt-1">
+              <label class="flex items-start gap-3 cursor-pointer text-xs text-gray-600">
+                <input type="checkbox" required class="mt-0.5 accent-[#08783E] w-4 h-4 rounded shrink-0" />
+                <span>I confirm that I can meet the required schedule and commitments for this role.</span>
+              </label>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit">Sign Up</button>
+            <button type="submit" class="w-full sm:w-auto px-8 h-12 bg-[#08783E] hover:bg-[#065c2f] text-white font-bold rounded-lg text-sm transition">
+              Submit Application
+            </button>
+          </form>
 
-        </form>
+          <!-- Pending Confirmation -->
+          <div id="confirmationBanner" class="hidden bg-[#eaf6ee] border border-[#08783E] rounded-xl p-6 text-center">
+            <div class="w-12 h-12 bg-[#08783E] text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-xl">✓</div>
+            <h3 class="text-lg font-bold text-[#172026] mb-1">Application Submitted!</h3>
+            <p class="text-xs text-gray-600 max-w-md mx-auto mb-4">
+              Your application status is now <span class="font-bold text-[#ae7827] bg-[#fff8e9] px-2 py-0.5 rounded">Pending Review</span>. The organizing team will review your application and respond via email.
+            </p>
+            <a href="opportunities.html" class="inline-block text-xs font-bold text-[#08783E] underline">Explore more opportunities</a>
+          </div>
 
-        <!-- Alert message -->
-        <div id="alertMessage" class="alert"></div>
+        </div>
+      </section>
 
-        <!-- Login link -->
-        <p class="auth-link">
-            Already have an account?
-            <a href="login.html">Login here</a>
-        </p>
+      <!-- Opportunity Reference Card -->
+      <aside class="w-full lg:col-span-1">
+        <div class="bg-white border border-[#E3E9E5] rounded-2xl p-4 sm:p-6 shadow-sm sticky top-6">
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Role Reference</p>
+          <span id="refCategory" class="inline-block bg-[#eaf6ee] text-[#08783E] text-xs font-bold px-2.5 py-1 rounded mb-2">Education</span>
+          <p id="refOrg" class="text-xs text-gray-500 font-medium">Bright Steps Initiative</p>
+          <h2 id="refTitle" class="text-base sm:text-lg font-bold text-[#172026] mt-1 mb-2">Help young readers build confidence</h2>
+          <p id="refDesc" class="text-xs text-gray-600 leading-relaxed mb-4">
+            Support children with reading practice in a friendly weekend learning group located in Lagos.
+          </p>
+          <hr class="border-gray-100 my-3" />
+          <dl class="text-xs space-y-2">
+            <div class="flex justify-between"><dt class="text-gray-500">Location:</dt><dd id="refLocation" class="font-semibold text-gray-800">Lagos (On-site)</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Commitment:</dt><dd id="refCommitment" class="font-semibold text-gray-800">2 hours / week</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Duration:</dt><dd id="refDuration" class="font-semibold text-gray-800">3 Months</dd></div>
+          </dl>
+        </div>
+      </aside>
+
     </div>
+  </main>
 
-    <!-- JavaScript files -->
-    <!-- Load API helper before registration logic -->
-    <script src="js/api.js"></script>
-    <script src="js/register.js"></script>
+  <!-- Footer -->
+  <footer class="border-t border-[#E3E9E5] bg-white py-6 text-xs text-gray-500 mt-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between gap-2">
+      <p><strong>IMPACTRA</strong> · Volunteer & NGO Impact Tracker</p>
+      <p>© 2026 IMPACTRA. All rights reserved.</p>
+    </div>
+  </footer>
 
+  <script>
+    // Mobile Menu 
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      mobileMenu.classList.toggle('flex');
+    });
+
+    // Sync dropdown with Reference Card
+    const select = document.getElementById('opportunitySelect');
+    
+    function syncCard() {
+      const opt = select.options[select.selectedIndex];
+      document.getElementById('refTitle').textContent = opt.text.split(' — ')[0];
+      document.getElementById('refOrg').textContent = opt.dataset.org || '';
+      document.getElementById('refCategory').textContent = opt.dataset.cat || 'General';
+      document.getElementById('refLocation').textContent = opt.dataset.loc || 'Anywhere';
+      document.getElementById('refCommitment').textContent = opt.dataset.commit || 'Flexible';
+      document.getElementById('refDuration').textContent = opt.dataset.duration || 'N/A';
+      document.getElementById('refDesc').textContent = opt.dataset.desc || '';
+    }
+
+    //  URL Params from opportunities.html
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedId = urlParams.get('id');
+    if (selectedId) {
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === selectedId) {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+    }
+
+    select.addEventListener('change', syncCard);
+    syncCard();
+
+    document.getElementById('applyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.classList.add('hidden');
+      document.getElementById('confirmationBanner').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 </body>
 </html>
