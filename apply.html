@@ -1,85 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPARTRA - Register</title>
-
-    <!-- Main stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Opportunity | IMPACTRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="shortcut icon" href="img/leaf-logo.png" type="image/x-icon" />
 </head>
+<body class="min-h-screen font-['Inter'] bg-[#f7f9f6] text-[#172026]">
 
-<body>
+  <!-- Header -->
+  <header class="bg-white border-b border-[#E3E9E5] px-4 py-3 lg:px-8">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 text-xl font-extrabold tracking-wider text-[#08783E]">
+        <img class="w-8 h-8" src="img/leaf-logo.png" alt="Logo" />
+        <span>IMPACTRA</span>
+      </a>
+      <nav aria-label="Main navigation" class="flex items-center gap-6 text-sm font-medium">
+        <a href="index.html" class="text-gray-600 hover:text-[#08783E]">Home</a>
+        <a href="opportunities.html" class="text-gray-600 hover:text-[#08783E]">Opportunities</a>
+        <a href="log-hours.html" class="text-gray-600 hover:text-[#08783E]">Log Hours</a>
+      </nav>
+    </div>
+  </header>
 
-    <div class="auth-card">
-        <h2>Create Account</h2>
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-4 py-8 lg:py-12">
+    <div class="mb-8">
+      <a href="opportunities.html" class="text-xs font-bold text-[#08783E] hover:underline flex items-center gap-1 mb-2">
+        ← Back to all opportunities
+      </a>
+      <h1 class="text-3xl font-extrabold text-[#172026]">Submit Your Application</h1>
+      <p class="text-gray-600 text-sm mt-1">Review the role details and let the organization know why you'd be a great fit.</p>
+    </div>
 
-        <form id="registerForm">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left Column: Reference Opportunity Card -->
+      <aside class="lg:col-span-1">
+        <div class="bg-white border border-[#E3E9E5] rounded-2xl p-6 shadow-sm sticky top-6">
+          <span class="inline-block bg-[#eaf6ee] text-[#08783E] text-xs font-bold px-2.5 py-1 rounded mb-3">Education</span>
+          <p class="text-xs text-gray-500 font-medium">Bright Steps Initiative</p>
+          <h2 class="text-lg font-bold text-[#172026] mt-1 mb-3">Help young readers build confidence</h2>
+          <p class="text-xs text-gray-600 leading-relaxed mb-4">
+            Support children with reading practice in a friendly weekend learning group located in Lagos.
+          </p>
+          <hr class="border-gray-100 my-4" />
+          <dl class="text-xs space-y-2">
+            <div class="flex justify-between"><dt class="text-gray-500">Location:</dt><dd class="font-semibold text-gray-800">Lagos (On-site)</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Commitment:</dt><dd class="font-semibold text-gray-800">2 hours / week</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Duration:</dt><dd class="font-semibold text-gray-800">3 Months</dd></div>
+          </dl>
+        </div>
+      </aside>
 
-            <!-- Full Name -->
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    placeholder="John Doe"
-                >
+      <!-- Right Column: Application Form -->
+      <section class="lg:col-span-2">
+        <div class="bg-white border border-[#E3E9E5] rounded-2xl p-6 lg:p-8 shadow-sm">
+          
+          <form id="applyForm" class="space-y-6">
+            <!-- Select Opportunity Dropdown -->
+            <div>
+              <label for="opportunitySelect" class="block text-xs font-bold text-gray-700 mb-1">Selected Opportunity</label>
+              <select id="opportunitySelect" class="w-full h-11 border border-gray-300 rounded-lg px-3 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#08783E]">
+                <option value="sample-1" selected>Help young readers build confidence — Bright Steps Initiative</option>
+                <option value="sample-2">Bring a community garden to life — Green Neighbourhood</option>
+                <option value="sample-3">Design for a community cause — Kindred Network</option>
+              </select>
             </div>
 
-            <!-- Email -->
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    placeholder="john@example.com"
-                >
+            <!-- Full Name & Email -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="fullName" class="block text-xs font-bold text-gray-700 mb-1">Full Name *</label>
+                <input id="fullName" type="text" required placeholder="John Doe" class="w-full h-11 border border-gray-300 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#08783E]" />
+              </div>
+              <div>
+                <label for="email" class="block text-xs font-bold text-gray-700 mb-1">Email Address *</label>
+                <input id="email" type="email" required placeholder="john@example.com" class="w-full h-11 border border-gray-300 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#08783E]" />
+              </div>
             </div>
 
-            <!-- Password -->
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    required
-                    placeholder="Enter your password"
-                >
+            <!-- Screening Question / Motivation -->
+            <div>
+              <label for="motivation" class="block text-xs font-bold text-gray-700 mb-1">Why are you interested in this role? *</label>
+              <textarea id="motivation" rows="4" required placeholder="Briefly share your motivation, relevant experience, or availability..." class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#08783E]"></textarea>
             </div>
 
-            <!-- Account Type -->
-            <div class="form-group">
-                <label for="role">Account Type</label>
-                <select id="role" name="role" required>
-                    <option value="volunteer">Volunteer</option>
-                    <option value="ngo">NGO Admin</option>
-                </select>
+            <!-- Screening Checkboxes -->
+            <div class="space-y-2">
+              <span class="block text-xs font-bold text-gray-700">Screening Questions</span>
+              <label class="flex items-start gap-2 cursor-pointer text-xs text-gray-600">
+                <input type="checkbox" required class="mt-0.5 accent-[#08783E] rounded" />
+                <span>I confirm that I am available to commit to 2 hours per week in Lagos.</span>
+              </label>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit">Sign Up</button>
+            <button type="submit" class="w-full sm:w-auto px-8 h-12 bg-[#08783E] hover:bg-[#065c2f] text-white font-bold rounded-lg text-sm transition">
+              Submit Application
+            </button>
+          </form>
 
-        </form>
+          <!-- Confirmation Banner (Hidden by default) -->
+          <div id="confirmationBanner" class="hidden bg-[#eaf6ee] border border-[#08783E] rounded-xl p-6 text-center mt-6">
+            <div class="w-12 h-12 bg-[#08783E] text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-xl">✓</div>
+            <h3 class="text-lg font-bold text-[#172026] mb-1">Application Submitted!</h3>
+            <p class="text-xs text-gray-600 max-w-md mx-auto mb-4">
+              Your application is currently <span class="font-bold text-[#ae7827] bg-[#fff8e9] px-2 py-0.5 rounded">Pending Review</span> by Bright Steps Initiative. They will contact you via email shortly.
+            </p>
+            <a href="opportunities.html" class="inline-block text-xs font-bold text-[#08783E] underline">Explore more opportunities</a>
+          </div>
 
-        <!-- Alert message -->
-        <div id="alertMessage" class="alert"></div>
-
-        <!-- Login link -->
-        <p class="auth-link">
-            Already have an account?
-            <a href="login.html">Login here</a>
-        </p>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <!-- JavaScript files -->
-    <!-- Load API helper before registration logic -->
-    <script src="js/api.js"></script>
-    <script src="js/register.js"></script>
-
+  <script>
+    document.getElementById('applyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.classList.add('hidden');
+      document.getElementById('confirmationBanner').classList.remove('hidden');
+    });
+  </script>
 </body>
 </html>
