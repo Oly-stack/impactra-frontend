@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore volunteering opportunities with IMPACTRA. Find a cause, location and commitment that fits you.">
+  <title>Volunteer Opportunities | IMPACTRA</title>
+  <style>
+    :root { --ink: #172f2b; --muted: #52635e; --green: #17664b; --line: #d9e2db; --paper: #f7f9f6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: Arial, Helvetica, sans-serif; line-height: 1.6; }
+    button, input, select { font: inherit; }
+    button, summary, select { cursor: pointer; }
+    a { color: var(--green); }
+    :focus-visible { outline: 3px solid #b25d12; outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    .skip-link { position: absolute; left: 16px; top: -100px; padding: 10px 16px; background: white; z-index: 2; }
+    .skip-link:focus { top: 12px; }
+    .wrap { width: min(1160px, calc(100% - 48px)); margin: auto; }
+    .site-header { background: white; border-bottom: 1px solid var(--line); }
+    .header-row { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { font-size: 22px; font-weight: 800; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; }
+    .brand-mark { width: 29px; height: 29px; background: var(--green); border-radius: 9px 9px 9px 0; display: inline-block; position: relative; }
+    .brand-mark::after { content: ''; position: absolute; width: 8px; height: 15px; border-right: 2px solid white; border-bottom: 2px solid white; transform: rotate(40deg); top: 4px; left: 10px; }
+    nav a { display: inline-block; padding: 25px 0; border-bottom: 3px solid var(--green); text-decoration: none; font-weight: 700; font-size: 14px; }
+    .hero { padding: 58px 0 48px; background: #eaf2e8; border-bottom: 1px solid var(--line); }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--green); text-transform: uppercase; margin: 0 0 12px; }
+    h1 { font-size: clamp(32px, 4.6vw, 54px); letter-spacing: -2px; line-height: 1.12; max-width: 700px; margin: 0 0 18px; }
+    .intro { max-width: 600px; color: var(--muted); margin: 0; font-size: 17px; }
+    main { padding: 32px 0 52px; }
+    .demo-note { border-left: 3px solid #ae7827; background: #fff8e9; padding: 10px 16px; color: #674b20; font-size: 13px; margin: 0 0 24px; }
+    .filters { padding: 24px; background: white; border: 1px solid var(--line); border-radius: 14px; }
+    .filter-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    h2 { font-size: 18px; margin: 0; }
+    .reset { border: 0; background: transparent; padding: 5px 0; color: var(--green); font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .filter-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 16px; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+    input, select { width: 100%; min-height: 46px; border: 1px solid #a7b8ae; border-radius: 7px; padding: 10px 12px; color: var(--ink); background: white; min-width: 0; }
+    input::placeholder { color: #63746b; opacity: 1; }
+    .results-heading { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin: 32px 0 20px; }
+    .result-count { color: var(--muted); font-size: 14px; margin: 0; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+    .card { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 24px; overflow-wrap: anywhere; }
+    .card-top { display: flex; gap: 12px; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .category { color: var(--green); background: #eaf3ed; border-radius: 5px; font-size: 11px; font-weight: 700; padding: 4px 9px; }
+    .mode { color: var(--muted); font-size: 12px; }
+    .organization { color: var(--muted); font-size: 12px; margin: 0 0 6px; }
+    h3 { font-size: 21px; letter-spacing: -.5px; line-height: 1.3; margin: 0 0 12px; }
+    .description { color: var(--muted); font-size: 14px; margin: 0 0 20px; min-height: 68px; }
+    .meta { display: grid; grid-template-columns: 1fr; gap: 7px; font-size: 13px; margin: 0 0 22px; }
+    .meta div { display: flex; gap: 10px; }
+    .meta dt { width: 77px; flex-shrink: 0; color: var(--muted); }
+    .meta dd { margin: 0; font-weight: 600; }
+    details { border-top: 1px solid var(--line); padding-top: 16px; font-size: 13px; }
+    summary { color: var(--green); font-weight: 700; padding: 2px 0; }
+    details p { margin: 14px 0 0; color: var(--muted); }
+    .empty { text-align: center; padding: 58px 24px; border: 1px dashed #a7b8ae; border-radius: 12px; background: white; }
+    .empty h3 { margin-bottom: 8px; }
+    .empty p { color: var(--muted); margin: 0 0 14px; }
+    footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: 12px; }
+    .footer-row { display: flex; justify-content: space-between; gap: 16px; }
+    footer p { margin: 0; }
+    @media (min-width: 1051px) { .card h3 { min-height: 55px; } }
+    @media (max-width: 1050px) { .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px) {
+      .wrap { width: calc(100% - 32px); } .header-row { min-height: 68px; gap: 12px; }
+      .brand { font-size: 17px; letter-spacing: 1px; } .brand-mark { width: 26px; height: 26px; }
+      nav a { font-size: 12px; padding: 21px 0; } .hero { padding: 38px 0 32px; }
+      h1 { letter-spacing: -1px; } .intro { font-size: 15px; }
+      .filters { padding: 18px; } .filter-grid, .cards { grid-template-columns: 1fr; }
+      .results-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .card { padding: 22px; } .description { min-height: 0; } .footer-row { flex-direction: column; gap: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to opportunities</a>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>IMPACTRA</div>
+      <nav aria-label="Main navigation"><a href="opportunities.html" aria-current="page">Find opportunities</a></nav>
+    </div>
+  </header>
+  <section class="hero" aria-labelledby="page-title">
+    <div class="wrap">
+      <p class="eyebrow">Your time. A shared purpose.</p>
+      <h1 id="page-title">Find your next way<br>to make a difference.</h1>
+      <p class="intro">Explore volunteering opportunities that match your interests, your skills and the time you have to give.</p>
+    </div>
+  </section>
+  <main id="main" class="wrap" tabindex="-1">
+    <p class="demo-note"><strong>Sample listings:</strong> These fictional opportunities demonstrate the page. They are not open for applications.</p>
+    <form id="filters" class="filters" role="search" aria-label="Find volunteering opportunities">
+      <div class="filter-heading"><h2>Find your fit</h2><button class="reset" type="reset">Clear filters</button></div>
+      <div class="filter-grid">
+        <div><label for="search">Search opportunities</label><input id="search" type="search" placeholder="Try teaching, design or an NGO" autocomplete="off"></div>
+        <div><label for="category">Cause</label><select id="category"><option value="">All causes</option>Education</option><option>Environment</option><option>Community support</option><option>Digital skills</option></select></div>
+        <div><label for="location">Location</label><select id="location"><option value="">All locations</option>Abuja</option><option>Enugu</option><option>Ibadan</option><option>Lagos</option><option>Anywhere</option></select></div>
+        <div><label for="mode">Work setting</label><select id="mode"><option value="">All settings</option>On-site</option><option>Remote</option></select></div>
+      </div>
+    </form>
+    <section aria-labelledby="results-title">
+      <div class="results-heading"><h2 id="results-title">Explore opportunities</h2><p id="result-count" class="result-count" role="status" aria-live="polite" aria-atomic="true"></p></div>
+      <div id="opportunities" class="cards"></div>
+      <div id="empty-state" class="empty" hidden><h3>No opportunities found</h3><p>Try another keyword or clear your filters to explore all listings.</p><button id="empty-reset" class="reset" type="button">Clear all filters</button></div>
+    </section>
+    <noscript><p>Please enable JavaScript to view and filter the sample opportunities.</p></noscript>
+  </main>
+  <footer><div class="wrap footer-row"><p><strong>IMPACTRA</strong> · Volunteer &amp; NGO Impact Tracker</p><p>Small actions. Meaningful contributions.</p></div></footer>
+  <template id="opportunity-template">
+    <article class="card">
+      <div class="card-top"><span class="category"></span><span class="mode"></span></div>
+      <p class="organization"></p><h3></h3><p class="description"></p>
+      <dl class="meta"><div><dt>Location</dt><dd class="location"></dd></div><div><dt>Commitment</dt><dd class="commitment"></dd></div></dl>
+      <details><summary>View details</summary><p class="tasks"></p><p class="skills"></p></details>
+    </article>
+  </template>
+  <script>
+    'use strict';
+    // Frontend-only fixtures. Replace this array with the team's agreed API response.
+    // No endpoint or application route is assumed; application handling is a separate feature.
+    const opportunities = [
+      { id: 'sample-1', title: 'Help young readers build confidence', organization: 'Bright Steps Initiative', category: 'Education', location: 'Lagos', mode: 'On-site', commitment: '2 hours / week', description: 'Support children with reading practice in a friendly weekend learning group.', tasks: 'Guide small reading groups and help learners practise vocabulary.', skills: 'Patience, clear communication and an interest in education.' },
+      { id: 'sample-2', title: 'Bring a community garden to life', organization: 'Green Neighbourhood Project', category: 'Environment', location: 'Abuja', mode: 'On-site', commitment: '3 hours / week', description: 'Join local volunteers to plant, maintain and care for a shared green space.', tasks: 'Help prepare planting beds, water seedlings and keep the garden tidy.', skills: 'Teamwork and a willingness to work outdoors. No gardening experience needed.' },
+      { id: 'sample-3', title: 'Design for a community cause', organization: 'Kindred Community Network', category: 'Digital skills', location: 'Anywhere', mode: 'Remote', commitment: '2–4 hours / week', description: 'Use your design skills to make community information clearer and easier to share.', tasks: 'Create accessible social graphics and simple event information sheets.', skills: 'Basic graphic design skills and access to a computer.' },
+      { id: 'sample-4', title: 'Support a neighbourhood food drive', organization: 'Neighbour Care Collective', category: 'Community support', location: 'Ibadan', mode: 'On-site', commitment: '4 hours / event', description: 'Help a community team organise donated supplies for local households.', tasks: 'Sort donations, prepare packages and support the distribution team.', skills: 'Organisation, teamwork and respectful communication.' },
+      { id: 'sample-5', title: 'Introduce learners to digital basics', organization: 'Open Learning Circle', category: 'Education', location: 'Enugu', mode: 'On-site', commitment: '2 hours / week', description: 'Help beginners become more comfortable using everyday computer tools.', tasks: 'Support practice sessions on typing, email and using the internet safely.', skills: 'Basic computer knowledge and the ability to explain things simply.' },
+      { id: 'sample-6', title: 'Help tell stories of community action', organization: 'Shared Purpose Initiative', category: 'Digital skills', location: 'Anywhere', mode: 'Remote', commitment: '3 hours / week', description: 'Turn volunteer updates into clear stories that celebrate community participation.', tasks: 'Edit short community updates and prepare readable newsletter content.', skills: 'Writing, proofreading and an interest in social impact.' }
+    ];
+    const filters = document.getElementById('filters');
+    const search = document.getElementById('search');
+    const category = document.getElementById('category');
+    const locationFilter = document.getElementById('location');
+    const mode = document.getElementById('mode');
+    const cards = document.getElementById('opportunities');
+    const template = document.getElementById('opportunity-template');
+    const count = document.getElementById('result-count');
+    const emptyState = document.getElementById('empty-state');
+
+    function filterOpportunities(items, query, cause, location, setting) {
+      const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      return items.filter(item => {
+        const searchable = [item.title, item.organization, item.description, item.category, item.location, item.mode, item.skills].join(' ').toLowerCase();
+        return words.every(word => searchable.includes(word))
+          && (!cause || item.category === cause)
+          && (!location || item.location === location)
+          && (!setting || item.mode === setting);
+      });
+    }
+
+    function renderOpportunities() {
+      const matches = filterOpportunities(opportunities, search.value, category.value, locationFilter.value, mode.value);
+      const fragment = document.createDocumentFragment();
+      matches.forEach(item => {
+        const card = template.content.cloneNode(true);
+        // textContent keeps listing text safe when real API data is introduced.
+        const fields = { '.category': item.category, '.mode': item.mode, '.organization': item.organization, 'h3': item.title, '.description': item.description, '.location': item.location, '.commitment': item.commitment, '.tasks': 'What you’ll do: ' + item.tasks, '.skills': 'What you’ll bring: ' + item.skills };
+        Object.entries(fields).forEach(([selector, value]) => { card.querySelector(selector).textContent = value; });
+        card.querySelector('h3').id = item.id;
+        card.querySelector('article').setAttribute('aria-labelledby', item.id);
+        card.querySelector('summary').setAttribute('aria-label', 'View details: ' + item.title);
+        fragment.appendChild(card);
+      });
+      cards.replaceChildren(fragment);
+      count.textContent = matches.length + (matches.length === 1 ? ' opportunity' : ' opportunities') + ' found';
+      emptyState.hidden = matches.length > 0;
+    }
+
+    filters.addEventListener('input', renderOpportunities);
+    filters.addEventListener('change', renderOpportunities);
+    filters.addEventListener('submit', event => { event.preventDefault(); renderOpportunities(); });
+    filters.addEventListener('reset', () => {
+      // Reset events run before the browser restores the controls' default values.
+      window.setTimeout(renderOpportunities, 0);
+    });
+    document.getElementById('empty-reset').addEventListener('click', () => { filters.reset(); search.focus(); });
+    renderOpportunities();
+  </script>
+</body>
+</html>
