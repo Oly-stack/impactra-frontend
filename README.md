@@ -1,2 +1,2 @@
 # impactra-frontend
-Frontend for IMPACTRA - Volunteer & NGO Impact Tracker (optional)
+Frontend for IMPACTRA - Volunteer & NGO Impact Tracker
