@@ -154,7 +154,7 @@
   </footer>
 
   <script>
-    // Mobile Menu Toggle
+    // Mobile Menu 
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     menuToggle.addEventListener('click', () => {
@@ -176,7 +176,7 @@
       document.getElementById('refDesc').textContent = opt.dataset.desc || '';
     }
 
-    //  URL Parameter from opportunities.html
+    //  URL Params from opportunities.html
     const urlParams = new URLSearchParams(window.location.search);
     const selectedId = urlParams.get('id');
     if (selectedId) {
