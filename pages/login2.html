@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impactra | Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anek+Tamil:wght@100..800&family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Deca:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Young+Serif&display=swap"
+      rel="stylesheet"
+    />
+    <script src="login2.js" defer></script>
+  </head>
+  <body class="bg-[#f9f9ff] font-Inter min-h-screen">
+    <main class="min-h-screen flex flex-col items-center justify-center px-6">
+      <div class="flex items-center gap-2 mb-5">
+        <img
+          src="/impactra-frontend/images/logo.png"
+          class="w-[40px] h-[auto]"
+        />
+        <h1 class="text-xl font-bold text-[#111827]">IMPACTRA</h1>
+      </div>
+      <section class="w-full max-w-[420px] bg-white p-6 rounded-xl">
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold text-[#111827]">Welcome back</h2>
+
+          <p class="text-sm text-gray-500 mt-1">
+            Enter your details to continue.
+          </p>
+        </div>
+
+        <form id="loginForm">
+          <div class="mb-5">
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Email address
+            </label>
+
+            <div class="relative">
+              <img
+                src="../images/email.png"
+                alt="Email"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-3"
+              />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@gmail.com"
+                class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Password
+            </label>
+
+            <div class="relative">
+              <img
+                src="../images/password.png"
+                alt="Email"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-4"
+              />
+
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                required
+              />
+
+              <button
+                type="button"
+                id="togglePassword"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <img src="../images/eye.png" class="w-4 h-3" />
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mb-6">
+            <label
+              class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                id="remember"
+                class="w-4 h-4 accent-blue-600 cursor-pointer"
+              />
+
+              <span>Remember me</span>
+            </label>
+
+            <a
+              href="#"
+              class="text-sm font-semibold text-blue-600 hover:text-blue-700"
+            >
+              Forgot password?
+            </a>
+          </div>
+
+          <button
+            type="submit"
+            class="relative w-full h-12 bg-[#0051d5] hover:bg-blue-600 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
+          >
+            Log in
+            <img src="../images/arrow.png" alt="Email" class="w-4 h-4" />
+          </button>
+        </form>
+        <div class="flex items-center gap-4 my-6">
+          <div class="flex-1 h-px bg-gray-200"></div>
+
+          <span class="text-sm text-black"> OR </span>
+
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <button
+          type="button"
+          class="w-full flex h-12 bg-[#f0f3ff] rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+        >
+          <img src="../images/google.png" alt="Email" class="w-5 h-5" />
+
+          Continue with Google
+        </button>
+
+        <p class="text-center text-sm text-gray-500 mt-7">
+          Don't have an account?
+
+          <a
+            href="register2.html"
+            class="text-blue-600 font-medium hover:text-blue-700"
+          >
+            Create an account
+          </a>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
