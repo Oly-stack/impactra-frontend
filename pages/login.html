@@ -5,195 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Impactra | Login</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anek+Tamil:wght@100..800&family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Deca:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Young+Serif&display=swap"
+      rel="stylesheet"
+    />
     <script src="login.js" defer></script>
   </head>
-  <body class="bg-[#eef7f2] transition-opacity duration-200 text-nearblack">
-    <main class="min-h-screen flex-items-center justify-center px-5 py-10">
-      <div
-        class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap 10 lg:gap-16"
-      >
-        <section class="relative hidden lg:block min-h-[600px]">
-          <div class="ml-[80px]">
-            <h1
-              class="text-[44px] text-[#075B32] font-bold leading-none lg:text-[60px]"
-            >
-              Impac<span class="text-[#087B3E]">tra</span>
-            </h1>
-            <p class="mt-2 text-[15px] text-[#4d6a5f]">
-              Connect. Contribute. Measure Impact.
-            </p>
-          </div>
-          <div class="relative z-20 mt-4 ml-[50px] max-w-[340px] lg:mt-[45px]">
-            <h2
-              class="text-[40px] text-[#075B32] font-semibold leading-11 tracking-tight"
-            >
-              Be part of a<br />
-              <span class="font-bold text-[#087B3E]">better tomorrow.</span>
-            </h2>
-            <p class="mt-5 text-[17px] leading-relaxed text-[#4d5b66]">
-              Join a community of changemakers creating real impact through
-              volunteering, opportunities and action.
-            </p>
-          </div>
+  <body class="bg-[#f9f9ff] font-Inter min-h-screen">
+    <main class="min-h-screen flex flex-col items-center justify-center px-6">
+      <div class="flex items-center gap-2 mb-5">
+        <img
+          src="/impactra-frontend/images/logo.png"
+          class="w-[40px] h-[auto]"
+        />
+        <h1 class="text-xl font-bold text-[#111827]">IMPACTRA</h1>
+      </div>
+      <section class="w-full max-w-[420px] bg-white p-6 rounded-xl">
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold text-[#111827]">Welcome back</h2>
 
-          <div class="relative w-full max-w-xl">
-            <img
-              src="../images/plants.jpeg"
-              alt="Volunteers planting seedlings"
-              class="w-full object-cover"
-            />
-            <div
-              class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#eef7f2] to-transparent pointer-events-none"
-            ></div>
-
-            <div
-              class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#eef7f2] to-transparent pointer-events-none"
-            ></div>
-
-            <div
-              class="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-[#eef7f2] to-transparent pointer-events-none"
-            ></div>
-
-            <div
-              class="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-[#eef7f2] to-transparent pointer-events-none"
-            ></div>
-          </div>
-        </section>
-        <section
-          class="w-full max-w-[750px] rounded-xl bg-white p-4 shadow-[0_20px_60px_rgba(15,122,78,0.08)] sm:p-10 lg:p-[50px]"
-        >
-          <h2 class="text-[28px] lg:[38px] font-bold">
-            Welcome back <span>👋</span>
-          </h2>
-          <p class="mb-10 mt-2 text-[#4d6a5f]">
-            Log in to your Impactra account.
+          <p class="text-sm text-gray-500 mt-1">
+            Enter your details to continue.
           </p>
-          <form id="loginForm">
-            <label for="email" class="mb-3 block text-[17px] font-semibold"
-              >Email address</label
+        </div>
+
+        <form id="loginForm">
+          <div class="mb-5">
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-2"
             >
-            <div
-              class="mb-7 flex h-[40px] text-[#087B3E] items-center gap-3.5 rounded-xl border-[1.5px] border-line px-5 text-muted transition focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10"
-            >
-              <svg
-                class="h-6 w-6 shrink-0"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="M3 7l9 6 9-6" />
-              </svg>
+              Email address
+            </label>
+
+            <div class="relative">
+              <img
+                src="../images/email.png"
+                alt="Email"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-3"
+              />
               <input
                 type="email"
                 id="email"
-                placeholder="you@example.com"
+                name="email"
+                placeholder="you@gmail.com"
+                class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
                 required
-                class="flex-1 bg-transparent text-lg text-ink outline-none placeholder:text-[#9aa8b5]"
               />
             </div>
-            <label for="password" class="mb-3 block text-[17px] font-semibold"
-              >Password</label
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700 mb-2"
             >
-            <div
-              class="mb-7 flex h-[40px] text-[#087B3E] items-center gap-3.5 rounded-xl border-[1.5px] border-line px-5 text-muted transition focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10"
-            >
-              <svg
-                class="h-6 w-6 shrink-0"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="5" y="11" width="14" height="10" rx="2" />
-                <path d="M8 11V8a4 4 0 018 0v3" />
-              </svg>
+              Password
+            </label>
+
+            <div class="relative">
+              <img
+                src="../images/password.png"
+                alt="Email"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-4"
+              />
+
               <input
                 type="password"
                 id="password"
+                name="password"
                 placeholder="Enter your password"
+                class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
                 required
-                class="flex-1 bg-transparent text-lg text-ink outline-none placeholder:text-[#9aa8b5]"
               />
+
               <button
                 type="button"
-                id="toggle"
-                aria-label="Show password"
-                class="flex text-muted"
+                id="togglePassword"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <svg
-                  class="h-6 w-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  color="#4B5560"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
+                <img src="../images/eye.png" class="w-4 h-3" />
               </button>
             </div>
+          </div>
+
+          <div class="flex items-center justify-between mb-6">
+            <label
+              class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                id="remember"
+                class="w-4 h-4 accent-blue-600 cursor-pointer"
+              />
+
+              <span>Remember me</span>
+            </label>
+
             <a
               href="#"
-              class="-mt-1.5 mb-9 block text-right font-semibold text-[#075B32]"
-              >Forgot password?</a
+              class="text-sm font-semibold text-blue-600 hover:text-blue-700"
             >
+              Forgot password?
+            </a>
+          </div>
 
-            <button
-              type="submit"
-              class="flex h-[50px] w-full items-center justify-center gap-3.5 rounded-xl bg-[#075B32] text-[22px] font-semibold text-white transition hover:bg-[#087B3E] hover:cursor-pointer active:scale-[0.99]"
-            >
-              Log In
-              <svg
-                class="h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </button>
-            <div
-              class="mb-6 mt-[30px] flex items-center gap-5 text-[15px] text-muted before:h-px before:flex-1 before:bg-[#E3E9E5] before:content-[''] after:h-px after:flex-1 after:bg-[#E3E9E5] after:content-['']"
-            >
-              OR
-            </div>
+          <button
+            type="submit"
+            class="relative w-full h-12 bg-[#0051d5] hover:bg-blue-600 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
+          >
+            Log in
+            <img src="../images/arrow.png" alt="Email" class="w-4 h-4" />
+          </button>
+        </form>
+        <div class="flex items-center gap-4 my-6">
+          <div class="flex-1 h-px bg-gray-200"></div>
 
-            <p class="text-center text-[#4d5b66]">
-              Don't have an account?
-              <a
-                href="register.html"
-                id="signUpLink"
-                class="ml-1.5 inline-flex items-center gap-2 font-semibold text-[#075B32]"
-              >
-                Sign up
-                <svg
-                  class="h-[18px] w-[18px]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </a>
-            </p>
-          </form>
-        </section>
-      </div>
+          <span class="text-sm text-black"> OR </span>
+
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <button
+          type="button"
+          class="w-full flex h-12 bg-[#f0f3ff] rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+        >
+          <img src="../images/google.png" alt="Email" class="w-5 h-5" />
+
+          Continue with Google
+        </button>
+
+        <p class="text-center text-sm text-gray-500 mt-7">
+          Don't have an account?
+
+          <a
+            href="register.html"
+            class="text-blue-600 font-medium hover:text-blue-700"
+          >
+            Create an account
+          </a>
+        </p>
+      </section>
     </main>
   </body>
 </html>
