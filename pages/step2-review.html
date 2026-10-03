@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMPACTRA - Step 2: Review & Submit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+</head>
+<body class="bg-[#f5f8ff] text-[#0f172a] font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200/80 px-6 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-50">
+    <a href="step1-profile.html" class="flex items-center gap-2.5">
+      <img src="../img/impactra logo.jpeg" alt="IMPACTRA Logo" class="h-8 w-auto object-contain rounded-lg" />
+      <span class="font-extrabold text-slate-900 tracking-tight text-base">IMPACTRA</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-1 bg-[#edf2f9] p-1 rounded-xl text-xs font-semibold text-slate-500">
+      <a href="step1-profile.html" class="bg-white text-slate-900 px-4 py-1.5 rounded-lg shadow-sm font-bold">Onboarding Flow</a>
+      <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition">Verification</a>
+      <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition">Training</a>
+      <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition">Coordinator Help</a>
+    </nav>
+
+    <div class="flex items-center gap-4 text-xs font-medium">
+      <span class="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60 font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        Portal Status: Ready
+      </span>
+      <button class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-semibold text-xs">?</button>
+      <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Step 2 Content -->
+  <main class="max-w-4xl mx-auto w-full px-4 pt-8 pb-12">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-[11px] font-extrabold tracking-wider text-blue-600 uppercase">● Final Verification Stage</span>
+      <span class="bg-blue-50 border border-blue-100 text-blue-800 text-[11px] font-bold px-3 py-1 rounded-lg">Clearance ID: NG-LAG-404</span>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">Review your organization details</h1>
+    <p class="text-slate-500 text-xs sm:text-sm max-w-xl mb-6">Check your information thoroughly before submitting your NGO profile for security and operational clearance.</p>
+
+    <!-- Header Banner -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
+        <span class="bg-blue-100 text-blue-700 text-[10px] uppercase font-black px-2 py-0.5 rounded">Registration Protocol</span>
+        <span>Reference: GRI-2025-NG88</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
+          <span class="text-xs font-extrabold text-slate-900">Profile Data <span class="text-emerald-600 font-normal">Completed</span></span>
+        </div>
+        <div class="w-16 h-0.5 bg-blue-600"></div>
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">2</div>
+          <span class="text-xs font-extrabold text-slate-900">2. Review & Submit <span class="text-blue-600 font-normal">Final Review</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-extrabold text-xs text-slate-900">Registration Details</h3>
+          <a href="step1-profile.html" class="text-[11px] font-bold text-blue-600 hover:underline">✏ Edit</a>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded-xl">
+          <div><p class="text-[9px] font-bold text-slate-400 uppercase">NIN</p><p class="font-bold text-slate-800">••••••••••</p></div>
+          <div><p class="text-[9px] font-bold text-slate-400 uppercase">Registration Number</p><p class="font-bold text-slate-800">CAC/RC 123456</p></div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-extrabold text-xs text-slate-900">Location</h3>
+          <a href="step1-profile.html" class="text-[11px] font-bold text-blue-600 hover:underline">✏ Edit</a>
+        </div>
+        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-xl">
+          <p class="text-[10px] font-bold text-slate-800">Lagos, Nigeria</p>
+          <p class="text-[10px] text-slate-500">12B Freedom Way, Lekki Phase 1</p>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-extrabold text-xs text-slate-900">About Your Organization</h3>
+          <a href="step1-profile.html" class="text-[11px] font-bold text-blue-600 hover:underline">✏ Edit</a>
+        </div>
+        <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl mb-3">Green Route Initiative supports local communities through food distribution, education, and volunteer-led programs.</p>
+        <div class="flex gap-2"><span class="bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-md">Community Support</span><span class="bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-md">Food Relief</span></div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-extrabold text-xs text-slate-900">Organization Details</h3>
+          <a href="step1-profile.html" class="text-[11px] font-bold text-blue-600 hover:underline">✏ Edit</a>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded-xl">
+          <div><p class="text-[9px] font-bold text-slate-400 uppercase">Organization Name</p><p class="font-bold text-slate-800">Green Route Initiative</p></div>
+          <div><p class="text-[9px] font-bold text-slate-400 uppercase">Email</p><p class="font-bold text-slate-800">hello@greenroute.org</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clearance -->
+    <div class="bg-blue-50/70 border border-blue-100 rounded-xl p-4 flex items-center gap-3 mb-6">
+      <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">i</div>
+      <div class="text-xs">
+        <h4 class="font-extrabold text-slate-900">Administrative Clearance Notice</h4>
+        <p class="text-slate-600">Your organization profile will be reviewed before you can access NGO operations, recruit volunteers, or launch emergency dispatch schedules.</p>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-between items-center">
+      <a href="step1-profile.html" class="bg-white border border-slate-200 text-slate-700 font-bold text-xs px-6 py-2.5 rounded-xl hover:bg-slate-50 transition">← Back</a>
+      <a href="step3-reviewing.html" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-7 py-2.5 rounded-xl shadow-md transition">Submit for Review ➾</a>
+    </div>
+  </main>
+</body>
+</html>
