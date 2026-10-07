@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMPACTRA - Step 1: Organization Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ["Inter", "sans-serif"] } } },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-[#f5f8ff] text-[#0f172a] font-sans antialiased min-h-screen flex flex-col justify-between"
+  >
+    <!-- Header -->
+    <header
+      class="bg-white border-b border-slate-200/80 px-6 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-50"
+    >
+      <a href="step1-profile.html" class="flex items-center gap-2.5">
+        <img
+          src="../img/impactra logo.jpeg"
+          alt="IMPACTRA Logo"
+          class="h-8 w-auto object-contain rounded-lg"
+        />
+        <span class="font-extrabold text-slate-900 tracking-tight text-base"
+          >IMPACTRA</span
+        >
+      </a>
+
+      <nav
+        class="hidden md:flex items-center gap-1 bg-[#edf2f9] p-1 rounded-xl text-xs font-semibold text-slate-500"
+      >
+        <a
+          href="step1-profile.html"
+          class="bg-white text-slate-900 px-4 py-1.5 rounded-lg shadow-sm font-bold"
+          >Onboarding Flow</a
+        >
+        <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition"
+          >Verification</a
+        >
+        <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition"
+          >Training</a
+        >
+        <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition"
+          >Coordinator Help</a
+        >
+      </nav>
+
+      <div class="flex items-center gap-4 text-xs font-medium">
+        <span
+          class="inline-flex items-center gap-1.5 text-[8px] lg:text-[12px] text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60 font-semibold"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Portal Status: Ready
+        </span>
+        <button
+          class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-semibold text-xs"
+        >
+          ?
+        </button>
+        <div
+          class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content 1 -->
+    <main class="max-w-4xl mx-auto w-full px-4 pt-8 pb-12">
+      <div class="flex items-center justify-between text-xs font-bold mb-6">
+        <div class="flex items-center gap-1.5 text-slate-700">
+          <svg
+            class="w-4 h-4 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 v5m-4 0h4"
+            ></path>
+          </svg>
+          <span>Organization Profile</span>
+        </div>
+        <span
+          class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-[11px] font-semibold border border-slate-200/80"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          hello@greenroute.org
+        </span>
+      </div>
+
+      <!-- Stepper Header -->
+      <div
+        class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-sm mb-6"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0"
+            >
+              1
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">
+                  Complete Profile
+                </h3>
+                <span
+                  class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-100"
+                  >In Progress</span
+                >
+              </div>
+              <p class="text-[11px] text-slate-400">
+                Core details, focus causes & branding
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+              <div class="w-1/2 h-full bg-blue-600 rounded-full"></div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <div
+                class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-400 flex items-center justify-center font-bold text-xs"
+              >
+                2
+              </div>
+              <div>
+                <h3 class="text-xs sm:text-sm font-bold text-slate-400">
+                  Review & Submit
+                </h3>
+                <p class="text-[11px] text-slate-400">
+                  Field verification checklist
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Container -->
+      <form
+        action="step2-review.html"
+        method="GET"
+        class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-8"
+        >
+          <div>
+            <span
+              class="text-[10px] font-extrabold tracking-wider text-blue-600 uppercase"
+              >Step 1 of 2 • Master Setup</span
+            >
+            <h1
+              class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight mt-0.5"
+            >
+              Set up your organization profile
+            </h1>
+            <p class="text-slate-500 text-xs sm:text-sm mt-0.5">
+              Tell us about your organization to begin deploying field teams.
+            </p>
+          </div>
+
+          <div
+            class="bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2 flex items-center gap-3 shrink-0 self-start sm:self-auto"
+          >
+            <div>
+              <p class="text-xs font-extrabold text-slate-900">60%</p>
+              <p
+                class="text-[9px] font-bold text-slate-400 uppercase tracking-wider"
+              >
+                Required Fields
+              </p>
+            </div>
+            <div class="relative w-7 h-7 flex items-center justify-center">
+              <svg class="w-7 h-7 transform -rotate-90" viewBox="0 0 36 36">
+                <path
+                  class="text-slate-200"
+                  stroke-width="4"
+                  stroke="currentColor"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path
+                  class="text-blue-600"
+                  stroke-dasharray="60, 100"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                  stroke="currentColor"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="space-y-6">
+            <div>
+              <h3
+                class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5 mb-0.5"
+              >
+                <svg
+                  class="w-4 h-4 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 v5m-4 0h4"
+                  ></path>
+                </svg>
+                Organization Details
+              </h3>
+              <p class="text-[11px] text-slate-400">
+                Official registry coordinates used for authorization badges.
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1"
+                >Organization Name <span class="text-red-500">*</span></label
+              >
+              <div class="relative">
+                <input
+                  type="text"
+                  name="orgName"
+                  value="Green Route Initiative"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                <div class="absolute right-3 top-2.5 text-emerald-500">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1"
+                >Email</label
+              >
+              <input
+                type="email"
+                value="hello@greenroute.org"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1"
+                >Phone Number</label
+              >
+              <input
+                type="text"
+                value="+234 801 234 5678"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+
+            <div>
+              <h4 class="text-[11px] font-bold text-slate-900 mb-0.5">
+                Location <span class="text-red-500">*</span>
+              </h4>
+              <div class="space-y-2.5 mt-2">
+                <select
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  <option>Lagos, Nigeria</option>
+                </select>
+                <input
+                  type="text"
+                  value="12B Freedom Way, Lekki Phase 1"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                <input
+                  type="text"
+                  value="Near Novare Mall"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900 mb-0.5">
+                Registration Details
+              </h3>
+              <div class="grid grid-cols-2 gap-3 mt-2">
+                <input
+                  type="text"
+                  placeholder="Enter 11-digit NIN"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                <input
+                  type="text"
+                  value="CAC/RC 123456"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <input
+                type="text"
+                value="www.greenroute.org"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 mt-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900 mb-0.5">
+                About Your Organization
+              </h3>
+              <p class="text-[11px] text-slate-400">
+                Our goals and the public guides for volunteers.
+              </p>
+            </div>
+
+            <div>
+              <textarea
+                rows="4"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              >
+Green Route Initiative supports local communities through food distribution, education, and volunteer-led programs.</textarea
+              >
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-2"
+                >Focus Area</label
+              >
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full"
+                  >Community Support</span
+                >
+                <span
+                  class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full"
+                  >Food Relief</span
+                >
+                <span
+                  class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full"
+                  >Literacy</span
+                >
+                <span
+                  class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full"
+                  >+ Emergency Health</span
+                >
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900 mb-0.5">
+                Supporting Documents
+              </h3>
+              <div
+                class="border-2 border-dashed border-blue-200/80 bg-blue-50/30 rounded-2xl p-5 text-center my-2"
+              >
+                <p class="text-xs font-bold text-slate-800">
+                  Drag and drop files here, or
+                  <span class="text-blue-600 underline">click to upload</span>
+                </p>
+              </div>
+              <div
+                class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between"
+              >
+                <span class="text-xs font-extrabold text-slate-900"
+                  >greenroute-symbol-crest.jpg</span
+                >
+                <span
+                  class="bg-blue-100 text-blue-700 text-[9px] font-bold px-1.5 py-0.5 rounded"
+                  >Uploaded</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between pt-8 border-t border-slate-100 mt-8"
+        >
+          <div
+            class="flex items-center gap-2 text-xs font-semibold text-slate-500"
+          >
+            <span class="w-2 h-1 mr-0.4 rounded-full bg-blue-600"></span>
+            <span><strong>Step 1 of 2:</strong> Profile configuration</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="bg-blue-50 text-blue-600 font-bold text-xs px-5 py-2.5 rounded-xl"
+            >
+              Save
+            </button>
+            <button
+              href="step2-review.html"
+              class="bg-blue-600 hover:bg-blue-700 flex gap-1 text-white font-bold text-xs px-6 py-2 rounded-xl transition inline-block"
+            >
+              Continue
+              <img src="/impactra-frontend/images/arrow.png" class="w-4 h-3" />
+            </button>
+          </div>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

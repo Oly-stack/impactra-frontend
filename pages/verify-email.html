@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMPACTRA - Verify Email</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+</head>
+<body class="bg-[#f5f8ff] text-[#0f172a] font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+  <!-- Verification Card -->
+  <div class="w-full max-w-md bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-xl shadow-blue-900/5 text-center">
+    
+    <!-- Email Icon  -->
+    <div class="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mx-auto mb-5 shadow-sm">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+      </svg>
+    </div>
+
+    <!-- Title & Description -->
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Check your email</h1>
+    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed mb-8">
+      We sent a 6-digit verification code to <span class="font-bold text-slate-700" id="userEmail">toyin@youthrise.org</span>
+    </p>
+
+    <!-- OTP Input Form -->
+    <form id="otpForm" action="step1-profile.html" method="GET">
+      <div class="flex justify-center gap-2 sm:gap-3 mb-8" id="otpInputs">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" autofocus required />
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
+      </div>
+
+      <!-- Action Button -->
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3.5 rounded-xl shadow-md shadow-blue-600/20 transition duration-150">
+        Verify Email
+      </button>
+    </form>
+
+    <!-- Resend Footer -->
+    <div class="mt-6 text-xs text-slate-500">
+      <p>Didn't get the code?</p>
+      <button type="button" id="resendBtn" class="text-blue-600 font-bold hover:underline mt-1 focus:outline-none">
+        Resend code
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // Verify email from URL parameter (e.g. verify-email.html?email=user@domain.com)
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailParam = urlParams.get('email');
+    if (emailParam) {
+      document.getElementById('userEmail').textContent = emailParam;
+    }
+
+    const inputs = document.querySelectorAll('.otp-box');
+
+    // Event handling
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        // non-numeric characters
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        if (input.value && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+
+      // allow code pasting
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasteData = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').trim();
+        if (pasteData.length === 6) {
+          pasteData.split('').forEach((char, i) => {
+            if (inputs[i]) inputs[i].value = char;
+          });
+          inputs[inputs.length - 1].focus();
+        }
+      });
+    });
+
+    // Resend OTP
+    document.getElementById('resendBtn').addEventListener('click', function() {
+      this.innerText = 'Code Sent!';
+      this.classList.remove('text-blue-600');
+      this.classList.add('text-emerald-600');
+      setTimeout(() => {
+        this.innerText = 'Resend code';
+        this.classList.remove('text-emerald-600');
+        this.classList.add('text-blue-600');
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
