@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Opportunity | Impactra</title>
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f8fafc;
+  color: #1f2937;
+}
+
+header {
+  padding: 20px 8%;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+main {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px #0000000d;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 25px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.active {
+  color: #4f46e5;
+  font-weight: bold;
+}
+
+section {
+  padding: 20px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+h2 { font-size: 20px; }
+
+.detail {
+  margin: 14px 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.detail strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+button {
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.back {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.publish {
+  background: #4f46e5;
+  color: white;
+}
+
+.publish:hover { background: #4338ca; }
+
+.notice {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  main {
+    margin: 15px;
+    padding: 20px;
+  }
+
+  .steps { font-size: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<header><strong>Impactra</strong></header>
+
+<main>
+  <h1>Review Your Opportunity</h1>
+
+  <p class="notice">
+    Check your information before publishing.
+  </p>
+
+  <div class="steps">
+    <span>1. Basic Information</span>
+    <span>2. Details</span>
+    <span class="active">3. Review</span>
+  </div>
+
+  <section>
+    <h2>Basic Information</h2>
+    <div id="basicInfo"></div>
+  </section>
+
+  <section>
+    <h2>Opportunity Details</h2>
+    <div id="extraInfo"></div>
+  </section>
+
+  <div class="actions">
+    <button class="back" onclick="goBack()">
+      Back to Details
+    </button>
+
+    <button class="publish" id="publishButton">
+      Publish Opportunity
+    </button>
+  </div>
+</main>
+
+<script>
+const draftKey = "impactraOpportunityDraft";
+
+let draft = {};
+
+try {
+  draft = JSON.parse(
+    sessionStorage.getItem(draftKey) || "{}"
+  );
+} catch (error) {
+  draft = {};
+}
+
+function addDetail(containerId, label, value) {
+      const container = document.getElementById(containerId);
+
+    const row = document.createElement("div");
+    row.className = "detail";
+
+    const heading = document.createElement("strong");
+    heading.textContent = label;
+
+    const content = document.createElement("span");
+    content.textContent = value || "Not provided";
+
+    row.appendChild(heading);
+    row.appendChild(content);
+    container.appendChild(row);
+  }
+
+  addDetail("basicInfo", "Opportunity Title", draft.title);
+  addDetail("basicInfo", "Category", draft.category);
+  addDetail("basicInfo", "Location", draft.location);
+  addDetail("basicInfo", "Description", draft.description);
+
+  addDetail("extraInfo", "Opportunity Type", draft.type);
+  addDetail("extraInfo", "Start Date", draft.startDate);
+  addDetail("extraInfo", "End Date", draft.endDate);
+  addDetail("extraInfo", "Application Deadline", draft.deadline);
+  addDetail("extraInfo", "Available Slots", draft.slots);
+  addDetail("extraInfo", "Requirements", draft.requirements);
+  addDetail("extraInfo", "Benefits", draft.benefits);
+
+  function goBack() {
+    window.location.href = "create-opportunities-step-2.html";
+  }
+
+  document.getElementById("publishButton")
+    .addEventListener("click", function() {
+
+      const requiredFields = [
+        "title", "category", "location",
+        "description", "type", "startDate",
+        "endDate", "deadline", "slots",
+        "requirements"
+      ];
+
+      const missingFields = requiredFields.filter(
+        field => !draft[field]
+      );
+
+      if (missingFields.length > 0) {
+        alert(
+          "Your opportunity is incomplete.\n\n" +
+          "Missing fields: " + missingFields.join(", ")
+        );
+        return;
+      }
+
+      try {
+        sessionStorage.setItem(
+          "impactraPublishedOpportunity",
+          JSON.stringify(draft)
+        );
+
+        window.location.href =
+          "opportunities-success.html";
+
+      } catch (error) {
+        console.error("Publishing error:", error);
+        alert("Unable to save your opportunity. Please try again.");
+      }
+    });
+</script>
+
+</body>
+</html>

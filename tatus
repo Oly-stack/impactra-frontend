@@ -1,0 +1,64 @@
+* [33ma94367c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m added screen
+* [33mf6abb64[m Initial commit
+* [33m2cce44f[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m edited the nav bar in Mr teniola's work,it was clumsy.
+*   [33m2f060fe[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[33m|[m[34m\[m  
+[33m|[m * [33m34549fa[m  latest push
+[33m|[m * [33m7335431[m added href links
+[33m|[m * [33m2845b14[m[33m ([m[1;31morigin/feature/opportunities-flow[m[33m)[m updated links
+[33m|[m * [33m397c07a[m spotted a bug
+[33m|[m * [33mbf834ec[m Update index.html
+[33m|[m * [33m2b1027b[m little omission
+[33m|[m *   [33m84a08ca[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[33m|[m [35m|[m[36m\[m  
+[33m|[m * [36m|[m [33m3810992[m linked login to landingpage
+[33m|[m * [36m|[m   [33mc76255e[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[33m|[m [1;31m|[m[1;32m\[m [36m\[m  
+[33m|[m * [1;32m|[m [36m|[m [33m4833f22[m linked login to landing page
+* [1;32m|[m [1;32m|[m [36m|[m [33m95165d4[m added verification page and organisation page
+[36m|[m [1;32m|[m[36m_[m[1;32m|[m[36m/[m  
+[36m|[m[36m/[m[1;32m|[m [1;32m|[m   
+* [1;32m|[m [1;32m|[m [33mc74aa19[m deleted old files
+[1;32m|[m [1;32m|[m[1;32m/[m  
+[1;32m|[m[1;32m/[m[1;32m|[m   
+* [1;32m|[m [33mcd50dae[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m *   [33mf1427a2[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[1;33m|[m [1;35m|[m[1;36m\[m  
+[1;33m|[m [1;35m|[m * [33m4011db1[m Add local frontend changes
+[1;33m|[m * [1;36m|[m [33mb210c41[m added volunteer profile
+[1;33m|[m [1;36m|[m[1;36m/[m  
+* [1;36m|[m [33m0455641[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+* [1;36m|[m [33m7a52956[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[31m|[m[1;36m\[m[1;36m|[m 
+[31m|[m * [33mf99cf8f[m reworked landing page
+[31m|[m *   [33m684d12b[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[31m|[m [33m|[m[34m\[m  
+[31m|[m [33m|[m * [33mde8b79a[m updateon log hour
+[31m|[m [33m|[m * [33m5655f94[m latest on apply
+[31m|[m [33m|[m * [33m201b7a6[m commit
+[31m|[m [33m|[m * [33m835fd09[m rework on application flow
+[31m|[m * [34m|[m [33mcbfb385[m linked log-hours
+[31m|[m [34m|[m[34m/[m  
+[31m|[m * [33m9d362f4[m adjusted login pages
+[31m|[m *   [33m0df56be[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[31m|[m [35m|[m[36m\[m  
+[31m|[m * [36m|[m [33mc52f7fc[m Update index.html
+* [36m|[m [36m|[m [33m8df71bf[m Added the actual pages Login2 and Register2
+[36m|[m [36m|[m[36m/[m  
+[36m|[m[36m/[m[36m|[m   
+* [36m|[m [33mfaf2662[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[1;31m|[m[36m\[m[36m|[m 
+[1;31m|[m * [33m282faf0[m Link apply and opportunities pages in nav
+[1;31m|[m *   [33m3ae94ff[m Merge branch 'main' of https://github.com/Oly-stack/impactra-frontend
+[1;31m|[m [1;33m|[m[1;34m\[m  
+[1;31m|[m [1;33m|[m * [33m92b74d5[m Add responsive opportunity listings with search and filters
+[1;31m|[m [1;33m|[m * [33m883663f[m Update frontend project
+[1;31m|[m [1;33m|[m * [33m38ab456[m Update frontend project
+[1;31m|[m * [1;34m|[m [33mb061df6[m Initial frontend build: landing page, hero, stats, how it works, why impactra, CTA, footer
+* [1;34m|[m [1;34m|[m [33ma5f7639[m Added login and registration page functionality
+[1;34m|[m [1;34m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[1;34m|[m   
+* [1;34m|[m [33maed745b[m Remove optional note from README description
+[1;34m|[m[1;34m/[m  
+* [33m7ba6ded[m Initial commit
