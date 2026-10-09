@@ -24,7 +24,10 @@
     <header
       class="bg-white border-b border-slate-200/80 px-6 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-50"
     >
-      <a href="step1-profile.html" class="flex ml-[120px] items-center gap-2.5">
+      <a
+        href="step1-profile.html"
+        class="flex ml-1 sm:ml-[120px] items-center gap-2.5"
+      >
         <img
           src="../images/logo2.png"
           alt="IMPACTRA Logo"
@@ -89,51 +92,52 @@
         </span>
       </div>
 
-      <!-- Stepper Header -->
       <div
-        class="bg-white border flex items-center justify-center border-slate-200/80 rounded-2xl px-4 sm:px-2 py-2 shadow-sm mb-6"
+        class="bg-white border border-slate-200/80 rounded-2xl p-4 md:px-6 shadow-sm mb-6"
       >
-        <div class="">
-          <div class="flex items-center gap-2">
+        <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+          <!-- Step 1 -->
+          <div class="flex items-start gap-3 min-w-0">
             <div
-              class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0"
+              class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0"
             >
               1
             </div>
-            <div>
-              <div class="flex items-center gap-1">
-                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-base font-extrabold text-slate-900">
                   Complete Profile
                 </h3>
                 <span
-                  class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-100"
+                  class="bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-100 whitespace-nowrap"
                   >In Progress</span
                 >
               </div>
-              <p class="text-[11px] text-slate-400">
-                Core details, focus causes & branding
+              <p class="text-sm text-slate-500">
+                Core details, focus causes &amp; branding
               </p>
             </div>
-            <div class="flex items-center gap-6">
-              <img
-                src="/impactra-frontend/images/complete.png"
-                class="w-[350px] h-1 ml-4"
-              />
-              <div class="flex items-center gap-2 shrink-0">
-                <div
-                  class="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 text-slate-400 flex items-center justify-center font-bold text-xs"
-                >
-                  2
-                </div>
-                <div>
-                  <h3 class="text-xs sm:text-sm font-bold text-slate-400">
-                    Review & Submit
-                  </h3>
-                  <p class="text-[11px] text-slate-400">
-                    Field verification checklist
-                  </p>
-                </div>
-              </div>
+          </div>
+
+          <!-- Progress line -->
+          <div
+            class="w-full md:flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden"
+          >
+            <div class="h-full w-1/2 bg-blue-600 rounded-full"></div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start gap-3 min-w-0">
+            <div
+              class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-400 flex items-center justify-center font-bold text-sm shrink-0"
+            >
+              2
+            </div>
+            <div class="min-w-0">
+              <h3 class="text-base font-bold text-slate-400">
+                Review &amp; Submit
+              </h3>
+              <p class="text-sm text-slate-400">Field verification checklist</p>
             </div>
           </div>
         </div>
@@ -220,7 +224,7 @@
                   type="text"
                   name="orgName"
                   value="Green Route Initiative"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  class="w-full bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
                 <div class="absolute right-3 top-2.5 text-emerald-500">
                   <img
@@ -239,7 +243,7 @@
                 <input
                   type="email"
                   value="hello@greenroute.org"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  class="w-full bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
                 <div class="absolute right-3 top-3 text-emerald-500">
                   <img
@@ -258,7 +262,7 @@
                 <input
                   type="text"
                   value="+234 801 234 5678"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  class="w-full bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
                 <div class="absolute right-3 top-3 text-emerald-500">
                   <img
@@ -282,7 +286,7 @@
                   <input
                     type="text"
                     value="Lagos,Nigeria"
-                    class="w-full pl-7 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    class="w-full pl-7 bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <div class="absolute left-2 top-3 text-emerald-500">
                     <img
@@ -298,7 +302,7 @@
                   <input
                     type="text"
                     value="12B Freedom Way, Lekki Phase 1"
-                    class="w-full pl-7 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    class="w-full pl-7 bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <div class="absolute left-2 top-3 text-emerald-500">
                     <img
@@ -316,7 +320,7 @@
                   <input
                     type="text"
                     value="Near Novare Mall"
-                    class="w-full pl-7 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    class="w-full pl-7 bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <div class="absolute left-2 top-3 text-emerald-500">
                     <img
@@ -360,7 +364,7 @@
                   <input
                     type="text"
                     placeholder="Enter 11-digit NIN"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    class="w-full bg-[#f0f3ff] border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <div class="absolute right-2 top-3 text-emerald-500">
                     <img
@@ -369,32 +373,52 @@
                     />
                   </div>
                 </div>
-
-                <input
-                  type="text"
-                  value="CAC/RC 123456"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
+                <div class="relative">
+                  <input
+                    type="text"
+                    value="CAC/RC 123456"
+                    class="w-full bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  <div class="absolute right-2 top-3 text-emerald-500">
+                    <img
+                      src="/impactra-frontend/images/page2.png"
+                      class="w-4 h-4"
+                    />
+                  </div>
+                </div>
               </div>
+              <p class="text-[12px] font-semibold mt-2">Website</p>
               <input
                 type="text"
                 value="www.greenroute.org"
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 mt-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                class="w-full bg-[#f0f3ff] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 mt-1.5 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
           </div>
 
           <div class="space-y-6">
             <div>
-              <h3 class="text-sm font-extrabold text-slate-900 mb-0.5">
-                About Your Organization
-              </h3>
+              <div class="flex gap-1">
+                <img src="/impactra-frontend/images/page.png" class="w-6 h-6" />
+                <h3 class="text-[20px] font-extrabold text-slate-900 mb-0.5">
+                  About Your Organization
+                </h3>
+              </div>
               <p class="text-[11px] text-slate-400">
                 Our goals and the public guides for volunteers.
               </p>
             </div>
 
             <div>
+              <div class="flex">
+                <p class="text-[15px] font-semibold ]">
+                  Organisation Description<span class="text-red-500">*</span>
+                </p>
+                <p class="text-[#97979b] text-[12px] ml-[120px]">
+                  306/400 characters
+                </p>
+              </div>
+
               <textarea
                 rows="4"
                 class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -428,9 +452,16 @@ Green Route Initiative supports local communities through food distribution, edu
             </div>
 
             <div class="">
-              <h3 class="text-sm font-extrabold text-slate-900 mb-0.5">
-                Supporting Documents
-              </h3>
+              <div class="flex gap-1">
+                <img src="/impactra-frontend/images/doc.png" class="w-5 h-4" />
+                <h3 class="text-sm font-extrabold text-slate-900 mb-0.5">
+                  Supporting Documents
+                </h3>
+              </div>
+              <p class="text-[#97979b] text-[12px]">
+                Upload official documents to verify your organisation.
+              </p>
+
               <div
                 class="border-2 border-dashed flex items-center justify-center flex-col border-blue-200/80 bg-blue-50/30 rounded-2xl p-5 text-center my-2"
               >
@@ -455,17 +486,62 @@ Green Route Initiative supports local communities through food distribution, edu
                   >Uploaded</span
                 >
               </div>
+              <div class="flex gap-2 mt-4">
+                <img
+                  src="/impactra-frontend/images/page2.png"
+                  class="w-6 h-6"
+                />
+                <p class="text-xs text-[#97979b]">
+                  Accepted documents:CAC certificate, organization ID,tax
+                  document or any official registration document.
+                </p>
+              </div>
+              <div class="flex mt-6">
+                <p class="text-xs font-semibold">
+                  Organisation Logo<span
+                    class="text-[#97979b] font-semibold mr-[80px]"
+                    >(Optional)</span
+                  >
+                </p>
+                <p class="text-xs font-semibold text-slate-800">
+                  Optional(PNG/JPG, max 10mb)
+                </p>
+              </div>
+              <div
+                class="flex gap-3 bg-[#f5f7ff] mt-3 rounded-[5px] p-2 w-[420px]"
+              >
+                <img src="/impactra-frontend/images/profile.png" />
+                <div class="">
+                  <p class="text-xs font-semibold">
+                    greenroute-symbol-crest.jpg<span
+                      class="font-semibold bg-[#f5f7ff] p-1 ml-3 rounded-full text-[#2563eb]"
+                      >Upload</span
+                    >
+                  </p>
+                  <p class="text-[#97979b] mt-1 text-xs">
+                    Click or drag file to replace current logo
+                  </p>
+                </div>
+                <img
+                  src="/impactra-frontend/images/cancel.png"
+                  class="w-4 h-4 ml-16 mt-3"
+                />
+              </div>
             </div>
           </div>
         </div>
 
+        <div>
+          <img src="" />
+        </div>
+
         <div
-          class="flex items-center justify-between pt-8 border-t border-slate-100 mt-8"
+          class="flex items-center justify-between pt-8 border-t border-slate-100 mt-5"
         >
           <div
             class="flex items-center gap-2 text-xs font-semibold text-slate-500"
           >
-            <span class="w-2 h-1 mr-0.4 rounded-full bg-blue-600"></span>
+            <span class="w-2 h-2 mr-0.4 rounded-full bg-blue-600"></span>
             <span><strong>Step 1 of 2:</strong> Profile configuration</span>
           </div>
           <div class="flex items-center gap-3">
