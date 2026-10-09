@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMPACTRA - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    aside {
+      width: 250px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .brand-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      font-size: 18px;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-section {
+      padding: 16px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none;
+      margin-bottom: 2px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item.active {
+      background-color: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+    }
+
+    .nav-item:hover:not(.active) {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .logout-btn {
+      padding: 16px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .logout-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: #dc2626;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 10px;
+    }
+
+    .logout-link:hover {
+      background-color: #fef2f2;
+    }
+
+    /* Main Area */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* Header Bar */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .search-box {
+      position: relative;
+      width: 320px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 12px 8px 34px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .search-key {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .bell-icon {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #64748b;
+      font-size: 16px;
+    }
+
+    .bell-badge {
+      width: 8px;
+      height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      border: 2px solid white;
+    }
+
+    .avatar-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 16px;
+      border-left: 1px solid #e2e8f0;
+    }
+
+    .avatar-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .avatar-info p:first-child {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .avatar-info p:last-child {
+      font-size: 10px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    /* Content */
+    .content-container {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cycle-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #2563eb;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .cycle-dot {
+      width: 6px;
+      height: 6px;
+      background: #2563eb;
+      border-radius: 50%;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+    }
+
+    .page-subtitle {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .date-pill {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    /* Stat Cards Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .metric-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .metric-number {
+      font-size: 26px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .pill-blue {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .pill-green {
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .pill-gray {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .metric-footer {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .text-red {
+      color: #ef4444;
+      font-weight: 700;
+    }
+
+    /* Main Section Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .card-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title-group h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .card-title-group p {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .view-link {
+      font-size: 12px;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+      padding: 10px 12px;
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    td {
+      padding: 12px;
+      font-size: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .cell-title {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .cell-sub {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .progress-bar-bg {
+      width: 100px;
+      height: 6px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-fill-blue {
+      height: 100%;
+      background: #2563eb;
+      border-radius: 999px;
+    }
+
+    .progress-fill-red {
+      height: 100%;
+      background: #ef4444;
+      border-radius: 999px;
+    }
+
+    .status-badge-active {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .status-badge-urgent {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .dot-green {
+      width: 5px;
+      height: 5px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      width: 5px;
+      height: 5px;
+      background: #ef4444;
+      border-radius: 50%;
+    }
+
+    .manage-link {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Photo Cards */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .photo-card {
+      height: 180px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Right Sidebar Widgets */
+    .target-box {
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+      margin-bottom: 16px;
+    }
+
+    .circle-chart {
+      position: relative;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: conic-gradient(#2563eb 0% 82%, #e2e8f0 82% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .circle-inner {
+      width: 52px;
+      height: 52px;
+      background: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-percent {
+      font-size: 12px;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .chart-label {
+      font-size: 7px;
+      font-weight: 800;
+      color: #2563eb;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .target-stats h4 {
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .target-stats h4 span {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .target-desc {
+      font-size: 10px;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .target-mob {
+      font-size: 10px;
+      font-weight: 700;
+      color: #059669;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .target-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 14px;
+    }
+
+    .stat-title {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    .stat-sub {
+      font-size: 10px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar -->
+  <aside>
+    <div>
+      <a href="index.html" class="brand-header">
+        <img src="img/impactra logo.jpeg" alt="IMPACTRA Logo" class="brand-logo-img" />
+        <span class="brand-title">IMPACTRA</span>
+      </a>
+
+      <div class="nav-section">
+        <div class="nav-label">OPERATIONS</div>
+        <a href="Dashboard.html" class="nav-item active">
+          <span>📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="pages/opportunities-list.html" class="nav-item">
+          <span>📅</span>
+          <span>Opportunities</span>
+        </a>
+        <a href="applications.html" class="nav-item">
+          <span>📄</span>
+          <span>Applications</span>
+        </a>
+        <a href="volunteer-profile.html" class="nav-item">
+          <span>👥</span>
+          <span>Volunteers</span>
+        </a>
+        <a href="contribution.html" class="nav-item">
+          <span>📈</span>
+          <span>Activities</span>
+        </a>
+        <a href="impact.html" class="nav-item">
+          <span>⚡</span>
+          <span>Impact</span>
+        </a>
+        <a href="certificates.html" class="nav-item">
+          <span>🏆</span>
+          <span>Certificates</span>
+        </a>
+
+        <div class="nav-label">SYSTEM</div>
+        <a href="messages.html" class="nav-item">
+          <span>💬</span>
+          <span>Messages</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span>⚙️</span>
+          <span>Settings</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="logout-btn">
+      <a href="index.html" class="logout-link">
+        <span>🚪</span>
+        <span>Log out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Right Main View -->
+  <div class="main-wrapper">
+
+    <!-- Header Navigation -->
+    <header>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search volunteers, shifts..." />
+        <span class="search-key">⌘K</span>
+      </div>
+
+      <div class="user-profile">
+        <button class="bell-icon">
+          🔔
+          <span class="bell-badge"></span>
+        </button>
+        
+        <div class="avatar-wrapper">
+          <img src="img/Profile.png" alt="Toyin Avatar" class="avatar-img" />
+          <div class="avatar-info">
+            <p>Toyin</p>
+            <p>NGO</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content-container">
+
+      <!-- Header Section -->
+      <div class="page-header">
+        <div>
+          <div class="cycle-badge">
+            <span class="cycle-dot"></span>
+            ACTIVE CYCLE Q4
+          </div>
+          <h1 class="page-title">OVERVIEW</h1>
+          <p class="page-subtitle">Here's what needs your operational attention today.</p>
+        </div>
+
+        <div class="header-actions">
+          <div class="date-pill">
+            <span>📅</span>
+            <span>Friday, Oct 13, 2026</span>
+          </div>
+          <a href="pages/create-opportunities-step-1.html" class="btn-primary">
+            <span>+</span>
+            <span>New Opportunity</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Metrics Top Grid -->
+      <div class="metrics-grid">
+        <!-- Card 1 -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">APPLICATIONS</span>
+            <div class="metric-icon">📄</div>
+          </div>
+          <div class="metric-value-row">
+            <span class="metric-number">14</span>
+            <span class="pill-blue">↗+6 today</span>
+          </div>
+          <p class="metric-footer text-red">• 4 urgent for this weekend</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">ACTIVITIES</span>
+            <div class="metric-icon">⏱️</div>
+          </div>
+          <div class="metric-value-row">
+            <span class="metric-number">6</span>
+            <span class="pill-gray">3 Programs</span>
+          </div>
+          <p class="metric-footer">⏱ 18.5 hours pending confirmation</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">OPPORTUNITIES</span>
+            <div class="metric-icon">📋</div>
+          </div>
+          <div class="metric-value-row">
+            <span class="metric-number">8</span>
+            <span class="pill-green">100% deployed</span>
+          </div>
+          <p class="metric-footer">Surulere, Yaba, Ikeja centres</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">TOTAL VOLUNTEERS</span>
+            <div class="metric-icon">👥</div>
+          </div>
+          <div class="metric-value-row">
+            <span class="metric-number">126</span>
+            <span class="pill-blue">↗+9.5%</span>
+          </div>
+          <p class="metric-footer">+12 onboarded this month</p>
+        </div>
+      </div>
+
+      <!-- Main Columns Grid -->
+      <div class="main-grid">
+
+        <!-- Left Main Section -->
+        <div>
+          <!-- Table Card -->
+          <div class="card-box">
+            <div class="card-top">
+              <div class="card-title-group">
+                <h3>Active Opportunities</h3>
+                <p>Live deployment rosters across regional zones</p>
+              </div>
+              <a href="pages/opportunities-list.html" class="view-link">View all (8) →</a>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>OPPORTUNITY & CATEGORY</th>
+                  <th>LOCATION & SCHEDULE</th>
+                  <th>CAPACITY</th>
+                  <th>STATUS</th>
+                  <th style="text-align: right;">ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="cell-title">Food Relief Distribution</div>
+                    <div class="cell-sub">Community Support</div>
+                  </td>
+                  <td>
+                    <div class="cell-title">Surulere, Lagos</div>
+                    <div class="cell-sub">Sat Oct 14</div>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 8px; font-weight: 700; font-size: 10px;">
+                      <span>8/10 Filled</span>
+                      <span style="color: #94a3b8;">80%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                      <div class="progress-fill-blue" style="width: 80%;"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge-active">
+                      <span class="dot-green"></span> Active
+                    </span>
+                  </td>
+                  <td style="text-align: right;">
+                    <a href="pages/opportunity-details.html" class="manage-link">Manage →</a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-title">School Literacy Support</div>
+                    <div class="cell-sub">Education</div>
+                  </td>
+                  <td>
+                    <div class="cell-title">Yaba, Lagos</div>
+                    <div class="cell-sub">Wed Oct 18</div>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 8px; font-weight: 700; font-size: 10px;">
+                      <span>4/6 Filled</span>
+                      <span style="color: #94a3b8;">66%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                      <div class="progress-fill-blue" style="width: 66%;"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge-active">
+                      <span class="dot-green"></span> Active
+                    </span>
+                  </td>
+                  <td style="text-align: right;">
+                    <a href="pages/opportunity-details.html" class="manage-link">Manage →</a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-title">Community Health Outreach</div>
+                    <div class="cell-sub">Health</div>
+                  </td>
+                  <td>
+                    <div class="cell-title">Ikeja, Lagos</div>
+                    <div class="cell-sub" style="color: #ef4444; font-weight: 700;">Tomorrow 9:00 AM</div>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 8px; font-weight: 700; font-size: 10px;">
+                      <span>7/10 Filled</span>
+                      <span style="color: #ef4444;">70%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                      <div class="progress-fill-red" style="width: 70%;"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge-urgent">
+                      <span class="dot-red"></span> Urgent
+                    </span>
+                  </td>
+                  <td style="text-align: right;">
+                    <a href="pages/opportunity-list.html" class="manage-link">Manage →</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bottom Photos -->
+          <div class="photo-grid">
+            <div class="photo-card">
+              <img src="img/dashboardleft.png" alt="Dashboard Left" />
+            </div>
+            <div class="photo-card">
+              <img src="img/dashboardright.png" alt="Dashboard Right" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Widgets -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Target Widget -->
+          <div class="card-box">
+            <div class="card-top">
+              <div class="card-title-group">
+                <h3>Quarterly Volunteer Service Target</h3>
+              </div>
+              <span class="pill-blue">Q4 2026</span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; font-weight: 500;">Aggregated verified service hours across all civic mobilization missions.</p>
+
+            <div class="target-box">
+              <div class="circle-chart">
+                <div class="circle-inner">
+                  <span class="chart-percent">82%</span>
+                  <span class="chart-label">ON TRACK</span>
+                </div>
+              </div>
+
+              <div class="target-stats">
+                <h4>1,640 <span>/ 2,000 hrs</span></h4>
+                <p class="target-desc">360 hours remaining with <span style="color: #2563eb;">32 days left</span> in Q4.</p>
+                <p class="target-mob">● Mobilization rate: +42h / week</p>
+              </div>
+            </div>
+
+            <div class="target-bottom-grid">
+              <div>
+                <div class="stat-title">DIRECT IMPACT</div>
+                <div class="stat-val">4,280</div>
+                <div class="stat-sub">Beneficiaries reached</div>
+              </div>
+              <div>
+                <div class="stat-title">RETENTION RATE</div>
+                <div class="stat-val">91.4%</div>
+                <div class="stat-sub">Returning volunteers</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Card -->
+          <div class="card-box">
+            <div class="card-top" style="margin-bottom: 4px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="color: #2563eb;">❇</span>
+                <h3 style="font-size: 14px; font-weight: 800; color: #0f172a;">Recent Activity</h3>
+              </div>
+              <span style="font-size: 10px; font-weight: 700; color: #94a3b8;">Live updates</span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; font-weight: 500;">Real-time submissions and volunteer actions across programs.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

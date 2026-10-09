@@ -4,105 +4,557 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IMPACTRA - Step 4: Account Approved</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-  </script>
-</head>
-<body class="bg-[#f5f8ff] text-[#0f172a] font-sans antialiased min-h-screen flex flex-col justify-between">
 
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200/80 px-6 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-50">
-    <a href="step1-profile.html" class="flex items-center gap-2.5">
-      <img src="../img/impactra logo.jpeg" alt="IMPACTRA Logo" class="h-8 w-auto object-contain rounded-lg" />
-      <span class="font-extrabold text-slate-900 tracking-tight text-base">IMPACTRA</span>
+    body {
+      background-color: #f5f8ff;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      justify-content: space-between;
+    }
+
+    /* Header Navigation */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      font-size: 16px;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-pill-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #edf2f9;
+      padding: 4px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .nav-pill-item {
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #64748b;
+      transition: all 0.15s ease;
+    }
+
+    .nav-pill-item.active {
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 800;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .nav-pill-item:hover:not(.active) {
+      color: #0f172a;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #047857;
+      background: #ecfdf5;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid #a7f3d0;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .help-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: none;
+      color: #64748b;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .user-avatar-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #2563eb;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .card-box {
+      width: 100%;
+      max-width: 580px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 36px 32px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .check-icon-wrapper {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #d1fae5;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 0 0 8px #ecfdf5;
+    }
+
+    .accreditation-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      color: #2563eb;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .card-heading {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .card-subtext {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+      max-width: 440px;
+      margin: 0 auto 24px;
+      font-weight: 500;
+    }
+
+    /* NGO Details Container */
+    .entity-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+
+    .entity-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 12px;
+    }
+
+    .entity-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .building-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #dbeafe;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .entity-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .entity-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .approved-badge {
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .entity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      font-size: 11px;
+    }
+
+    .meta-val {
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Capabilities Grid */
+    .capabilities-wrapper {
+      text-align: left;
+      margin-bottom: 24px;
+    }
+
+    .capabilities-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .cap-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tier-badge {
+      font-size: 10px;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .cap-card {
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      padding: 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .cap-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .cap-title-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .cap-sub-text {
+      font-size: 9px;
+      color: #94a3b8;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    /* Action Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .btn-dashboard {
+      flex: 1;
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-dashboard:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-guide {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-guide:hover {
+      background: #e2e8f0;
+    }
+
+    /* Footer Security */
+    .security-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 10px;
+      color: #94a3b8;
+      font-weight: 600;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .security-footer a {
+      color: #64748b;
+      text-decoration: none;
+    }
+
+    .security-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <a href="step1-profile.html" class="brand-link">
+      <img src="../img/impactra logo.jpeg" alt="IMPACTRA Logo" class="brand-logo-img" />
+      <span class="brand-title">IMPACTRA</span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-1 bg-[#edf2f9] p-1 rounded-xl text-xs font-semibold text-slate-500">
-      <a href="step1-profile.html" class="bg-white text-slate-900 px-4 py-1.5 rounded-lg shadow-sm font-bold">Onboarding Flow</a>
-      <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition">Verification</a>
-      <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition">Training</a>
-      <a href="#" class="px-4 py-1.5 hover:text-slate-900 transition">Coordinator Help</a>
+    <nav class="nav-pill-group">
+      <a href="step1-profile.html" class="nav-pill-item active">Onboarding Flow</a>
+      <a href="verification.html" class="nav-pill-item">Verification</a>
+      <a href="#" class="nav-pill-item">Training</a>
+      <a href="#" class="nav-pill-item">Coordinator Help</a>
     </nav>
 
-    <div class="flex items-center gap-4 text-xs font-medium">
-      <span class="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60 font-semibold">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+    <div class="header-right">
+      <div class="status-badge">
+        <span class="status-dot"></span>
         Portal Status: Ready
-      </span>
-      <button class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-semibold text-xs">?</button>
-      <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+      </div>
+      <button class="help-btn">?</button>
+      <div class="user-avatar-btn">
+        👤
       </div>
     </div>
   </header>
 
-  <!-- Step 4 Content -->
-  <main class="flex-1 flex flex-col items-center justify-center px-4 py-10">
-    <div class="w-full max-w-xl bg-white border border-slate-200/80 rounded-3xl p-8 shadow-xl text-center">
-      <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 ring-8 ring-emerald-50">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+  <!-- Main Content Box -->
+  <main>
+    <div class="card-box">
+      
+      <!-- Green Check Header Badge -->
+      <div class="check-icon-wrapper">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
       </div>
 
-      <span class="inline-block bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3">Official NGO Accreditation</span>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Your NGO account is approved</h1>
-      <p class="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-md mx-auto mb-6">Your organization has been approved. You can now access IMPACTRA's full suite of deployment, verification, and community impact tools.</p>
-
-      <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-left mb-6">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200/60 mb-3">
-          <div>
-            <p class="text-[9px] font-bold uppercase text-slate-400">Organization Entity</p>
-            <h3 class="text-sm font-extrabold text-slate-900">Green Route Initiative</h3>
-          </div>
-          <span class="bg-emerald-100 text-emerald-800 font-extrabold text-[10px] px-2.5 py-1 rounded-full flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Approved
-          </span>
-        </div>
-        <div class="grid grid-cols-2 gap-4 text-xs">
-          <div>
-            <p class="text-[9px] font-bold uppercase text-slate-400">Accreditation ID</p>
-            <p class="font-extrabold text-slate-900">NGO - 2026 - 8841</p>
-          </div>
-          <div>
-            <p class="text-[9px] font-bold uppercase text-slate-400">Clearance Timestamp</p>
-            <p class="font-extrabold text-slate-900">October 3, 2026 • 09:14 UTC</p>
-          </div>
-        </div>
+      <div class="accreditation-tag">
+        🛡 Official NGO Accreditation
       </div>
 
-      <div class="text-left mb-6">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">Unlocked Workspace Capabilities</span>
-          <span class="text-[10px] font-bold text-blue-600">Tier 1 Global Access</span>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div class="bg-slate-50 p-3 rounded-xl flex items-start gap-2.5">
-            <span class="text-blue-600 font-bold">✓</span>
+      <h1 class="card-heading">Your NGO account is approved</h1>
+      <p class="card-subtext">Your organization has been approved. You can now access IMPACTRA's full suite of deployment, verification, and community impact tools.</p>
+
+      <!-- Entity Details Card -->
+      <div class="entity-box">
+        <div class="entity-header">
+          <div class="entity-left">
+            <div class="building-icon">
+              🏢
+            </div>
             <div>
-              <p class="font-extrabold text-slate-900">Post Volunteer Opportunities</p>
-              <p class="text-[10px] text-slate-400">Publish shifts directly to verified responders</p>
+              <div class="entity-label">ORGANIZATION ENTITY</div>
+              <div class="entity-name">Green Route Initiative</div>
             </div>
           </div>
-          <div class="bg-slate-50 p-3 rounded-xl flex items-start gap-2.5">
-            <span class="text-blue-600 font-bold">✓</span>
+          <div class="approved-badge">
+            <span class="status-dot"></span> Approved
+          </div>
+        </div>
+
+        <div class="entity-grid">
+          <div>
+            <div class="entity-label">ACCREDITATION ID</div>
+            <div class="meta-val">NGO - 2026 - 8841</div>
+          </div>
+          <div>
+            <div class="entity-label">CLEARANCE TIMESTAMP</div>
+            <div class="meta-val">October 4, 2026 • 09:14 UTC</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capabilities Grid -->
+      <div class="capabilities-wrapper">
+        <div class="capabilities-top">
+          <span class="cap-title">UNLOCKED WORKSPACE CAPABILITIES</span>
+          <span class="tier-badge">Tier 1 Global Access</span>
+        </div>
+
+        <div class="capabilities-grid">
+          <div class="cap-card">
+            <div class="cap-check">✓</div>
             <div>
-              <p class="font-extrabold text-slate-900">Review & Triage Applications</p>
-              <p class="text-[10px] text-slate-400">Automated credentialing and squad filters</p>
+              <div class="cap-title-text">Post Volunteer Opportunities</div>
+              <div class="cap-sub-text">Publish shifts directly to verified responders</div>
+            </div>
+          </div>
+
+          <div class="cap-card">
+            <div class="cap-check">✓</div>
+            <div>
+              <div class="cap-title-text">Review & Triage Applications</div>
+              <div class="cap-sub-text">Automated credentialing and squad filters</div>
+            </div>
+          </div>
+
+          <div class="cap-card">
+            <div class="cap-check">✓</div>
+            <div>
+              <div class="cap-title-text">Verify Shift Hours & Contributions</div>
+              <div class="cap-sub-text">Encrypted sign-ins and mobile approvals</div>
+            </div>
+          </div>
+
+          <div class="cap-card">
+            <div class="cap-check">✓</div>
+            <div>
+              <div class="cap-title-text">Track Verified Community Impact</div>
+              <div class="cap-sub-text">Real-time live metric summaries for donors</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3">
-        <a href="#" onclick="alert('Navigating to Dashboard...')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-3 px-4 rounded-xl transition text-center">Go to Dashboard →</a>
-        <a href="step1-profile.html" class="bg-blue-50 text-blue-600 font-bold text-xs py-3 px-5 rounded-xl hover:bg-blue-100 transition text-center">Restart Flow</a>
+      <!-- Action Buttons -->
+      <div class="btn-row">
+        <a href="../Dashboard.html" class="btn-dashboard">
+          <span>Go to Dashboard</span>
+          <span>→</span>
+        </a>
+        <a href="#" class="btn-guide">
+          <span>📥</span>
+          <span>Download NGO Onboarding Guide</span>
+        </a>
       </div>
+
+      <!-- Footer Info -->
+      <div class="security-footer">
+        <span>🛡 Encrypted Records</span>
+        <span>•</span>
+        <a href="#">❓ Need Help? Contact NGO Support</a>
+      </div>
+
     </div>
   </main>
+
 </body>
 </html>
