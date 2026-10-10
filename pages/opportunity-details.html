@@ -332,110 +332,214 @@
   </main>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+  (() => {
+    "use strict";
 
-      function setText(id, value, fallback = "Not specified") {
-        const element = document.getElementById(id);
+    /* Toast */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
+      }
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
+    }
 
-        if (!element) {
-          console.warn("Missing element:", id);
-          return;
-        }
+    /* Rendering helpers*/
+    function setText(id, value, fallback = "Not specified") {
+      const element = document.getElementById(id);
+      if (!element) {
+        console.warn("Missing element:", id);
+        return;
+      }
+      const hasValue =
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== "";
+      element.textContent = hasValue ? String(value) : fallback;
+    }
 
-        const hasValue =
-          value !== undefined &&
-          value !== null &&
-          String(value).trim() !== "";
+    function formatDate(dateString) {
+      if (!dateString) return "Not specified";
+      // Accept both "2026-10-04" and full ISO strings
+      const iso = /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+        ? `${dateString}T00:00:00`
+        : dateString;
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return "Not specified";
+      return date.toLocaleDateString("en-NG", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    }
 
-        element.textContent = hasValue
-          ? String(value)
-          : fallback;
+    /* Cache of the current opportunity (populated on load)*/
+    let currentOpportunity = null;
+
+    /* Render*/
+    function render(opportunity) {
+      setText("title", opportunity.title, "Opportunity Details");
+      setText("category", opportunity.category, "Opportunity");
+      setText("sideCategory", opportunity.category);
+
+      setText("location", opportunity.location);
+      setText("sideLocation", opportunity.location);
+
+      setText("type", opportunity.type);
+
+      setText("description", opportunity.description, "No description provided.");
+      setText("shortDescription", opportunity.description, "Explore this opportunity.");
+
+      setText("requirements", opportunity.requirements, "No requirements provided.");
+      setText("benefits", opportunity.benefits, "No benefits specified.");
+
+      setText("startDate", formatDate(opportunity.startDate));
+      setText("endDate", formatDate(opportunity.endDate));
+      setText("deadline", formatDate(opportunity.deadline));
+      setText("sideDeadline", formatDate(opportunity.deadline));
+
+      setText("slots", opportunity.slots);
+
+      // Update the document title too, if the page has one
+      if (opportunity.title) document.title = `${opportunity.title} · IMPACTRA`;
+    }
+
+    /* Load on DOM ready*/
+    document.addEventListener("DOMContentLoaded", async function () {
+      const DRAFT_KEY     = "impactraOpportunityDraft";
+      const PUBLISHED_KEY = "impactraPublishedOpportunity";
+
+      /*  1. Read from sessionStorage  */
+      let opportunity = null;
+      try {
+        const raw =
+          sessionStorage.getItem(PUBLISHED_KEY) ||
+          sessionStorage.getItem(DRAFT_KEY);
+        if (raw) opportunity = JSON.parse(raw);
+      } catch (error) {
+        console.error("[opportunity-detail] corrupt saved data:", error);
       }
 
-      function formatDate(dateString) {
-        if (!dateString) {
-          return "Not specified";
+      /*  2. Try to refresh from API (URL ?id=, then cached id)  */
+      const urlId = new URLSearchParams(window.location.search).get("id");
+      const apiId = urlId || opportunity?.id;
+
+      if (window.API && apiId) {
+        try {
+          const res = await API.opportunities.get(apiId);
+          const remote = res?.data || res || null;
+          if (remote) {
+            // Remote wins for fields it provides; fall back to local otherwise
+            opportunity = { ...(opportunity || {}), ...remote };
+          }
+        } catch (err) {
+          // Non-fatal — we still have the local copy
+          console.warn("[opportunity-detail] server refresh failed:", err);
         }
+      }
 
-        const date = new Date(dateString + "T00:00:00");
+      /*  3. Nothing to show? Bail with a friendly message  */
+      if (!opportunity) {
+        console.warn("[opportunity-detail] no opportunity found in sessionStorage");
+        toast("No opportunity to display", "info");
+        return;
+      }
 
-        if (Number.isNaN(date.getTime())) {
-          return "Not specified";
-        }
+      /*  4. Cache + render  */
+      currentOpportunity = opportunity;
+      render(opportunity);
+    });
 
-        return date.toLocaleDateString("en-NG", {
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        });
+    /* Apply for opportunity*/
+    window.applyForOpportunity = async function () {
+      if (!currentOpportunity) {
+        toast("Nothing to apply to yet", "error");
+        return;
+      }
+
+      // Find the button (in case the HTML uses onclick="applyForOpportunity()")
+      const btn =
+        document.querySelector("[data-apply-btn]") ||
+        Array.from(document.querySelectorAll("button")).find((b) =>
+          /apply/i.test(b.textContent || "")
+        );
+
+      const original = btn ? btn.innerHTML : "";
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add("opacity-70", "cursor-not-allowed");
+        btn.textContent = "Applying…";
       }
 
       try {
-        // Prefer the published opportunity.
-        // Fall back to the saved draft for previewing.
-        const savedOpportunity =
-          sessionStorage.getItem("impactraPublishedOpportunity") ||
-          sessionStorage.getItem("impactraOpportunityDraft");
-
-        if (!savedOpportunity) {
-          console.warn("No saved opportunity found.");
-          return;
+        // If we have an API client and an ID, submit the application for real.
+        if (window.API && currentOpportunity.id) {
+          await API.applications.create
+            ? await API.applications.create({ opportunityId: currentOpportunity.id })
+            : await API.post("/applications", { opportunityId: currentOpportunity.id });
+        } else {
+          // Fallback so the button still does something during dev
+          await new Promise((r) => setTimeout(r, 400));
         }
 
-        const opportunity = JSON.parse(savedOpportunity);
+        toast("Application submitted — we'll be in touch", "success");
 
-        setText("title", opportunity.title, "Opportunity Details");
+        if (btn) {
+          btn.textContent = "Applied";
+          btn.classList.remove("opacity-70", "cursor-not-allowed");
+          btn.classList.add("bg-[#059669]", "text-white");
+          // Leave disabled after successful apply
+        }
+      } catch (err) {
+        // Roll back
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove("opacity-70", "cursor-not-allowed");
+          btn.innerHTML = original;
+        }
 
-        setText("category", opportunity.category, "Opportunity");
-        setText("sideCategory", opportunity.category);
+        const msg = err?.message || "Couldn't submit application — please try again";
+        toast(msg, "error");
+        console.error("[opportunity-detail] apply failed:", err);
+      }
+    };
 
-        setText("location", opportunity.location);
-        setText("sideLocation", opportunity.location);
-
-        setText("type", opportunity.type);
-
-        setText(
-          "description",
-          opportunity.description,
-          "No description provided."
-        );
-
-        setText(
-          "shortDescription",
-          opportunity.description,
-          "Explore this opportunity."
-        );
-
-        setText(
-          "requirements",
-          opportunity.requirements,
-          "No requirements provided."
-        );
-
-        setText(
-          "benefits",
-          opportunity.benefits,
-          "No benefits specified."
-        );
-
-        setText("startDate", formatDate(opportunity.startDate));
-        setText("endDate", formatDate(opportunity.endDate));
-        setText("deadline", formatDate(opportunity.deadline));
-        setText("sideDeadline", formatDate(opportunity.deadline));
-
-        setText("slots", opportunity.slots);
-
-      } catch (error) {
-        console.error("Unable to load opportunity:", error);
+    /* Bind the Apply button if it isn't using onclick*/
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = Array.from(document.querySelectorAll("button")).find((b) =>
+        /apply/i.test(b.textContent || "")
+      );
+      if (btn && !btn.hasAttribute("onclick")) {
+        btn.addEventListener("click", window.applyForOpportunity);
       }
     });
 
-    function applyForOpportunity() {
-      alert(
-        "Application functionality will be connected during integration."
-      );
-    }
-  </script>
+    /* Global 401*/
+    document.addEventListener("api:unauthorized", () => {
+      toast("Session expired — please sign in again", "error");
+      setTimeout(() => (window.location.href = "login.html"), 900);
+    });
+  })();
+</script>
 
 </body>
 </html>

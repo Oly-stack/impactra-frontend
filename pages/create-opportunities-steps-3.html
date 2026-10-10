@@ -144,88 +144,211 @@ button {
 </main>
 
 <script>
-const draftKey = "impactraOpportunityDraft";
+  (() => {
+    "use strict";
 
-let draft = {};
+    /* Toast */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
+      }
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
+    }
 
-try {
-  draft = JSON.parse(
-    sessionStorage.getItem(draftKey) || "{}"
-  );
-} catch (error) {
-  draft = {};
-}
+    /* Load draft from sessionStorage*/
+    const draftKey = "impactraOpportunityDraft";
 
-function addDetail(containerId, label, value) {
+    let draft = {};
+    try {
+      draft = JSON.parse(sessionStorage.getItem(draftKey) || "{}");
+    } catch (error) {
+      console.error("[publish] corrupt draft, starting fresh:", error);
+      draft = {};
+    }
+
+    /* Render draft details into the review panel*/
+    function addDetail(containerId, label, value) {
       const container = document.getElementById(containerId);
+      if (!container) return;
 
-    const row = document.createElement("div");
-    row.className = "detail";
+      const row = document.createElement("div");
+      row.className = "detail";
 
-    const heading = document.createElement("strong");
-    heading.textContent = label;
+      const heading = document.createElement("strong");
+      heading.textContent = label;
 
-    const content = document.createElement("span");
-    content.textContent = value || "Not provided";
+      const content = document.createElement("span");
+      content.textContent = value || "Not provided";
 
-    row.appendChild(heading);
-    row.appendChild(content);
-    container.appendChild(row);
-  }
+      row.appendChild(heading);
+      row.appendChild(content);
+      container.appendChild(row);
+    }
 
-  addDetail("basicInfo", "Opportunity Title", draft.title);
-  addDetail("basicInfo", "Category", draft.category);
-  addDetail("basicInfo", "Location", draft.location);
-  addDetail("basicInfo", "Description", draft.description);
+    /* yyyy-mm-dd */
+    function formatDate(value) {
+      if (!value) return "";
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return value;
+      return d.toLocaleDateString(undefined, {
+        month: "long", day: "numeric", year: "numeric",
+      });
+    }
 
-  addDetail("extraInfo", "Opportunity Type", draft.type);
-  addDetail("extraInfo", "Start Date", draft.startDate);
-  addDetail("extraInfo", "End Date", draft.endDate);
-  addDetail("extraInfo", "Application Deadline", draft.deadline);
-  addDetail("extraInfo", "Available Slots", draft.slots);
-  addDetail("extraInfo", "Requirements", draft.requirements);
-  addDetail("extraInfo", "Benefits", draft.benefits);
+    addDetail("basicInfo", "Opportunity Title", draft.title);
+    addDetail("basicInfo", "Category",          draft.category);
+    addDetail("basicInfo", "Location",          draft.location);
+    addDetail("basicInfo", "Description",       draft.description);
 
-  function goBack() {
-    window.location.href = "create-opportunities-step-2.html";
-  }
+    addDetail("extraInfo", "Opportunity Type",     draft.type);
+    addDetail("extraInfo", "Start Date",           formatDate(draft.startDate));
+    addDetail("extraInfo", "End Date",             formatDate(draft.endDate));
+    addDetail("extraInfo", "Application Deadline", formatDate(draft.deadline));
+    addDetail("extraInfo", "Available Slots",      draft.slots);
+    addDetail("extraInfo", "Requirements",         draft.requirements);
+    addDetail("extraInfo", "Benefits",             draft.benefits);
 
-  document.getElementById("publishButton")
-    .addEventListener("click", function() {
+    /* Back button — kept global so onclick still works*/
+    window.goBack = function () {
+      window.location.href = "create-opportunities-step-2.html";
+    };
 
-      const requiredFields = [
-        "title", "category", "location",
-        "description", "type", "startDate",
-        "endDate", "deadline", "slots",
-        "requirements"
-      ];
+    /* Publish*/
+    const publishBtn = document.getElementById("publishButton");
+    if (!publishBtn) return;
 
-      const missingFields = requiredFields.filter(
-        field => !draft[field]
-      );
+    const REQUIRED_FIELDS = [
+      "title", "category", "location",
+      "description", "type", "startDate",
+      "endDate", "deadline", "slots",
+      "requirements",
+    ];
+
+    /* Friendly labels for the "missing fields" message */
+    const FIELD_LABELS = {
+      title: "Opportunity Title",
+      category: "Category",
+      location: "Location",
+      description: "Description",
+      type: "Opportunity Type",
+      startDate: "Start Date",
+      endDate: "End Date",
+      deadline: "Application Deadline",
+      slots: "Available Slots",
+      requirements: "Requirements",
+      benefits: "Benefits",
+    };
+
+    publishBtn.addEventListener("click", async function () {
+      /*  Validate draft completeness  */
+      const missingFields = REQUIRED_FIELDS.filter((f) => !draft[f]);
 
       if (missingFields.length > 0) {
-        alert(
-          "Your opportunity is incomplete.\n\n" +
-          "Missing fields: " + missingFields.join(", ")
+        const labels = missingFields.map((f) => FIELD_LABELS[f] || f);
+        toast(
+          `Incomplete — missing: ${labels.join(", ")}`,
+          "error"
         );
+        // Highlight the first missing field's input on step 1/2 if the
         return;
       }
 
-      try {
-        sessionStorage.setItem(
-          "impactraPublishedOpportunity",
-          JSON.stringify(draft)
-        );
+      /*  Busy state  */
+      const original = publishBtn.innerHTML;
+      publishBtn.disabled = true;
+      publishBtn.classList.add("opacity-80", "cursor-not-allowed");
+      publishBtn.textContent = "Publishing…";
 
-        window.location.href =
-          "opportunities-success.html";
+      try {
+        /*  Build API payload  */
+        const payload = {
+          title:       draft.title,
+          category:    draft.category,
+          location:    draft.location,
+          description: draft.description,
+          type:        draft.type,
+          startDate:   draft.startDate,
+          endDate:     draft.endDate,
+          deadline:    draft.deadline,
+          slots:       Number(draft.slots),
+          requirements: draft.requirements,
+          benefits:     draft.benefits || "",
+        };
+
+        /*  Call the API  */
+        let created = null;
+        if (window.API) {
+          const res = await API.opportunities.create(payload);
+          created = res?.data || res || null;
+        } else {
+          // Fallback so the page still works while API is unavailable
+          await new Promise((r) => setTimeout(r, 500));
+        }
+
+        /*  Persist a copy for the success page  */
+        try {
+          const published = {
+            ...draft,
+            id: created?.id || null,
+            publishedAt: new Date().toISOString(),
+          };
+          sessionStorage.setItem(
+            "impactraPublishedOpportunity",
+            JSON.stringify(published)
+          );
+          // Clear the working draft so a new opportunity starts fresh
+          sessionStorage.removeItem(draftKey);
+        } catch (storageErr) {
+          console.warn("[publish] couldn't persist published copy:", storageErr);
+        }
+
+        toast("Opportunity published", "success");
+        setTimeout(() => {
+          window.location.href = "opportunities-success.html";
+        }, 600);
 
       } catch (error) {
-        console.error("Publishing error:", error);
-        alert("Unable to save your opportunity. Please try again.");
+        /*  Roll back the button  */
+        publishBtn.disabled = false;
+        publishBtn.classList.remove("opacity-80", "cursor-not-allowed");
+        publishBtn.innerHTML = original;
+
+        console.error("[publish] failed:", error);
+
+        /*  Surface a helpful message  */
+        const msg = error?.message || "Unable to publish your opportunity";
+
+        // If the backend flags a specific field, focus it in the message
+        const lower = msg.toLowerCase();
+        const fieldHit = REQUIRED_FIELDS.find((f) => lower.includes(f));
+        if (fieldHit) {
+          toast(`${FIELD_LABELS[fieldHit] || fieldHit}: ${msg}`, "error");
+        } else {
+          toast(`${msg} — please try again`, "error");
+        }
       }
     });
+  })();
 </script>
 
 </body>

@@ -1,4 +1,4 @@
-/*IMPACTRA — Applications Dashboard*/
+/* IMPACTRA — Applications Dashboard*/
 (() => {
   "use strict";
 
@@ -9,6 +9,14 @@
       el.textContent.replace(/\s+/g, " ").trim().toLowerCase()
         .includes(text.toLowerCase())
     );
+
+  /* Global API guard */
+  if (!window.API) {
+    console.error("[app.js] API client not found. Did you load api.js before app.js?");
+  }
+
+  /* Cache of API applications keyed by lowercase name for fast lookup */
+  const appIndex = new Map();
 
   /* TOAST */
   function toast(message, variant = "default") {
@@ -36,6 +44,20 @@
       el.style.transform = "translateY(8px)";
       setTimeout(() => el.remove(), 260);
     }, 2600);
+  }
+
+  /* Button busy helper */
+  function withBusy(btn, label, fn) {
+    if (!btn) return Promise.resolve();
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    if (label) btn.textContent = label;
+    return Promise.resolve()
+      .then(fn)
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      });
   }
 
   /* SIDEBAR */
@@ -156,8 +178,7 @@
   const searchInput = $('input[placeholder*="Search volunteers"]');
   document.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-      e.preventDefault();
-      searchInput?.focus();
+      e.preventDefault(); searchInput?.focus();
       searchInput?.select();
     }
   });
@@ -165,8 +186,11 @@
   const bell = $$("header button").find((b) =>
     b.querySelector('span.bg-\\[\\#F43F5E\\]')
   );
-  bell?.addEventListener("click", () => {
+  bell?.addEventListener("click", async () => {
     bell.querySelector('span.bg-\\[\\#F43F5E\\]')?.remove();
+    try {
+      await API.notifications.markAllRead();
+    } catch (_) { /* non-blocking */ }
     toast("No new notifications", "success");
   });
 
@@ -180,13 +204,15 @@
         <button data-modal-confirm class="h-10 rounded-lg bg-[#E11D48] px-4 text-sm font-semibold text-white transition hover:bg-rose-700">Log out</button>
       `,
     });
-    $("[data-modal-confirm]")?.addEventListener("click", () => {
-      closeModal();
-      setTimeout(() => toast("Logging out…", "info"), 200);
+    $("[data-modal-confirm]")?.addEventListener("click", async (ev) => {
+      withBusy(ev.currentTarget, "Logging out…", async () => {
+        try { await API.auth.logout(); } catch (_) { /* ignore */ }
+        window.location.href = "login.html";
+      });
     });
   });
 
-  /*APPLICATIONS GRID — status detection & filtering*/
+  /* APPLICATIONS GRID — status detection & filtering */
   const grid = $("main section.grid");
   const cards = grid ? $$(":scope > article", grid) : [];
 
@@ -198,11 +224,10 @@
     else if (/\breview\b/.test(t))    card.dataset.status = "pending";
     else                              card.dataset.status = "pending";
 
-    // Cache a searchable text blob
     card.dataset.searchText = card.textContent.replace(/\s+/g, " ").trim().toLowerCase();
   });
 
-  // Empty-state message (hidden by default)
+  // Empty-state message
   let emptyState = null;
   if (grid) {
     emptyState = document.createElement("div");
@@ -214,14 +239,12 @@
   }
 
   /* STATUS COUNTERS as filters */
-  // The counters live in the grid just above the cards: grid-cols-2 ... xl:grid-cols-4
   const counterRow = $$("section > div.grid").find((d) =>
     d.querySelector(":scope > div p") &&
     /total/i.test(d.textContent)
   );
   const counterBoxes = counterRow ? $$(":scope > div", counterRow) : [];
 
-  // Map each counter to a status
   const COUNTER_MAP = counterBoxes.map((box) => {
     const t = box.textContent.toLowerCase();
     if (/\btotal\b/.test(t))    return "all";
@@ -234,7 +257,6 @@
   let activeFilter = "all";
 
   counterBoxes.forEach((box, i) => {
-    // make it interactive
     box.classList.add(
       "cursor-pointer", "transition",
       "hover:border-[#0051b5]/40", "hover:shadow-sm"
@@ -269,22 +291,49 @@
     }
   }
 
+  /* Update counter numbers from API stats */
+  function applyStatsToCounters(stats) {
+    if (!stats || !counterBoxes.length) return;
+    const pick = {
+      all:      stats.total ?? stats.all,
+      pending:  stats.pending,
+      approved: stats.approved,
+      rejected: stats.rejected,
+    };
+    counterBoxes.forEach((box, i) => {
+      const key = COUNTER_MAP[i];
+      if (key == null || pick[key] == null) return;
+      // Find the number paragraph (the one that isn't the label)
+      const numEl = $$("p", box).find((p) => /^\d+$/.test(p.textContent.trim()));
+      if (numEl) numEl.textContent = String(pick[key]);
+    });
+  }
+
+  /* Adjust one counter by a delta (used after approve/reject) */
+  function bumpCounter(key, delta) {
+    const idx = COUNTER_MAP.indexOf(key);
+    if (idx === -1) return;
+    const box = counterBoxes[idx];
+    const numEl = $$("p", box).find((p) => /^\d+$/.test(p.textContent.trim()));
+    if (!numEl) return;
+    const current = Number(numEl.textContent) || 0;
+    numEl.textContent = String(Math.max(0, current + delta));
+  }
+
   /* SORT */
-  // The "Sort: Newest First" button in the page header
   const sortBtn = byText("button", "Sort:");
   const SORTS = ["Newest First", "Oldest First", "Name (A–Z)", "Name (Z–A)"];
   let sortIndex = 0;
 
-  // Build a rank from the "Applied X ago" text so we can sort
   function appliedRank(card) {
     const t = card.textContent.toLowerCase();
     if (/applied\s+\d+\s+hour/.test(t)) {
       const h = t.match(/applied\s+(\d+)\s+hour/)?.[1];
-      return Number(h) * 60; // minutes
+      return Number(h) * 60;
     }
     if (/applied\s+yesterday/.test(t)) return 24 * 60;
-    if (/verified\s+/.test(t))          return -1;      // verified = newest
-    if (/closed\s+/.test(t))            return 999999;  // rejected/closed = oldest
+    if (/verified\s+/.test(t))          return -1;
+    if (/closed\s+/.test(t))            return 999999;
     return 500;
   }
 
@@ -309,9 +358,7 @@
 
   sortBtn?.addEventListener("click", () => {
     sortIndex = (sortIndex + 1) % SORTS.length;
-    // Swap label "Sort: X" while preserving the caret icon
     const caret = sortBtn.querySelector("span.text-\\[\\#979798\\]");
-    // Clear text nodes between start and the icon span
     [...sortBtn.childNodes].forEach((n) => {
       if (n.nodeType === 3) n.remove();
       if (n.nodeType === 1 && !n.contains(caret)) n.remove();
@@ -364,7 +411,6 @@
       `,
     });
 
-    // prefill from current state
     if ($("[data-f-status]")) $("[data-f-status]").value = activeFilter;
 
     $("[data-f-reset]")?.addEventListener("click", () => {
@@ -402,12 +448,10 @@
 
     cards.forEach((card) => {
       const status = card.dataset.status;
-
       const statusOk = activeFilter === "all" || status === activeFilter;
 
       const text = card.dataset.searchText;
       const qOk = !q || text.includes(q);
-
       const oppOk = extraOpp === "all" || text.includes(extraOpp.toLowerCase());
       const locOk = !extraLoc || text.includes(extraLoc);
 
@@ -418,7 +462,6 @@
 
     if (emptyState) emptyState.hidden = visible !== 0;
 
-    // Update footer count
     const footer = byText("p", "Showing");
     if (footer) {
       footer.textContent = visible
@@ -427,7 +470,6 @@
     }
   }
 
-  // Search typing
   let searchTimer;
   searchInput?.addEventListener("input", () => {
     clearTimeout(searchTimer);
@@ -440,7 +482,19 @@
     }
   });
 
-  /*CARD ACTIONS */
+  /* CARD ACTIONS */
+
+  /* Find the API application ID for a card (if we have one) */
+  function appIdFor(card) {
+    if (card.dataset.appId) return card.dataset.appId;
+    const name = $("h2", card)?.textContent.trim().toLowerCase();
+    if (name && appIndex.has(name)) {
+      const id = appIndex.get(name).id;
+      card.dataset.appId = id;
+      return id;
+    }
+    return null;
+  }
 
   /* REVIEW APPLICATION */
   function openReview(card) {
@@ -482,16 +536,40 @@
       `,
     });
 
-    $("[data-action='approve']")?.addEventListener("click", () => {
-      setCardStatus(card, "approved");
-      closeModal();
-      setTimeout(() => toast(`${name} approved`, "success"), 200);
+    $("[data-action='approve']")?.addEventListener("click", (ev) => {
+      const id = appIdFor(card);
+      withBusy(ev.currentTarget, "Approving…", async () => {
+        try {
+          if (id) await API.applications.approve(id);
+          setCardStatus(card, "approved");
+          closeModal();
+          setTimeout(() => {
+            toast(`${name} approved`, "success");
+            bumpCounter("approved", +1);
+            bumpCounter("pending", -1);
+          }, 200);
+        } catch (err) {
+          toast(err.message || "Couldn't approve application", "error");
+        }
+      });
     });
 
-    $("[data-action='reject']")?.addEventListener("click", () => {
-      setCardStatus(card, "rejected");
-      closeModal();
-      setTimeout(() => toast(`${name} rejected`, "info"), 200);
+    $("[data-action='reject']")?.addEventListener("click", (ev) => {
+      const id = appIdFor(card);
+      withBusy(ev.currentTarget, "Rejecting…", async () => {
+        try {
+          if (id) await API.applications.reject(id, "other", "");
+          setCardStatus(card, "rejected");
+          closeModal();
+          setTimeout(() => {
+            toast(`${name} rejected`, "info");
+            bumpCounter("rejected", +1);
+            bumpCounter("pending", -1);
+          }, 200);
+        } catch (err) {
+          toast(err.message || "Couldn't reject application", "error");
+        }
+      });
     });
   }
 
@@ -499,7 +577,6 @@
   function setCardStatus(card, status) {
     card.dataset.status = status;
 
-    // Rebuild the badge (it's the first span with rounded-full border in the card header)
     const badge = $$("span.inline-flex", card).find((s) =>
       /review|approved|rejected/i.test(s.textContent)
     );
@@ -519,7 +596,7 @@
         <span class="text-xs font-semibold text-[#BE123C]">Rejected</span>`;
     }
 
-    // update footer buttons (remove "Review Application" if handled)
+    // Update footer buttons: replace "Review Application" with "View Application"
     const reviewBtn = byText("button", "Review Application", card);
     if (reviewBtn) {
       reviewBtn.outerHTML = `
@@ -527,24 +604,32 @@
           View Application
         </button>`;
     }
-    // Re-bind any new View Application button
     wireCardButtons(card);
     applyFilters();
   }
 
-  /* Wire all card action buttons */
+  /* Wire card action buttons */
   function wireCardButtons(card) {
     const name = $("h2", card)?.textContent.trim() || "applicant";
 
     card.querySelectorAll("button").forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
       const label = btn.textContent.replace(/\s+/g, " ").trim();
 
       if (label.startsWith("Review Application")) {
         btn.addEventListener("click", () => openReview(card));
       } else if (label.startsWith("View Profile")) {
         btn.addEventListener("click", () => {
-          // TODO: window.location.href = `volunteer-profile.html?name=${encodeURIComponent(name)}`;
-          toast(`Opening ${name}'s profile…`, "info");
+          // Prefer API volunteer id; fall back to name-based query
+          const rec = appIndex.get(name.toLowerCase());
+          const vid = rec?.volunteerId || rec?.volunteer?.id;
+          if (vid) {
+            window.location.href = `volunteer-profile.html?id=${encodeURIComponent(vid)}`;
+          } else {
+            // window.location.href = `volunteer-profile.html?name=${encodeURIComponent(name)}`;
+            toast(`Opening ${name}'s profile…`, "info");
+          }
         });
       } else if (label.startsWith("View Application")) {
         btn.addEventListener("click", () => {
@@ -561,36 +646,139 @@
   cards.forEach(wireCardButtons);
 
   /* PAGINATION */
+  let currentPage = 1;
   const paginationNav = $("footer nav");
+
+  async function goToPage(page) {
+    currentPage = page;
+
+    // Visual swap of active page number
+    $$("span, button", paginationNav).forEach((el) => {
+      if (el.tagName === "SPAN") {
+        const n = el.textContent.trim();
+        if (/^\d+$/.test(n)) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = n;
+          b.className = "flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E8F0] bg-white text-xs font-medium text-[#334155] transition hover:bg-slate-50";
+          el.replaceWith(b);
+        }
+      }
+    });
+    const active = $$("button", paginationNav).find((b) => b.textContent.trim() === String(page));
+    if (active) {
+      active.outerHTML = `<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0051b5] text-xs font-semibold text-white">${page}</span>`;
+    }
+
+    try {
+      await API.applications.list({ page, limit: 20 });
+      // NOTE : The API response is not used to update the DOM here, because the current implementation uses static cards. 
+      toast(`Page ${page} loaded`, "success");
+    } catch (err) {
+      toast(err.message || "Couldn't load page", "error");
+    }
+  }
+
   paginationNav?.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn || btn.disabled) return;
 
-    // "Previous" / "Next"
     const t = btn.textContent.trim();
-    if (t === "Previous") { toast("Already on page 1", "info"); return; }
-    if (t === "Next")     { toast("Loading page 2…", "info"); return; }
-
-    // Page number buttons
+    if (t === "Previous") {
+      if (currentPage <= 1) { toast("Already on page 1", "info"); return; }
+      goToPage(currentPage - 1);
+      return;
+    }
+    if (t === "Next") {
+      goToPage(currentPage + 1);
+      return;
+    }
     if (/^\d+$/.test(t)) {
-      // visual swap of active page number
-      $$("span, button", paginationNav).forEach((el) => {
-        if (el.tagName === "SPAN") {
-          // old active -> convert to button
-          const n = el.textContent.trim();
-          if (/^\d+$/.test(n)) {
-            const b = document.createElement("button");
-            b.type = "button";
-            b.textContent = n;
-            b.className = "flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E8F0] bg-white text-xs font-medium text-[#334155] transition hover:bg-slate-50";
-            el.replaceWith(b);
-          }
-        }
-      });
-      btn.outerHTML = `<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0051b5] text-xs font-semibold text-white">${t}</span>`;
-      toast(`Page ${t} loaded`, "success");
+      goToPage(Number(t));
     }
   });
+
+  /* GLOBAL 401 */
+  document.addEventListener("api:unauthorized", () => {
+    toast("Session expired — please sign in again", "error");
+    setTimeout(() => (window.location.href = "login.html"), 900);
+  });
+
+  /* HYDRATE FROM API ON LOAD */
+  (async function loadApplications() {
+    if (!window.API) return;
+
+    try {
+      // 1. Stats — update the counter strip numbers
+      try {
+        const stats = await API.applications.stats();
+        applyStatsToCounters(stats?.data || stats);
+      } catch (err) {
+        console.warn("[app.js] Failed to load stats:", err);
+      }
+
+      // 2. Applications — index by name so card actions can find real IDs
+      try {
+        const res = await API.applications.list({ page: 1, limit: 50 });
+        const list = Array.isArray(res) ? res : (res?.data || res?.applications || []);
+
+        list.forEach((app) => {
+          const key = (app.volunteerName || app.volunteer?.name || app.name || "")
+            .toString()
+            .trim()
+            .toLowerCase();
+          if (key) appIndex.set(key, app);
+        });
+
+        // Attach IDs to matching static cards, and refresh the "Applied X ago"
+        cards.forEach((card) => {
+          const name = $("h2", card)?.textContent.trim().toLowerCase();
+          if (!name) return;
+          const rec = appIndex.get(name);
+          if (!rec) return;
+
+          card.dataset.appId = rec.id;
+
+          // Update submitted-at text if the server gives us a timestamp
+          const appliedEl = $("span.text-\\[\\#979798\\]", card);
+          const ts = rec.submittedAt || rec.createdAt;
+          if (appliedEl && ts) {
+            const d = new Date(ts);
+            if (!isNaN(d.getTime())) {
+              const rel = relativeFromNow(d);
+              appliedEl.textContent = `Applied ${rel}`;
+            }
+          }
+        });
+
+        // Recompute searchable text 
+        cards.forEach((card) => {
+          card.dataset.searchText = card.textContent.replace(/\s+/g, " ").trim().toLowerCase();
+        });
+      } catch (err) {
+        console.warn("[app.js] Failed to load applications:", err);
+      }
+
+      applyFilters();
+      highlightActiveCounter();
+    } catch (err) {
+      console.warn("[app.js] Hydrate failed:", err);
+    }
+  })();
+
+  /* Small helper: "2 hours ago" style string */
+  function relativeFromNow(date) {
+    const diffMs = Date.now() - date.getTime();
+    const mins = Math.max(0, Math.round(diffMs / 60000));
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"} ago`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+    const days = Math.round(hours / 24);
+    if (days === 1) return "yesterday";
+    if (days < 30) return `${days} days ago`;
+    return date.toLocaleDateString();
+  }
 
   /* KICK-OFF */
   applySort();

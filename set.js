@@ -1,4 +1,4 @@
-/*IMPACTRA — Settings*/
+/* IMPACTRA — Settings*/
 (() => {
   "use strict";
 
@@ -9,6 +9,11 @@
       el.textContent.replace(/\s+/g, " ").trim().toLowerCase()
         .includes(text.toLowerCase())
     );
+
+  /* Global API guard */
+  if (!window.API) {
+    console.error("[set.js] API client not found. Did you load api.js before set.js?");
+  }
 
   /*0. TOAST*/
   function toast(message, variant = "default") {
@@ -37,6 +42,20 @@
       el.style.transform = "translateY(8px)";
       setTimeout(() => el.remove(), 260);
     }, 2800);
+  }
+
+  /* Button busy helper */
+  function withBusy(btn, label, fn) {
+    if (!btn) return Promise.resolve();
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    if (label) btn.textContent = label;
+    return Promise.resolve()
+      .then(fn)
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      });
   }
 
   /*1. MOBILE SIDEBAR*/
@@ -138,7 +157,7 @@
     if (e.key === "Escape") closeModal();
   });
 
-  // Focus trap
+  /* Focus trap */
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Tab" || !activeModal) return;
     const focusables = $$(
@@ -166,8 +185,11 @@
   const bell = $$("header button").find((b) =>
     b.querySelector('span.bg-\\[\\#F43F5E\\]')
   );
-  bell?.addEventListener("click", () => {
+  bell?.addEventListener("click", async () => {
     bell.querySelector('span.bg-\\[\\#F43F5E\\]')?.remove();
+    try {
+      await API.notifications.markAllRead();
+    } catch (_) { /* non-blocking */ }
     toast("No new notifications", "success");
   });
 
@@ -185,7 +207,10 @@
   const saveBtn    = byText("button", "Save Changes");
   const discardBtn = byText("button", "Discard");
 
+  let pendingAvatarFile = null; // set when user picks a new avatar
+
   function isDirty() {
+    if (pendingAvatarFile) return true;
     return fields.some((f) => f.value !== initial.get(f));
   }
 
@@ -221,7 +246,7 @@
   });
 
   function validateProfile() {
-    const [first, last, email, phone, bio, role, location] = fields;
+    const [first, last, email, phone] = fields;
 
     if (!first.value.trim())  { markInvalid(first,  "First name is required"); return false; }
     if (!last.value.trim())   { markInvalid(last,   "Last name is required");  return false; }
@@ -241,18 +266,55 @@
     if (!isDirty()) return;
     if (!validateProfile()) return;
 
-    // TODO: replace with real API call
-    saveBtn.disabled = true;
-    const originalText = saveBtn.textContent;
-    saveBtn.textContent = "Saving…";
+    // Password change validation 
+    const hasAnyPw = [currentPw, newPw, confirmPw].some((f) => f && f.value.trim());
+    if (hasAnyPw && !validatePasswordChange()) return;
 
-    setTimeout(() => {
-      // Commit snapshot
-      fields.forEach((f) => initial.set(f, f.value));
-      saveBtn.textContent = originalText;
-      updateSaveState();
-      toast("Settings saved", "success");
-    }, 700);
+    withBusy(saveBtn, "Saving…", async () => {
+      try {
+        // 1. Update profile fields
+        const payload = {
+          firstName: $("first-name")?.value.trim(),
+          lastName:  $("last-name")?.value.trim(),
+          email:     $("email")?.value.trim(),
+          phone:     $("phone")?.value.trim(),
+          bio:       $("bio")?.value.trim(),
+          role:      $("role")?.value.trim(),
+          location:  $("location")?.value.trim(),
+        };
+
+        //avoid unnecessary writes
+        Object.keys(payload).forEach((k) => {
+          if (!payload[k]) delete payload[k];
+        });
+
+        await API.settings.updateProfile(payload);
+
+        // 2. Upload avatar if user picked one
+        if (pendingAvatarFile) {
+          await API.settings.uploadAvatar(pendingAvatarFile);
+          pendingAvatarFile = null;
+        }
+
+        // 3. Change password if requested
+        if (hasAnyPw) {
+          await API.settings.changePassword({
+            currentPassword: currentPw.value,
+            newPassword:     newPw.value,
+          });
+          currentPw.value = "";
+          newPw.value     = "";
+          confirmPw.value = "";
+        }
+
+        // Commit snapshot
+        fields.forEach((f) => initial.set(f, f.value));
+        updateSaveState();
+        toast("Settings saved", "success");
+      } catch (err) {
+        toast(err.message || "Couldn't save settings", "error");
+      }
+    });
   });
 
   discardBtn?.addEventListener("click", () => {
@@ -271,6 +333,9 @@
 
     $("[data-modal-confirm]")?.addEventListener("click", () => {
       fields.forEach((f) => { f.value = initial.get(f); clearInvalid(f); });
+      pendingAvatarFile = null;
+      // Reset the visible avatar back to the last known server value
+      refreshAvatarPreview();
       updateSaveState();
       closeModal();
       setTimeout(() => toast("Changes discarded", "info"), 200);
@@ -286,9 +351,21 @@
   });
 
   /*7. AVATAR — UPLOAD / REMOVE*/
-  const avatarImg = $("#profile img, main img") || $$("main img")[0];
   const uploadBtn = byText("button", "Upload new");
   const removeBtn = byText("button", "Remove");
+
+  // Cache the last known server avatar so we can restore it on discard
+  let serverAvatarSrc = null;
+
+  function mainAvatarImg() {
+    return $$("img[alt]").find((img) => img.closest("main"));
+  }
+
+  function refreshAvatarPreview(src) {
+    const img = mainAvatarImg();
+    if (!img) return;
+    img.src = src || serverAvatarSrc || img.dataset.fallback || img.src;
+  }
 
   // Create a hidden file input
   const fileInput = document.createElement("input");
@@ -314,12 +391,14 @@
       return;
     }
 
+    pendingAvatarFile = file;
+
     const reader = new FileReader();
     reader.onload = (e) => {
-      $$("img[alt='Mary Adeyemi']").forEach((img) => {
-        if (img.closest("main")) img.src = e.target.result;
-      });
-      toast("Avatar updated — click Save to persist", "success");
+      const img = mainAvatarImg();
+      if (img) img.src = e.target.result;
+      updateSaveState();
+      toast("Avatar preview updated — click Save to persist", "success");
     };
     reader.readAsDataURL(file);
     fileInput.value = "";
@@ -335,18 +414,24 @@
       `,
     });
 
-    $("[data-modal-confirm]")?.addEventListener("click", () => {
-      $$("img[alt='Mary Adeyemi']").forEach((img) => {
-        if (img.closest("main")) {
-          img.src =
+    $("[data-modal-confirm]")?.addEventListener("click", (ev) => {
+      withBusy(ev.currentTarget, "Removing…", async () => {
+        try {
+          await API.settings.removeAvatar();
+          serverAvatarSrc =
             "data:image/svg+xml;utf8," +
             encodeURIComponent(
               `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='#E2E8F0'/><circle cx='50' cy='40' r='18' fill='#94A3B8'/><path d='M20 90c0-18 15-30 30-30s30 12 30 30z' fill='#94A3B8'/></svg>`
             );
+          const img = mainAvatarImg();
+          if (img) img.src = serverAvatarSrc;
+          pendingAvatarFile = null;
+          closeModal();
+          setTimeout(() => toast("Profile photo removed", "info"), 200);
+        } catch (err) {
+          toast(err.message || "Couldn't remove photo", "error");
         }
       });
-      closeModal();
-      setTimeout(() => toast("Profile photo removed", "info"), 200);
     });
   });
 
@@ -354,20 +439,43 @@
   const notifSection = document.getElementById("notifications");
   if (notifSection) {
     const toggles = $$('input[type="checkbox"].peer', notifSection);
+
+    // Cache labels 
+    function labelFor(toggle) {
+      return toggle
+        .closest("div.flex")
+        ?.querySelector("p.text-sm.font-semibold")
+        ?.textContent.trim() || "";
+    }
+
     toggles.forEach((toggle) => {
-      toggle.addEventListener("change", () => {
-        const label = toggle
-          .closest("div.flex")
-          ?.querySelector("p.text-sm.font-semibold")
-          ?.textContent.trim();
-        if (label) {
+      toggle.addEventListener("change", async () => {
+        const label = labelFor(toggle);
+        const enabled = toggle.checked;
+
+        //checkbox state
+        try {
+          await API.settings.updateNotifications({
+            [slugify(label)]: enabled,
+          });
           toast(
-            `${label}: ${toggle.checked ? "enabled" : "disabled"}`,
-            toggle.checked ? "success" : "info"
+            `${label}: ${enabled ? "enabled" : "disabled"}`,
+            enabled ? "success" : "info"
           );
+        } catch (err) {
+          // Roll back the toggle on failure
+          toggle.checked = !enabled;
+          toast(err.message || "Couldn't update notification setting", "error");
         }
       });
     });
+  }
+
+  function slugify(str) {
+    return str
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
   }
 
   /*9. SECURITY — PASSWORD VALIDATION*/
@@ -386,7 +494,7 @@
   }
 
   function validatePasswordChange() {
-    if (!currentPw || !newPw || !confirmPw) return false;
+    if (!currentPw || !newPw || !confirmPw) return true;
 
     const has = (v) => v && v.trim().length > 0;
     const allEmpty = !has(currentPw.value) && !has(newPw.value) && !has(confirmPw.value);
@@ -416,59 +524,81 @@
     f.addEventListener("input", () => clearInvalid(f));
   });
 
-  // Hook password validation into save — extend the existing listener chain
-  if (saveBtn) {
-    saveBtn.addEventListener("click", (e) => {
-      // Only block if passwords are being changed AND invalid
-      const hasAnyPw = [currentPw, newPw, confirmPw].some((f) => f && f.value.trim());
-      if (hasAnyPw && !validatePasswordChange()) {
-        e.stopImmediatePropagation();
-        return;
-      }
-    }, { capture: true });
-  }
-
   /*10. TWO-FACTOR AUTHENTICATION*/
   const tfaBtn = byText("button", "Enable 2FA");
-  tfaBtn?.addEventListener("click", () => {
-    openModal({
-      title: "Enable Two-Factor Authentication",
-      body: `
-        <p>Scan the QR code with your authenticator app (Google Authenticator, Authy, 1Password, etc.), then enter the 6-digit code to confirm.</p>
-        <div class="mt-4 flex items-center justify-center rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-6">
-          <div class="flex h-40 w-40 items-center justify-center rounded-lg bg-white text-[11px] font-mono text-[#94A3B8] shadow-sm">
-            [ QR CODE ]
-          </div>
-        </div>
-        <label class="mt-4 block">
-          <span class="text-[11px] font-semibold uppercase tracking-[0.55px] text-[#64748B]">Verification code</span>
-          <input data-tfa-code type="text" inputmode="numeric" maxlength="6" placeholder="000000"
-                 class="mt-1.5 h-11 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 text-center text-lg font-mono tracking-[0.5em] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"/>
-        </label>
-      `,
-      footer: `
-        <button data-modal-cancel class="h-10 rounded-lg bg-[#F1F5F9] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
-        <button data-modal-confirm class="h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-semibold text-white transition hover:bg-[#1D4ED8]">Verify & Enable</button>
-      `,
-    });
+  tfaBtn?.addEventListener("click", async (ev) => {
+    withBusy(ev.currentTarget, "Setting up…", async () => {
+      let qrMarkup = `
+        <div class="flex h-40 w-40 items-center justify-center rounded-lg bg-white text-[11px] font-mono text-[#94A3B8] shadow-sm">
+          [ QR CODE ]
+        </div>`;
+      let secretHint = "";
 
-    $("[data-modal-confirm]")?.addEventListener("click", () => {
-      const code = $("[data-tfa-code]")?.value.trim();
-      if (!/^\d{6}$/.test(code)) {
-        toast("Enter the 6-digit code from your app", "error");
-        $("[data-tfa-code]")?.focus();
+      try {
+        const setup = await API.settings.setup2FA();
+        const qr   = setup?.qrCode || setup?.qr;
+        const sec  = setup?.secret;
+
+        if (qr) {
+          // Backend may return a data URL or an SVG/PNG URL
+          qrMarkup = `<img src="${qr}" alt="2FA QR code" class="h-40 w-40 rounded-lg bg-white object-contain shadow-sm"/>`;
+        }
+        if (sec) {
+          secretHint = `
+            <p class="mt-3 text-[12px] text-slate-500">
+              Or enter this code manually:
+              <code class="rounded bg-[#F1F5F9] px-1.5 py-0.5 text-[11px] font-mono text-[#0F172A]">${sec}</code>
+            </p>`;
+        }
+      } catch (err) {
+        toast(err.message || "Couldn't start 2FA setup", "error");
         return;
       }
-      closeModal();
-      setTimeout(() => {
-        // Flip the button to a "Manage 2FA" state
-        if (tfaBtn) {
-          tfaBtn.textContent = "Manage 2FA";
-          tfaBtn.classList.remove("bg-[#2563EB]", "hover:bg-[#1D4ED8]");
-          tfaBtn.classList.add("bg-[#059669]", "hover:bg-[#047857]");
+
+      openModal({
+        title: "Enable Two-Factor Authentication",
+        body: `
+          <p>Scan the QR code with your authenticator app (Google Authenticator, Authy, 1Password, etc.), then enter the 6-digit code to confirm.</p>
+          <div class="mt-4 flex items-center justify-center rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-6">
+            ${qrMarkup}
+          </div>
+          ${secretHint}
+          <label class="mt-4 block">
+            <span class="text-[11px] font-semibold uppercase tracking-[0.55px] text-[#64748B]">Verification code</span>
+            <input data-tfa-code type="text" inputmode="numeric" maxlength="6" placeholder="000000"
+                   class="mt-1.5 h-11 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 text-center text-lg font-mono tracking-[0.5em] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"/>
+          </label>
+        `,
+        footer: `
+          <button data-modal-cancel class="h-10 rounded-lg bg-[#F1F5F9] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
+          <button data-modal-confirm class="h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-semibold text-white transition hover:bg-[#1D4ED8]">Verify & Enable</button>
+        `,
+      });
+
+      $("[data-modal-confirm]")?.addEventListener("click", (evc) => {
+        const code = $("[data-tfa-code]")?.value.trim();
+        if (!/^\d{6}$/.test(code)) {
+          toast("Enter the 6-digit code from your app", "error");
+          $("[data-tfa-code]")?.focus();
+          return;
         }
-        toast("Two-factor authentication enabled", "success");
-      }, 220);
+        withBusy(evc.currentTarget, "Verifying…", async () => {
+          try {
+            await API.settings.enable2FA(code);
+            closeModal();
+            setTimeout(() => {
+              if (tfaBtn) {
+                tfaBtn.textContent = "Manage 2FA";
+                tfaBtn.classList.remove("bg-[#2563EB]", "hover:bg-[#1D4ED8]");
+                tfaBtn.classList.add("bg-[#059669]", "hover:bg-[#047857]");
+              }
+              toast("Two-factor authentication enabled", "success");
+            }, 220);
+          } catch (err) {
+            toast(err.message || "Invalid code — please try again", "error");
+          }
+        });
+      });
     });
   });
 
@@ -479,7 +609,7 @@
       title: "Delete your account?",
       body: `
         <p class="text-[13px] leading-5">
-          This will permanently delete <strong>Mary Adeyemi</strong> and all associated data
+          This will permanently delete your account and all associated data
           — volunteers, opportunities, verified hours, and certificates. This action cannot be undone.
         </p>
         <label class="mt-4 block">
@@ -509,37 +639,104 @@
       }
     });
 
-    confirmBtn?.addEventListener("click", () => {
+    confirmBtn?.addEventListener("click", (ev) => {
       if (confirmBtn.disabled) return;
-      // TODO: replace with real API call
-      closeModal();
-      setTimeout(() => {
-        toast("Account scheduled for deletion", "error");
-        // window.location.href = "goodbye.html";
-      }, 250);
+      withBusy(confirmBtn, "Deleting…", async () => {
+        try {
+          await API.settings.deleteAccount("delete my account");
+          closeModal();
+          setTimeout(() => {
+            toast("Account scheduled for deletion", "error");
+            // window.location.href = "goodbye.html";
+          }, 250);
+        } catch (err) {
+          toast(err.message || "Couldn't delete account", "error");
+        }
+      });
     });
   });
 
-  /*12. SIDEBAR NAV — placeholder for internal anchors*/
-  $$("aside nav a").forEach((a) => {
-    const text = a.textContent.trim().toLowerCase();
-    if (text === "log out") {
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        openModal({
-          title: "Log out?",
-          body: `<p>You'll be signed out of IMPACTRA on this device.</p>`,
-          footer: `
-            <button data-modal-cancel class="h-10 rounded-lg bg-[#F1F5F9] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
-            <button data-modal-confirm class="h-10 rounded-lg bg-[#E11D48] px-4 text-sm font-semibold text-white transition hover:bg-rose-700">Log out</button>
-          `,
-        });
-        $("[data-modal-confirm]")?.addEventListener("click", () => {
-          closeModal();
-          setTimeout(() => toast("Logging out…", "info"), 200);
-        });
+  /*12. SIDEBAR LOG OUT*/
+  $$("aside nav a, aside button").forEach((el) => {
+    const text = el.textContent.trim().toLowerCase();
+    if (text !== "log out") return;
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal({
+        title: "Log out?",
+        body: `<p>You'll be signed out of IMPACTRA on this device.</p>`,
+        footer: `
+          <button data-modal-cancel class="h-10 rounded-lg bg-[#F1F5F9] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
+          <button data-modal-confirm class="h-10 rounded-lg bg-[#E11D48] px-4 text-sm font-semibold text-white transition hover:bg-rose-700">Log out</button>
+        `,
       });
-    }
+      $("[data-modal-confirm]")?.addEventListener("click", async () => {
+        try { await API.auth.logout(); } catch (_) { /* ignore */ }
+        window.location.href = "login.html";
+      });
+    });
   });
+
+  /*13. GLOBAL 401 HANDLER*/
+  document.addEventListener("api:unauthorized", () => {
+    toast("Session expired — please sign in again", "error");
+    setTimeout(() => (window.location.href = "login.html"), 900);
+  });
+
+  /*14. HYDRATE FROM API ON LOAD*/
+  (async function loadSettings() {
+    if (!window.API) return;
+
+    //  Profile 
+    try {
+      const profile = await API.settings.getProfile();
+      if (profile) {
+        const map = {
+          "first-name": profile.firstName,
+          "last-name":  profile.lastName,
+          "email":      profile.email,
+          "phone":      profile.phone,
+          "bio":        profile.bio,
+          "role":       profile.role,
+          "location":   profile.location,
+        };
+        Object.entries(map).forEach(([id, value]) => {
+          const el = document.getElementById(id);
+          if (el && value != null) el.value = value;
+        });
+
+        // Re-snapshot so nothing shows as dirty after load
+        fields.forEach((f) => initial.set(f, f.value));
+        updateSaveState();
+
+        // Avatar
+        const avatarUrl = profile.avatarUrl || profile.avatar;
+        const img = mainAvatarImg();
+        if (img && avatarUrl) {
+          img.src = avatarUrl;
+          serverAvatarSrc = avatarUrl;
+        } else if (img) {
+          serverAvatarSrc = img.src;
+          img.dataset.fallback = img.src;
+        }
+      }
+    } catch (err) {
+      console.warn("[set.js] Failed to load profile:", err);
+    }
+
+    //  Notification preferences 
+    try {
+      const prefs = await API.settings.getNotifications();
+      if (prefs && notifSection) {
+        const toggles = $$('input[type="checkbox"].peer', notifSection);
+        toggles.forEach((toggle) => {
+          const key = slugify(labelFor(toggle));
+          if (typeof prefs[key] === "boolean") toggle.checked = prefs[key];
+        });
+      }
+    } catch (err) {
+      console.warn("[set.js] Failed to load notification prefs:", err);
+    }
+  })();
 
 })();

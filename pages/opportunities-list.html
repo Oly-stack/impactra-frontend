@@ -137,30 +137,157 @@
   </main>
 
   <script>
-    const search = document.getElementById("search");
-    const cards = document.querySelectorAll(".card");
-    const empty = document.getElementById("empty");
+  (() => {
+    "use strict";
 
-    search.addEventListener("input", () => {
+    /* Toast */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
+      }
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
+    }
+
+    /* Refs*/
+    const search = document.getElementById("search");
+    const empty  = document.getElementById("empty");
+
+    /* Cache: refetch the card list every time we filter*/
+    function getCards() {
+      return Array.from(document.querySelectorAll(".card"));
+    }
+
+    /* Search*/
+    function runSearch() {
+      if (!search) return;
+
       const query = search.value.toLowerCase().trim();
+      const cards = getCards();
       let visibleCount = 0;
 
-      cards.forEach(card => {
-        const matches = card.textContent
-          .toLowerCase()
-          .includes(query);
-
+      cards.forEach((card) => {
+        const matches = !query || card.textContent.toLowerCase().includes(query);
         card.hidden = !matches;
+        if (matches) visibleCount++;
+      });
 
-        if (matches) {
-          visibleCount++;
+      if (empty) {
+        empty.style.display = visibleCount === 0 ? "block" : "none";
+      }
+    }
+
+    if (search) {
+      // Debounce so we don't re-filter on every keystroke
+      let debounceTimer;
+      search.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(runSearch, 120);
+      });
+
+      // Keyboard shortcut: ⌘K / Ctrl+K focuses search
+      document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          search.focus();
+          search.select();
         }
       });
 
-      empty.style.display =
-        visibleCount === 0 ? "block" : "none";
+      // Escape clears the search
+      search.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && search.value) {
+          search.value = "";
+          runSearch();
+        }
+      });
+    }
+
+    /* API hydration — attach IDs / refresh details from backend*/
+    async function hydrateCards() {
+      if (!window.API) return;
+
+      try {
+        const res = await API.opportunities.list({ limit: 100 });
+        const list = Array.isArray(res) ? res : (res?.data || res?.opportunities || []);
+        if (!list.length) return;
+
+        const byTitle = new Map();
+        list.forEach((opp) => {
+          const key = (opp.title || opp.name || "").toString().trim().toLowerCase();
+          if (key) byTitle.set(key, opp);
+        });
+
+        getCards().forEach((card) => {
+          const title = (card.querySelector("h2, h3, .title")?.textContent || card.textContent)
+            .trim()
+            .toLowerCase();
+          const rec = byTitle.get(title);
+          if (!rec) return;
+
+          // Attach the server ID so downstream actions can use it
+          if (rec.id) card.dataset.opportunityId = rec.id;
+
+          // Optionally refresh a "posted X ago" style caption if present
+          const caption = card.querySelector(".posted-at, [data-posted-at]");
+          const ts = rec.createdAt || rec.publishedAt || rec.updatedAt;
+          if (caption && ts) {
+            const d = new Date(ts);
+            if (!isNaN(d.getTime())) caption.textContent = relativeFromNow(d);
+          }
+        });
+
+        // Re-run the current search so any text we just updated is filterable
+        runSearch();
+      } catch (err) {
+        console.warn("[opportunities] hydration failed:", err);
+      }
+    }
+
+    /* Small helper: "2 hours ago" style string */
+    function relativeFromNow(date) {
+      const diffMs = Date.now() - date.getTime();
+      const mins = Math.max(0, Math.round(diffMs / 60000));
+      if (mins < 1) return "just now";
+      if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"} ago`;
+      const hours = Math.round(mins / 60);
+      if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+      const days = Math.round(hours / 24);
+      if (days === 1) return "yesterday";
+      if (days < 30) return `${days} days ago`;
+      return date.toLocaleDateString();
+    }
+
+    /* Global 401*/
+    document.addEventListener("api:unauthorized", () => {
+      toast("Session expired — please sign in again", "error");
+      setTimeout(() => (window.location.href = "login.html"), 900);
     });
-  </script>
+
+    /* Kick-off*/
+    runSearch();
+    hydrateCards();
+  })();
+</script>
 
 </body>
 </html>

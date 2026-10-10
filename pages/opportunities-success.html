@@ -225,45 +225,118 @@
   </main>
 
   <script>
+  (() => {
+    "use strict";
 
-    document.addEventListener("DOMContentLoaded", function() {
+    /* Toast */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
+      }
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
+    }
 
+    /* Safe element setter */
+    function setText(id, value, fallback = "Not provided") {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = (value === 0 ? "0" : value) || fallback;
+    }
+
+    /* Small helper: format ISO / yyyy-mm-dd strings */
+    function formatDate(value) {
+      if (!value) return "";
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return value;
+      return d.toLocaleDateString(undefined, {
+        month: "long", day: "numeric", year: "numeric",
+      });
+    }
+
+    /* Main*/
+    document.addEventListener("DOMContentLoaded", async function () {
+      const DRAFT_KEY = "impactraOpportunityDraft";
+
+      /*  1. Load the local draft  */
+      let opportunity = {};
       try {
-
-        const savedDraft = sessionStorage.getItem(
-          "impactraOpportunityDraft"
-        );
-
-        if (savedDraft) {
-
-          const opportunity = JSON.parse(savedDraft);
-
-          document.getElementById(
-            "opportunityTitle"
-          ).textContent = opportunity.title || "Not provided";
-
-          document.getElementById(
-            "opportunityCategory"
-          ).textContent = opportunity.category || "Not provided";
-
-          document.getElementById(
-            "opportunityLocation"
-          ).textContent = opportunity.location || "Not provided";
-
-        }
-
+        const raw = sessionStorage.getItem(DRAFT_KEY);
+        if (raw) opportunity = JSON.parse(raw) || {};
       } catch (error) {
-
-        console.error(
-          "Unable to load opportunity information:",
-          error
-        );
-
+        console.error("[opportunity-detail] corrupt draft:", error);
+        toast("Couldn't read the saved draft", "error");
       }
 
+      /*  2. If we have an API id, re-fetch the freshest copy  */
+      if (window.API && opportunity.id) {
+        try {
+          const res = await API.opportunities.get(opportunity.id);
+          const remote = res?.data || res || null;
+          if (remote) {
+            // Remote wins for fields it provides; fall back to local draft otherwise
+            opportunity = { ...opportunity, ...remote };
+            // Keep sessionStorage in sync
+            try {
+              sessionStorage.setItem(DRAFT_KEY, JSON.stringify(opportunity));
+            } catch (_) { /* ignore storage quota */ }
+          }
+        } catch (err) {
+          // Non-fatal — we still have the local copy
+          console.warn("[opportunity-detail] server refresh failed:", err);
+          toast("Using locally saved copy — server unavailable", "info");
+        }
+      }
+
+      /*  3. Render into the page  */
+      setText("opportunityTitle",    opportunity.title);
+      setText("opportunityCategory", opportunity.category);
+      setText("opportunityLocation", opportunity.location);
+
+    
+      //4. These are no-ops if the elements don't exist.
+      setText("opportunityDescription", opportunity.description);
+      setText("opportunityType",        opportunity.type);
+      setText("opportunityStartDate",   formatDate(opportunity.startDate));
+      setText("opportunityEndDate",     formatDate(opportunity.endDate));
+      setText("opportunityDeadline",    formatDate(opportunity.deadline));
+      setText("opportunitySlots",       opportunity.slots);
+      setText("opportunityRequirements", opportunity.requirements);
+      setText("opportunityBenefits",     opportunity.benefits);
+
+      /*  5. If the draft is completely empty, tell the user  */
+      const hasAnyData = Object.keys(opportunity).some((k) => opportunity[k]);
+      if (!hasAnyData) {
+        toast("No saved opportunity found — please start from step 1", "info");
+      }
     });
 
-  </script>
+    /* Global 401*/
+    document.addEventListener("api:unauthorized", () => {
+      toast("Session expired — please sign in again", "error");
+      setTimeout(() => (window.location.href = "login.html"), 900);
+    });
+  })();
+</script>
 
 </body>
 </html>

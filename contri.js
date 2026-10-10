@@ -1,4 +1,4 @@
-/*IMPACTRA — Contribution Review*/
+/* IMPACTRA — Contribution Review*/
 (() => {
   "use strict";
 
@@ -7,6 +7,18 @@
 
   const findByText = (sel, text, root = document) =>
     $$(sel, root).find((el) => el.textContent.trim().toLowerCase().includes(text.toLowerCase()));
+
+  /* Read contribution id from URL */
+  const urlParams      = new URLSearchParams(window.location.search);
+  const CONTRIBUTION_ID = urlParams.get("id") || "CONTRIB-DEMO-001";
+
+  /* Global API guard */
+  if (!window.API) {
+    console.error("[contri.js] API client not found. Did you load api.js before contri.js?");
+  }
+
+  /* Cached contribution data (populated on hydrate) */
+  let contribution = null;
 
   /*0. TOAST*/
   function toast(message, variant = "default") {
@@ -22,6 +34,7 @@
       default: "bg-[#00174B] text-white",
       success: "bg-[#065F46] text-white",
       error:   "bg-[#991B1B] text-white",
+      info:    "bg-[#1D4ED8] text-white",
     };
     const el = document.createElement("div");
     el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
@@ -34,6 +47,20 @@
       el.style.transform = "translateY(8px)";
       setTimeout(() => el.remove(), 260);
     }, 2800);
+  }
+
+  /* Button busy helper */
+  function withBusy(btn, label, fn) {
+    if (!btn) return Promise.resolve();
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    if (label) btn.textContent = label;
+    return Promise.resolve()
+      .then(fn)
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      });
   }
 
   /*1. MOBILE SIDEBAR*/
@@ -67,7 +94,7 @@
     });
   }
 
-  /*2. MODAL SYSTEM (created on demand)*/
+  /*2. MODAL SYSTEM*/
   let activeModal = null;
 
   function ensureModalPortal() {
@@ -79,12 +106,9 @@
       portal.innerHTML = `
         <div data-modal-overlay class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
         <div class="relative z-10 flex min-h-full items-center justify-center p-4">
-          <div data-modal-card
-               role="dialog"
-               aria-modal="true"
+          <div data-modal-card role="dialog" aria-modal="true"
                class="w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-2xl
-                      opacity-0 scale-95 transition duration-200 ease-out">
-          </div>
+                      opacity-0 scale-95 transition duration-200 ease-out"></div>
         </div>`;
       document.body.appendChild(portal);
 
@@ -117,10 +141,7 @@
 
     portal.classList.remove("hidden");
     document.body.style.overflow = "hidden";
-    requestAnimationFrame(() => {
-      card.classList.remove("opacity-0", "scale-95");
-    });
-
+    requestAnimationFrame(() => card.classList.remove("opacity-0", "scale-95"));
     activeModal = card;
 
     $("[data-modal-close]", card)?.addEventListener("click", closeModal);
@@ -128,10 +149,7 @@
       btn.addEventListener("click", closeModal)
     );
 
-    // Focus first focusable
-    setTimeout(() => {
-      $("button, [href], input, select, textarea", card)?.focus();
-    }, 60);
+    setTimeout(() => $("button, [href], input, select, textarea", card)?.focus(), 60);
   }
 
   function closeModal() {
@@ -150,7 +168,7 @@
     if (e.key === "Escape") closeModal();
   });
 
-  /*3. DRAWER (used for the Audit Log)*/
+  /*3. DRAWER (Audit Log)*/
   let activeDrawer = null;
 
   function ensureDrawerPortal() {
@@ -161,12 +179,9 @@
       host.className = "fixed inset-0 z-[75] hidden";
       host.innerHTML = `
         <div data-drawer-overlay class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-        <aside data-drawer-panel
-               role="dialog"
-               aria-modal="true"
+        <aside data-drawer-panel role="dialog" aria-modal="true"
                class="absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full
-                      flex-col bg-white shadow-2xl transition-transform duration-300 ease-out">
-        </aside>`;
+                      flex-col bg-white shadow-2xl transition-transform duration-300 ease-out"></aside>`;
       document.body.appendChild(host);
 
       host.addEventListener("click", (e) => {
@@ -227,58 +242,100 @@
     }
   });
 
-  const bell = findByText("header button", "") // fallback
-    || $('header button[type="button"]');
-  const bellBtn = $$("header button").find((b) => b.querySelector('span.h-2.w-2'));
-  bellBtn?.addEventListener("click", () => {
+  const bellBtn = $$("header button").find((b) => b.querySelector("span.h-2.w-2"));
+  bellBtn?.addEventListener("click", async () => {
     bellBtn.querySelector("span.h-2.w-2")?.remove();
+    try {
+      await API.notifications.markAllRead();
+    } catch (_) {  }
     toast("You're all caught up", "success");
   });
 
   /*5. AUDIT LOG DRAWER*/
-  const AUDIT_EVENTS = [
-    { time: "Oct 4, 2026 · 2:15 PM", title: "Contribution submitted",
-      detail: "Mary Adeyemi submitted 4.0 hrs for Food Relief Distribution.",
-      tone: "blue" },
-    { time: "Oct 4, 2026 · 2:16 PM", title: "Evidence uploaded",
-      detail: "2 files attached — group photo and signed attendance sheet.",
-      tone: "blue" },
-    { time: "Oct 4, 2026 · 2:18 PM", title: "Auto-check passed",
-      detail: "Hours match scheduled shift (4.0 hrs). No anomalies detected.",
-      tone: "green" },
-    { time: "Oct 5, 2026 · 9:02 AM", title: "Routed for verification",
-      detail: "Assigned to NGO reviewer queue (Toyin).",
-      tone: "amber" },
-  ];
-
   const TONE = {
-    blue:  "bg-[#0051b5]",
-    green: "bg-[#009842]",
-    amber: "bg-[#F59E0B]",
+    blue:   "bg-[#0051b5]",
+    green:  "bg-[#009842]",
+    amber:  "bg-[#F59E0B]",
+    red:    "bg-[#BA1A1A]",
   };
 
-  function renderAuditLog() {
+  /* Fallback events — replaced by API response when it arrives */
+  let auditEvents = [
+    { time: "—", title: "Loading audit log…", detail: "Fetching events from server.", tone: "blue" },
+  ];
+
+  function toneFor(eventType) {
+    const t = (eventType || "").toLowerCase();
+    if (t.includes("reject") || t.includes("error")) return "red";
+    if (t.includes("verify") || t.includes("approve")) return "green";
+    if (t.includes("route") || t.includes("pending"))  return "amber";
+    return "blue";
+  }
+
+  function formatAuditTime(ts) {
+    if (!ts) return "—";
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return String(ts);
+    return d.toLocaleString(undefined, {
+      month: "short", day: "numeric", year: "numeric",
+      hour: "numeric", minute: "2-digit",
+    });
+  }
+
+  function renderAuditLog(events) {
+    if (!events || !events.length) {
+      return `<p class="text-sm text-slate-500">No events yet.</p>`;
+    }
     return `
       <ol class="relative ml-3 border-l border-[#E5E7EB] pl-6">
-        ${AUDIT_EVENTS.map((ev) => `
-          <li class="relative pb-6 last:pb-0">
-            <span class="absolute -left-[31px] top-1 h-2.5 w-2.5 rounded-full ring-4 ring-white ${TONE[ev.tone]}"></span>
-            <p class="text-[11px] font-semibold uppercase leading-4 tracking-[0.55px] text-[#6B7280]">${ev.time}</p>
-            <p class="mt-0.5 text-sm font-semibold leading-5">${ev.title}</p>
-            <p class="mt-0.5 text-[13px] leading-[18px] text-[#4B5563]">${ev.detail}</p>
-          </li>
-        `).join("")}
+        ${events.map((ev) => {
+          const time  = ev.time || ev.timestamp ? formatAuditTime(ev.time || ev.timestamp) : "—";
+          const title = ev.title || ev.event || "Event";
+          const detail = ev.detail || ev.description || "";
+          const tone = ev.tone || toneFor(ev.type || ev.event);
+          return `
+            <li class="relative pb-6 last:pb-0">
+              <span class="absolute -left-[31px] top-1 h-2.5 w-2.5 rounded-full ring-4 ring-white ${TONE[tone] || TONE.blue}"></span>
+              <p class="text-[11px] font-semibold uppercase leading-4 tracking-[0.55px] text-[#6B7280]">${time}</p>
+              <p class="mt-0.5 text-sm font-semibold leading-5">${title}</p>
+              <p class="mt-0.5 text-[13px] leading-[18px] text-[#4B5563]">${detail}</p>
+            </li>`;
+        }).join("")}
       </ol>
     `;
   }
 
-  findByText("button", "Audit Log")?.addEventListener("click", () => {
-    openDrawer({ title: "Audit Log", body: renderAuditLog() });
+  findByText("button", "Audit Log")?.addEventListener("click", async (e) => {
+    // Show drawer with placeholder, then fetch and re-render
+    openDrawer({ title: "Audit Log", body: renderAuditLog(auditEvents) });
+    try {
+      const res = await API.activities.contributions.auditLog(CONTRIBUTION_ID);
+      const events = Array.isArray(res) ? res : (res?.events || res?.data || []);
+      if (events.length) {
+        auditEvents = events;
+        const panel = $("[data-drawer-panel]");
+        const bodyWrap = panel?.querySelector(".scroll-thin");
+        if (bodyWrap) bodyWrap.innerHTML = renderAuditLog(events);
+      }
+    } catch (err) {
+      const panel = $("[data-drawer-panel]");
+      const bodyWrap = panel?.querySelector(".scroll-thin");
+      if (bodyWrap) {
+        bodyWrap.innerHTML = `
+          <p class="text-sm text-[#991B1B]">
+            Couldn't load audit log: ${err.message || "unknown error"}
+          </p>`;
+      }
+    }
   });
 
-  /*6. EVIDENCE — VIEW + DOWNLOAD*/
-  $$("button").forEach((btn) => {
-    if (btn.textContent.trim() === "View") {
+  /*6. EVIDENCE — VIEW*/
+  // Bind "View" buttons now; also re-bind after hydration if new ones appear
+  function bindEvidenceButtons() {
+    $$("button").forEach((btn) => {
+      if (btn.dataset.evidenceBound) return;
+      if (btn.textContent.trim() !== "View") return;
+      btn.dataset.evidenceBound = "1";
       btn.addEventListener("click", () => {
         const img = btn.closest("div")?.parentElement?.querySelector("img");
         const src = img?.src || "";
@@ -288,8 +345,7 @@
           size: "max-w-3xl",
           body: `
             <div class="flex items-center justify-center rounded-lg bg-[#F9FAFB] p-3">
-              <img src="${src}" alt="${alt}"
-                   class="max-h-[60vh] w-auto rounded-md object-contain" />
+              <img src="${src}" alt="${alt}" class="max-h-[60vh] w-auto rounded-md object-contain" />
             </div>
             <p class="mt-3 text-[13px] leading-[18px] text-[#4B5563]">${alt}</p>
           `,
@@ -301,25 +357,50 @@
           `,
         });
       });
+    });
+  }
+  bindEvidenceButtons();
+
+  /*7. DOWNLOAD SIGNED SHEET*/
+  findByText("a", "Download PDF")?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const link = e.currentTarget;
+    withBusy(link, "Preparing…", async () => {
+      try {
+        // Try to fetch evidence metadata and find the signed sheet's URL
+        const res = await API.activities.contributions.evidence(CONTRIBUTION_ID);
+        const files = Array.isArray(res) ? res : (res?.files || res?.data || []);
+        const sheet = files.find((f) =>
+          /signed|attendance|sheet/i.test(f.name || f.type || f.label || "")
+        );
+        const url = sheet?.url || sheet?.downloadUrl || sheet?.href;
+
+        if (url) {
+          window.open(url, "_blank", "noopener");
+          toast("Download ready", "success");
+          return;
+        }
+        // No URL found — fall back to a friendly message
+        toast("Signed sheet not attached", "info");
+      } catch (err) {
+        toast(err.message || "Couldn't prepare download", "error");
+      }
+    });
+  });
+
+  /*8. VIEW FULL VOLUNTEER PROFILE*/
+  findByText("a", "View Full Volunteer Profile")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const volunteerId = contribution?.volunteerId || contribution?.volunteer?.id;
+    if (volunteerId) {
+      window.location.href = `volunteer-profile.html?id=${encodeURIComponent(volunteerId)}`;
+    } else {
+      toast("Volunteer ID not available", "error");
     }
   });
 
-  findByText("a", "Download PDF")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    toast("Preparing signed sheet download…", "default");
-    setTimeout(() => toast("Download ready", "success"), 900);
-  });
-
-  /*7. VIEW FULL VOLUNTEER PROFILE*/
-  findByText("a", "View Full Volunteer Profile")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    // TODO: replace with real navigation
-    // window.location.href = "volunteer-profile.html?id=VOL-4029";
-    toast("Opening Mary Adeyemi's profile…");
-  });
-
-  /*8. VERIFY CONTRIBUTION*/
-  const verifyBtn = findByText("button", "Verify Contribution");
+  /*9. VERIFY / REQUEST CHANGES*/
+  const verifyBtn  = findByText("button", "Verify Contribution");
   const requestBtn = findByText("button", "Request Changes");
 
   function markVerified() {
@@ -341,25 +422,47 @@
       b.classList.remove("hover:bg-[#0046b8]", "hover:bg-slate-200");
     });
 
-    // Swap heading
     const heading = card?.querySelector("h3");
     if (heading) heading.textContent = "Contribution Verified";
 
-    // Replace note
     const note = card?.querySelector(".mt-4.flex.items-start.gap-2 p");
     if (note) {
-      note.innerHTML = `<strong>4.0 hours</strong> have been added to Mary Adeyemi's verified record.`;
+      const hours = contribution?.hours ?? "4.0";
+      const name  = contribution?.volunteerName || contribution?.volunteer?.name || "the volunteer";
+      note.innerHTML = `<strong>${hours} hours</strong> have been added to ${name}'s verified record.`;
     }
   }
 
+  function markChangesRequested() {
+    const badge = findByText("span", "Pending Verification");
+    if (badge) {
+      badge.innerHTML = `
+        <span class="h-1.5 w-1.5 rounded-full bg-[#F43F5E]"></span>
+        <span class="text-[11px] font-semibold tracking-[0.55px] text-[#9F1239]">Changes Requested</span>`;
+      badge.classList.remove("bg-[#FFFBEB]");
+      badge.classList.add("bg-[#FFF1F2]");
+    }
+
+    const card = verifyBtn?.closest("section");
+    card?.querySelectorAll("button").forEach((b) => {
+      b.disabled = true;
+      b.classList.add("opacity-50", "cursor-not-allowed");
+      b.classList.remove("hover:bg-[#0046b8]", "hover:bg-slate-200");
+    });
+  }
+
   verifyBtn?.addEventListener("click", () => {
+    const hours = contribution?.hours ?? "4.0";
+    const name  = contribution?.volunteerName || contribution?.volunteer?.name || "the volunteer";
+    const activity = contribution?.activity?.title || contribution?.activityName || "this activity";
+
     openModal({
       title: "Confirm Verification",
       body: `
         <p class="text-[13px] leading-5 text-[#4B5563]">
-          You're about to verify <strong>4.0 hours</strong> for
-          <strong>Mary Adeyemi</strong> on the <strong>Food Relief Distribution</strong> activity.
-          This will be added to her verified record and IMPACTRA's organizational impact data.
+          You're about to verify <strong>${hours} hours</strong> for
+          <strong>${name}</strong> on <strong>${activity}</strong>.
+          This will be added to their verified record and IMPACTRA's organizational impact data.
         </p>
         <div class="mt-4 flex items-start gap-2 rounded-lg border border-[#0051b5]/20 bg-[#F3F4F6] p-3">
           <span class="shrink-0 text-[#0051b5]">
@@ -382,16 +485,22 @@
       `,
     });
 
-    $("[data-modal-confirm]")?.addEventListener("click", () => {
-      closeModal();
-      setTimeout(() => {
-        markVerified();
-        toast("Contribution verified — 4.0 hours added", "success");
-      }, 220);
+    $("[data-modal-confirm]")?.addEventListener("click", (ev) => {
+      withBusy(ev.currentTarget, "Verifying…", async () => {
+        try {
+          await API.activities.contributions.verify(CONTRIBUTION_ID);
+          closeModal();
+          setTimeout(() => {
+            markVerified();
+            toast(`Contribution verified — ${hours} hours added`, "success");
+          }, 220);
+        } catch (err) {
+          toast(err.message || "Couldn't verify contribution", "error");
+        }
+      });
     });
   });
 
-  /*9. REQUEST CHANGES*/
   requestBtn?.addEventListener("click", () => {
     openModal({
       title: "Request Changes",
@@ -430,21 +539,32 @@
       `,
     });
 
-    $("[data-modal-confirm]")?.addEventListener("click", () => {
-      const msg = $("[data-message]")?.value.trim();
+    $("[data-modal-confirm]")?.addEventListener("click", (ev) => {
+      const reason = $("[data-reason]")?.value || "other";
+      const msg    = $("[data-message]")?.value.trim();
+
       if (!msg) {
         toast("Please add a message for the volunteer", "error");
         $("[data-message]")?.focus();
         return;
       }
-      closeModal();
-      setTimeout(() => {
-        toast("Change request sent to Mary Adeyemi", "success");
-      }, 220);
+
+      withBusy(ev.currentTarget, "Sending…", async () => {
+        try {
+          await API.activities.contributions.reject(CONTRIBUTION_ID, reason, msg);
+          closeModal();
+          setTimeout(() => {
+            markChangesRequested();
+            toast("Change request sent", "success");
+          }, 220);
+        } catch (err) {
+          toast(err.message || "Couldn't send request", "error");
+        }
+      });
     });
   });
 
-  /*10. KEYBOARD: focus trap light (Escape already handled)*/
+  /*10. KEYBOARD: focus trap*/
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Tab" || !activeModal) return;
     const focusables = $$(
@@ -465,8 +585,147 @@
     }
   });
 
-  /*11. SMALL UX: highlight the note box on hover for decision*/
+  /*11. UX: hover shadow on primary action*/
   verifyBtn?.addEventListener("mouseenter", () => verifyBtn.classList.add("shadow-md"));
   verifyBtn?.addEventListener("mouseleave", () => verifyBtn.classList.remove("shadow-md"));
+
+  /*12. SIDEBAR LOG OUT*/
+  $$("aside nav a, aside button").forEach((el) => {
+    const text = el.textContent.trim().toLowerCase();
+    if (text !== "log out") return;
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal({
+        title: "Log out?",
+        body: `<p>You'll be signed out of IMPACTRA on this device.</p>`,
+        footer: `
+          <button data-modal-cancel class="h-10 rounded-lg bg-[#F3F4F6] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
+          <button data-modal-confirm class="h-10 rounded-lg bg-[#BA1A1A] px-4 text-sm font-semibold text-white transition hover:bg-rose-800">Log out</button>
+        `,
+      });
+      $("[data-modal-confirm]")?.addEventListener("click", async () => {
+        try { await API.auth.logout(); } catch (_) { /* ignore */ }
+        window.location.href = "login.html";
+      });
+    });
+  });
+
+  /*13. GLOBAL 401 HANDLER*/
+  document.addEventListener("api:unauthorized", () => {
+    toast("Session expired — please sign in again", "error");
+    setTimeout(() => (window.location.href = "login.html"), 900);
+  });
+
+  /*14. HYDRATE FROM API ON LOAD*/
+  (async function loadContribution() {
+    if (!window.API) return;
+
+    try {
+      const res = await API.activities.contributions.get(CONTRIBUTION_ID);
+      contribution = res?.data || res || null;
+
+      if (!contribution) {
+        console.warn("[contri.js] Contribution not found:", CONTRIBUTION_ID);
+        return;
+      }
+
+      const c = contribution;
+
+      //  Header: volunteer name 
+      const nameEl = byText("p", "Mary Adeyemi");
+      const displayName = c.volunteerName || c.volunteer?.name || c.volunteer?.fullName;
+      if (nameEl && displayName) nameEl.textContent = displayName;
+
+      //  Header: VOL id 
+      const volIdEl = byText("span", "#VOL-");
+      const volId   = c.volunteerId || c.volunteer?.id;
+      if (volIdEl && volId) volIdEl.textContent = `#${volId}`;
+
+      //  Header: submitted date 
+      const submittedEl = byText("span", "Submitted ");
+      if (submittedEl && (c.submittedAt || c.createdAt)) {
+        const d = new Date(c.submittedAt || c.createdAt);
+        submittedEl.textContent = `Submitted ${d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
+      }
+
+      //  Activity card title 
+      const titleEl = $("main h2");
+      if (titleEl && (c.activity?.title || c.activityName)) {
+        titleEl.textContent = c.activity?.title || c.activityName;
+      }
+
+      //  Organization 
+      const orgEl = byText("p", "Green Future Initiative");
+      if (orgEl && (c.organization?.name || c.organizationName)) {
+        orgEl.textContent = c.organization?.name || c.organizationName;
+      }
+
+      //  Metadata grid 
+      const metaMap = {
+        Date:     c.date ? new Date(c.date).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }) : null,
+        Time:     c.startTime && c.endTime ? `${c.startTime} – ${c.endTime}` : null,
+        Location: c.location || c.activity?.location,
+        Role:     c.role || c.activity?.role,
+      };
+      Object.entries(metaMap).forEach(([label, value]) => {
+        if (!value) return;
+        const labelEl = byText("p", label);
+        const valueEl = labelEl?.parentElement?.querySelector("p.font-semibold");
+        if (valueEl) valueEl.textContent = value;
+      });
+
+      //  Volunteer statement 
+      const quote = byText("blockquote", "I helped");
+      if (quote && (c.statement || c.volunteerStatement)) {
+        quote.textContent = `“${c.statement || c.volunteerStatement}”`;
+      }
+
+      //  Hours comparison 
+      const expectedBadge = byText("span", "Expected:");
+      const submittedBadge = byText("span", "Submitted:");
+      if (c.expectedHours != null && expectedBadge?.parentElement) {
+        const strong = expectedBadge.parentElement.querySelector(".font-semibold");
+        if (strong) strong.textContent = `${c.expectedHours} hrs`;
+      }
+      if (c.hours != null && submittedBadge?.parentElement) {
+        const strong = submittedBadge.parentElement.querySelector(".font-semibold");
+        if (strong) strong.textContent = `${c.hours} hrs`;
+      }
+
+      //  Volunteer snapshot (right column) 
+      const snapshotName = byText("h2", "Mary Adeyemi");
+      if (snapshotName && displayName) snapshotName.textContent = displayName;
+
+      const snapshotMeta = byText("p", "VOL-");
+      if (snapshotMeta) {
+        const parts = [];
+        if (volId) parts.push(volId);
+        if (c.volunteer?.occupation) parts.push(c.volunteer.occupation);
+        if (c.volunteer?.location)   parts.push(c.volunteer.location);
+        if (parts.length) snapshotMeta.innerHTML = parts.join(" · ") + (snapshotMeta.querySelector("br") ? "<br/>" : "");
+      }
+
+      //  Avatar in snapshot 
+      const snapshotImg = $$("img[alt]").find((img) => /mary|volunteer|avatar/i.test(img.alt || ""));
+      if (snapshotImg && c.volunteer?.avatarUrl) {
+        snapshotImg.src = c.volunteer.avatarUrl;
+      }
+
+      //  Verified hours note in snapshot 
+      const verifiedNote = byText("p", "pending verification");
+      if (verifiedNote && c.hours != null) {
+        verifiedNote.textContent = `+${c.hours} pending verification`;
+      }
+
+      //  If already verified, reflect that 
+      const status = (c.status || "").toLowerCase();
+      if (status === "verified" || status === "approved") markVerified();
+      else if (status === "rejected" || status === "changes_requested") markChangesRequested();
+
+    } catch (err) {
+      console.warn("[contri.js] Failed to hydrate contribution:", err);
+      // Page keeps its static sample data — no toast needed
+    }
+  })();
 
 })();

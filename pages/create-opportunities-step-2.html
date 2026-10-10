@@ -231,75 +231,201 @@
   </main>
 
   <script>
-    const form = document.getElementById("detailsForm");
+  (() => {
+    "use strict";
 
-    function goBack() {
-      window.location.href =
-        "create-opportunity-step-one.html";
+    /* Toast */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
+      }
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
     }
 
-    form.addEventListener("submit", function(event) {
+    /* Field highlighting */
+    function markInvalid(field, message) {
+      if (!field) return;
+      field.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
+      field.classList.remove("border-gray-200");
+      field.focus();
+      toast(message, "error");
+    }
+
+    function clearInvalid(field) {
+      if (!field) return;
+      field.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
+      field.classList.add("border-gray-200");
+    }
+
+    /* Back button */
+    window.goBack = function () {
+      window.location.href = "create-opportunity-step-one.html";
+    };
+
+    const form = document.getElementById("detailsForm");
+    if (!form) return;
+
+    const typeInput         = document.getElementById("type");
+    const startDateInput    = document.getElementById("startDate");
+    const endDateInput      = document.getElementById("endDate");
+    const deadlineInput     = document.getElementById("deadline");
+    const slotsInput        = document.getElementById("slots");
+    const requirementsInput = document.getElementById("requirements");
+    const benefitsInput     = document.getElementById("benefits");
+
+    const DRAFT_KEY = "impactraOpportunityDraft";
+
+    /* Restore draft if user came back */
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const draft = JSON.parse(raw);
+        if (draft.type        && typeInput)         typeInput.value = draft.type;
+        if (draft.startDate   && startDateInput)    startDateInput.value = draft.startDate;
+        if (draft.endDate     && endDateInput)      endDateInput.value = draft.endDate;
+        if (draft.deadline    && deadlineInput)     deadlineInput.value = draft.deadline;
+        if (draft.slots != null && slotsInput)      slotsInput.value = draft.slots;
+        if (draft.requirements && requirementsInput) requirementsInput.value = draft.requirements;
+        if (draft.benefits     && benefitsInput)     benefitsInput.value = draft.benefits;
+      }
+    } catch (_) { /* ignore corrupt draft */ }
+
+    /* Clear invalid state on input */
+    [typeInput, startDateInput, endDateInput, deadlineInput,
+     slotsInput, requirementsInput, benefitsInput].forEach((el) => {
+      if (!el) return;
+      el.addEventListener("input", () => clearInvalid(el));
+      el.addEventListener("change", () => clearInvalid(el));
+    });
+
+    /* Date sanity check helper */
+    function parseDate(str) {
+      if (!str) return null;
+      const d = new Date(str);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    form.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const startDate =
-        document.getElementById("startDate").value;
+      const type         = typeInput?.value || "";
+      const startDate    = startDateInput?.value || "";
+      const endDate      = endDateInput?.value || "";
+      const deadline     = deadlineInput?.value || "";
+      const slotsRaw     = slotsInput?.value || "";
+      const requirements = requirementsInput?.value.trim() || "";
+      const benefits     = benefitsInput?.value.trim() || "";
 
-      const endDate =
-        document.getElementById("endDate").value;
-
-      const deadline =
-        document.getElementById("deadline").value;
-
-      if (endDate < startDate) {
-        alert("End date cannot be before start date.");
+      /*  Required fields  */
+      if (!type) {
+        markInvalid(typeInput, "Please choose an opportunity type");
+        return;
+      }
+      if (!startDate) {
+        markInvalid(startDateInput, "Please pick a start date");
+        return;
+      }
+      if (!endDate) {
+        markInvalid(endDateInput, "Please pick an end date");
+        return;
+      }
+      if (!deadline) {
+        markInvalid(deadlineInput, "Please pick an application deadline");
+        return;
+      }
+      if (!slotsRaw || Number(slotsRaw) < 1) {
+        markInvalid(slotsInput, "Please enter at least 1 volunteer slot");
+        return;
+      }
+      if (!requirements) {
+        markInvalid(requirementsInput, "Please list the volunteer requirements");
+        return;
+      }
+      if (!benefits) {
+        markInvalid(benefitsInput, "Please describe the volunteer benefits");
         return;
       }
 
-      if (deadline > startDate) {
-        alert(
-          "Application deadline cannot be after the start date."
-        );
+      /*  Date logic  */
+      const start    = parseDate(startDate);
+      const end      = parseDate(endDate);
+      const deadlineD = parseDate(deadline);
+
+      if (start && end && end < start) {
+        markInvalid(endDateInput, "End date can't be before the start date");
+        return;
+      }
+      if (start && deadlineD && deadlineD > start) {
+        markInvalid(deadlineInput, "Deadline must be on or before the start date");
         return;
       }
 
+      /*  Build details object  */
       const details = {
-        type: document.getElementById("type").value,
-        startDate: startDate,
-        endDate: endDate,
-        deadline: deadline,
-        slots: Number(
-          document.getElementById("slots").value
-        ),
-        requirements: document
-          .getElementById("requirements").value.trim(),
-        benefits: document
-          .getElementById("benefits").value.trim()
+        type,
+        startDate,
+        endDate,
+        deadline,
+        slots: Number(slotsRaw),
+        requirements,
+        benefits,
       };
+
+      /*  Busy state  */
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const original  = submitBtn ? submitBtn.innerHTML : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-80", "cursor-not-allowed");
+        submitBtn.innerHTML = "Saving…";
+      }
 
       try {
         const savedDraft = JSON.parse(
-          sessionStorage.getItem(
-            "impactraOpportunityDraft"
-          ) || "{}"
+          sessionStorage.getItem(DRAFT_KEY) || "{}"
         );
 
-        const updatedDraft = {
-          ...savedDraft,
-          ...details
-        };
+        const updatedDraft = { ...savedDraft, ...details };
 
-        sessionStorage.setItem(
-          "impactraOpportunityDraft",
-          JSON.stringify(updatedDraft)
-        );
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(updatedDraft));
 
-       window.location.href = "create-opportunities-steps-3.html";
+        toast("Details saved — continuing…", "success");
+        setTimeout(() => {
+          window.location.href = "create-opportunities-steps-3.html";
+        }, 500);
 
       } catch (error) {
-        alert("Unable to save your information.");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("opacity-80", "cursor-not-allowed");
+          submitBtn.innerHTML = original;
+        }
+        console.error("[create-opportunity step 2] draft save failed:", error);
+        toast("Unable to save your information — please try again", "error");
       }
     });
-  </script>
+  })();
+</script>
 
 </body>
 </html>

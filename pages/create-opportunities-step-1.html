@@ -216,55 +216,146 @@
   </main>
 
   <script>
+  (() => {
+    "use strict";
 
-    const form = document.getElementById(
-      "opportunityForm"
-    );
+    /* Toast */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
+      }
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
+    }
 
-    form.addEventListener("submit", function(event) {
+    /* Field highlighting */
+    function markInvalid(field, message) {
+      if (!field) return;
+      field.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
+      field.classList.remove("border-gray-200");
+      field.focus();
+      toast(message, "error");
+    }
 
+    function clearInvalid(field) {
+      if (!field) return;
+      field.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
+      field.classList.add("border-gray-200");
+    }
+
+    const form = document.getElementById("opportunityForm");
+    if (!form) return;
+
+    const titleInput       = document.getElementById("title");
+    const categoryInput    = document.getElementById("category");
+    const locationInput    = document.getElementById("location");
+    const descriptionInput = document.getElementById("description");
+
+    const DRAFT_KEY = "impactraOpportunityDraft";
+
+    /* Restore draft if the user came back */
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const draft = JSON.parse(raw);
+        if (draft.title && titleInput)             titleInput.value = draft.title;
+        if (draft.category && categoryInput)       categoryInput.value = draft.category;
+        if (draft.location && locationInput)       locationInput.value = draft.location;
+        if (draft.description && descriptionInput) descriptionInput.value = draft.description;
+      }
+    } catch (_) { /* ignore corrupt draft */ }
+
+    /* Clear red rings on input */
+    [titleInput, categoryInput, locationInput, descriptionInput].forEach((el) => {
+      if (!el) return;
+      el.addEventListener("input", () => clearInvalid(el));
+      el.addEventListener("change", () => clearInvalid(el));
+    });
+
+    form.addEventListener("submit", function (event) {
       event.preventDefault();
 
       const opportunity = {
-        title: document.getElementById("title").value.trim(),
-
-        category: document.getElementById("category").value,
-
-        location: document.getElementById("location").value.trim(),
-
-        description: document.getElementById("description").value.trim()
+        title:       titleInput?.value.trim() || "",
+        category:    categoryInput?.value || "",
+        location:    locationInput?.value.trim() || "",
+        description: descriptionInput?.value.trim() || "",
       };
 
-      if (
-        !opportunity.title ||
-        !opportunity.category ||
-        !opportunity.location ||
-        !opportunity.description
-      ) {
-        alert("Please complete all required fields.");
+      /* Validation */
+      if (!opportunity.title) {
+        markInvalid(titleInput, "Please enter a title for the opportunity");
+        return;
+      }
+      if (opportunity.title.length < 4) {
+        markInvalid(titleInput, "Title is a bit short — try at least 4 characters");
+        return;
+      }
+      if (!opportunity.category) {
+        markInvalid(categoryInput, "Please choose a category");
+        return;
+      }
+      if (!opportunity.location) {
+        markInvalid(locationInput, "Please enter a location");
+        return;
+      }
+      if (!opportunity.description) {
+        markInvalid(descriptionInput, "Please add a short description");
+        return;
+      }
+      if (opportunity.description.length < 20) {
+        markInvalid(descriptionInput, "Description is too short — add at least 20 characters");
         return;
       }
 
-      try {
-
-        sessionStorage.setItem(
-  "impactraOpportunityDraft",
-  JSON.stringify(opportunity)
-);
-
-window.location.href = "create-opportunities-step-2.html";
-
-} catch (error) {
-
-  alert(
-    "Unable to save your draft. Please try again."
-        );
-
+      /* Busy state */
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const original  = submitBtn ? submitBtn.innerHTML : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add ("opacity-80", "cursor-not-allowed");
+        submitBtn.innerHTML = "Saving…";
       }
 
-    });
+      try {
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(opportunity));
 
-  </script>
+        toast("Draft saved — continuing…", "success");
+        setTimeout(() => {
+          window.location.href = "create-opportunities-step-2.html";
+        }, 500);
+
+      } catch (error) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("opacity-80", "cursor-not-allowed");
+          submitBtn.innerHTML = original;
+        }
+        console.error("[create-opportunity] draft save failed:", error);
+        toast("Unable to save your draft — please try again", "error");
+      }
+    });
+  })();
+</script>
 
 </body>
 </html>
