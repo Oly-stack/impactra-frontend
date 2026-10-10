@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>
+  <link
+    rel="shortcut icon"
+    href="/impactra-frontend/images/logo.png"
+    type="image/x-icon"
+  />
 
   <body class="min-h-screen bg-[#f9f9ff] font-sans text-slate-800">
     <!-- NAVBAR -->
@@ -71,7 +76,7 @@
             Review your organization details
           </h1>
 
-          <p class="mt-1 max-w-2xl text-sm text-slate-600">
+          <p class="mt-1 max-w-2xl text-[16px] text-slate-600">
             Check your information thoroughly before submitting your NGO profile
             for security and operational clearance.
           </p>
@@ -81,7 +86,7 @@
           class="flex max-w-56 items-center gap-2 rounded-lg bg-indigo-100 px-4 py-3 text-xs font-medium text-slate-700"
         >
           <i data-lucide="shield" class="h-5 w-5 shrink-0 text-blue-700"></i>
-          <span>Clearance ID: NG-LAG-404</span>
+          <span class="text-[13px]">Clearance ID: NG-LAG-404</span>
         </div>
       </div>
     </section>
@@ -94,46 +99,66 @@
           class="mb-6 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm"
         >
           <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded bg-indigo-100 px-2 py-1 text-[10px] font-bold"
+            <span class="rounded bg-indigo-100 px-2 py-1 text-[16px] font-bold"
               >REGISTRATION PROTOCOL</span
             >
-            <span class="text-slate-600">Reference: GRI-2025-NG88</span>
+            <span class="text-slate-600 text-[16px]"
+              >Reference: GRI-2025-NG88</span
+            >
           </div>
 
           <div class="flex flex-wrap items-center gap-3">
             <span class="flex items-center gap-1 text-slate-600">
-              <i data-lucide="shield-check" class="h-4 w-4 text-blue-700"></i>
+              <i
+                data-lucide="shield-check"
+                class="h-4 text-[14px] w-4 text-blue-700"
+              ></i>
               256-bit Encrypted Dossier
             </span>
             <span
               class="hidden border-l border-slate-300 sm:block sm:h-5"
             ></span>
-            <span class="font-semibold">Step 2 of 2</span>
+            <span class="font-semibold text-[14px]">Step 2 of 2</span>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="flex shrink-0 items-center gap-2">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
+          <!-- Step 1 -->
+          <div class="flex items-center gap-3 min-w-0">
             <div
-              class="flex h-8 w-8 items-center justify-center rounded-full bg-black text-white"
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white"
             >
-              <i data-lucide="check" class="h-4 w-4"></i>
+              <i data-lucide="check" class="h-5 w-5"></i>
             </div>
-            <div>
-              <p class="text-xs font-bold sm:text-sm">1. Profile Data</p>
-              <p class="text-xs font-semibold text-emerald-600">Completed</p>
+            <div class="min-w-0">
+              <p
+                class="text-[20px] font-semibold leading-tight text-slate-900 sm:text-lg"
+              >
+                1. Profile Data
+              </p>
+              <p class="text-[14px] font-semibold text-emerald-600">
+                Completed
+              </p>
             </div>
           </div>
 
-          <div class="h-1 flex-1 rounded-full bg-blue-700"></div>
+          <!-- Line -->
+          <div class="h-1 w-full rounded-full bg-blue-700 md:flex-1"></div>
 
-          <div class="flex shrink-0 items-center gap-2">
-            <div class="text-right">
-              <p class="text-xs font-bold sm:text-sm">2. Review &amp; Submit</p>
-              <p class="text-xs text-blue-700">Final Review</p>
+          <!-- Step 2 -->
+          <div class="flex items-center gap-3 min-w-0 md:justify-end">
+            <div class="min-w-0 md:text-right order-2 md:order-1">
+              <p
+                class="text-[20px] font-semibold leading-tight text-slate-900 sm:text-lg"
+              >
+                2. Review Details
+              </p>
+              <p class="text-[14px] font-semibold text-blue-700">
+                Final Review
+              </p>
             </div>
             <div
-              class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-700 text-sm font-bold text-white"
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-700 text-base font-bold text-white order-1 md:order-2"
             >
               2
             </div>
@@ -155,8 +180,10 @@
                   <i data-lucide="contact-round" class="h-5 w-5"></i>
                 </div>
                 <div>
-                  <h2 class="text-sm font-bold">Registration Details</h2>
-                  <p class="text-[10px] text-slate-600">
+                  <h2 class="text-[20px] sm:text-[20px] font-bold">
+                    Registration Details
+                  </h2>
+                  <p class="text-[14px] text-slate-600">
                     Statutory verification credentials and authority
                     identification
                   </p>
@@ -174,11 +201,11 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] sm:text-sm font-bold tracking-wide text-slate-500"
                 >
                   NIN (ORGANIZATION / AUTHORIZED REP)
                 </p>
-                <p class="flex items-center gap-1 text-xs font-semibold">
+                <p class="flex items-center gap-1 text-[14px]font-semibold">
                   <i
                     data-lucide="lock-keyhole"
                     class="h-4 w-4 text-slate-500"
@@ -189,14 +216,14 @@
 
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   REGISTRATION NUMBER
                 </p>
                 <p class="flex items-center gap-1 text-xs font-semibold">
                   <i
                     data-lucide="fingerprint"
-                    class="h-4 w-4 text-slate-500"
+                    class="h-4 w-4 text-[12px] text-slate-500"
                   ></i>
                   CAC/RC 123456
                 </p>
@@ -213,31 +240,33 @@
                 <i data-lucide="file-text" class="h-5 w-5"></i>
               </div>
               <div>
-                <h2 class="text-sm font-bold">About Your Organization</h2>
-                <p class="text-[10px] text-slate-600">
+                <h2 class="text-[20px] font-bold">About Your Organization</h2>
+                <p class="text-[14px] text-slate-600">
                   Public registry mission summary and charter statement
                 </p>
               </div>
             </div>
 
             <div class="rounded-lg bg-[#f0f2ff] p-3">
-              <p class="mb-2 text-[9px] font-bold tracking-wide text-slate-500">
+              <p
+                class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
+              >
                 MISSION &amp; ACTIVITY SCOPE
               </p>
 
-              <p class="text-xs leading-5 text-slate-700">
+              <p class="text-4 leading-5 text-slate-700">
                 Green Route Initiative supports local communities through food
                 distribution, education, and volunteer-led programs.
               </p>
 
               <div class="mt-3 flex flex-wrap gap-1.5">
-                <span class="rounded bg-indigo-100 px-2 py-1 text-[9px]"
+                <span class="rounded bg-indigo-100 px-2 py-1 text-[12px]"
                   >Community Support</span
                 >
-                <span class="rounded bg-indigo-100 px-2 py-1 text-[9px]"
+                <span class="rounded bg-indigo-100 px-2 py-1 text-[12px]"
                   >Food Relief</span
                 >
-                <span class="rounded bg-indigo-100 px-2 py-1 text-[9px]"
+                <span class="rounded bg-indigo-100 px-2 py-1 text-[12px]"
                   >Literacy</span
                 >
               </div>
@@ -253,8 +282,8 @@
                 <i data-lucide="folder-closed" class="h-5 w-5"></i>
               </div>
               <div>
-                <h2 class="text-sm font-bold">Supporting Documents</h2>
-                <p class="text-[10px] text-slate-600">
+                <h2 class="text-[20px] font-bold">Supporting Documents</h2>
+                <p class="text-[14px] text-slate-600">
                   Uploaded legal charter credentials and identification
                 </p>
               </div>
@@ -271,16 +300,16 @@
                     <i data-lucide="file-text" class="h-4 w-4"></i>
                   </div>
                   <div class="min-w-0">
-                    <p class="text-[9px] text-slate-600">CAC CERTIFICATE</p>
-                    <p class="truncate text-[10px] font-semibold">
+                    <p class="text-[14px] text-slate-600">CAC CERTIFICATE</p>
+                    <p class="truncate text-[12px] font-semibold">
                       CAC_Certificate.pdf
                     </p>
                   </div>
                 </div>
                 <span
-                  class="flex shrink-0 items-center gap-1 text-[9px] font-semibold text-emerald-600"
+                  class="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-emerald-600"
                 >
-                  <i data-lucide="circle-check" class="h-4 w-4"></i>Uploaded
+                  <i data-lucide="circle-check" class="h-4 w-4 ]"></i>Uploaded
                 </span>
               </div>
 
@@ -294,14 +323,14 @@
                     <i data-lucide="file-text" class="h-4 w-4"></i>
                   </div>
                   <div class="min-w-0">
-                    <p class="text-[9px] text-slate-600">ORGANIZATION ID</p>
-                    <p class="truncate text-[10px] font-semibold">
+                    <p class="text-[14px] text-slate-600">ORGANIZATION ID</p>
+                    <p class="truncate text-[12px] font-semibold">
                       Organization_ID.pdf
                     </p>
                   </div>
                 </div>
                 <span
-                  class="flex shrink-0 items-center gap-1 text-[9px] font-semibold text-emerald-600"
+                  class="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-emerald-600"
                 >
                   <i data-lucide="circle-check" class="h-4 w-4"></i>Uploaded
                 </span>
@@ -321,10 +350,10 @@
               </div>
 
               <div>
-                <h3 class="text-xs font-bold">
+                <h3 class="text-[16px] font-bold">
                   Administrative Clearance Notice
                 </h3>
-                <p class="mt-1 text-[11px] leading-5 text-slate-600">
+                <p class="mt-1 text-[14px] leading-5 text-slate-600">
                   Your organization profile will be reviewed before you can
                   access NGO operations, recruit volunteers, or launch emergency
                   dispatch schedules.
@@ -346,8 +375,8 @@
                   <i data-lucide="map-pin" class="h-5 w-5"></i>
                 </div>
                 <div>
-                  <h2 class="text-sm font-bold">Location</h2>
-                  <p class="text-[10px] text-slate-600">
+                  <h2 class="text-[20px] font-bold">Location</h2>
+                  <p class="text-[14px] text-slate-600">
                     Physical operating address and landmarks
                   </p>
                 </div>
@@ -364,11 +393,11 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   CITY &amp; COUNTRY
                 </p>
-                <p class="flex items-center gap-1 text-xs font-semibold">
+                <p class="flex items-center gap-1 text-sm font-semibold">
                   <i data-lucide="map-pin" class="h-4 w-4"></i>
                   Lagos, Nigeria
                 </p>
@@ -376,11 +405,11 @@
 
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   STREET ADDRESS
                 </p>
-                <p class="flex items-center gap-1 text-xs font-semibold">
+                <p class="flex items-center gap-1 text-sm font-semibold">
                   <i data-lucide="house" class="h-4 w-4 shrink-0"></i>
                   12B Freedom Way, Lekki Phase 1
                 </p>
@@ -388,11 +417,11 @@
 
               <div class="rounded-lg bg-[#f0f2ff] p-3 sm:col-span-2">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   LANDMARK
                 </p>
-                <p class="flex items-center gap-1 text-xs font-semibold">
+                <p class="flex items-center gap-1 text-sm font-semibold">
                   <i data-lucide="navigation" class="h-4 w-4"></i>
                   Near Novare Mall
                 </p>
@@ -410,8 +439,8 @@
                   <i data-lucide="building-2" class="h-5 w-5"></i>
                 </div>
                 <div>
-                  <h2 class="text-sm font-bold">Organization Details</h2>
-                  <p class="text-[10px] text-slate-600">
+                  <h2 class="text-[20px] font-bold">Organization Details</h2>
+                  <p class="text-[14px] text-slate-600">
                     Core legal entity and administrative touchpoints
                   </p>
                 </div>
@@ -428,12 +457,12 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   ORGANIZATION NAME
                 </p>
                 <p
-                  class="flex flex-wrap items-center gap-1 text-xs font-semibold"
+                  class="flex flex-wrap items-center gap-1 text-sm font-semibold"
                 >
                   Green Route Initiative
                   <i
@@ -445,12 +474,12 @@
 
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   ORGANIZATION EMAIL
                 </p>
                 <p
-                  class="flex items-center gap-1 break-all text-xs font-semibold"
+                  class="flex items-center gap-1 break-all text-sm font-semibold"
                 >
                   <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
                   hello@greenroute.org
@@ -459,11 +488,11 @@
 
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   PHONE NUMBER
                 </p>
-                <p class="flex items-center gap-1 text-xs font-semibold">
+                <p class="flex items-center gap-1 text-sm font-semibold">
                   <i data-lucide="phone" class="h-4 w-4"></i>
                   +234 801 234 5678
                 </p>
@@ -471,7 +500,7 @@
 
               <div class="rounded-lg bg-[#f0f2ff] p-3">
                 <p
-                  class="mb-2 text-[9px] font-bold tracking-wide text-slate-500"
+                  class="mb-2 text-[14px] font-bold tracking-wide text-slate-500"
                 >
                   OFFICIAL WEBSITE
                 </p>
@@ -480,12 +509,12 @@
                     href="https://www.greenroute.org"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="flex items-center gap-1 text-[10px] font-semibold text-blue-700 hover:underline"
+                    class="flex items-center gap-1 text-[16px] font-semibold text-blue-700 hover:underline"
                   >
                     <i data-lucide="globe" class="h-4 w-4"></i>
                     www.greenroute.org
                   </a>
-                  <span class="rounded bg-indigo-100 px-1.5 py-1 text-[9px]"
+                  <span class="rounded bg-indigo-100 px-1.5 py-1 text-[12px]"
                     >SSL Secured</span
                   >
                 </div>
@@ -499,14 +528,14 @@
           >
             <button
               onclick="history.back()"
-              class="flex items-center justify-center rounded-lg border border-slate-300 bg-white px-8 py-3 text-sm font-semibold hover:bg-slate-50 sm:min-w-40"
+              class="flex items-center justify-center rounded-lg border border-slate-300 bg-white px-8 py-3 text-[16px] font-semibold hover:bg-slate-50 sm:min-w-40"
             >
               Back
             </button>
 
             <button
               onclick="submitProfile()"
-              class="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-blue-700 sm:min-w-48"
+              class="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-[16px] font-semibold text-white shadow-md hover:bg-blue-700 sm:min-w-48"
             >
               Submit for Review
               <i data-lucide="arrow-right" class="h-4 w-4"></i>

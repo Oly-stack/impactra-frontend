@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMPACTRA - Create Certificate Template</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Great+Vibes&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="/impactra-frontend/images/logo.png"
+      type="image/x-icon"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              script: ["Great Vibes", "cursive"],
+              serif2: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html,
+      body {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body class="bg-[#f8f9fc] text-[#0f172a] font-sans antialiased">
+    <!-- Mobile overlay -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden"
+    ></div>
+
+    <!-- SIDEBAR -->
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-200"
+    >
+      <div class="flex items-center gap-2.5 px-6 h-20 shrink-0">
+        <img
+          src="../images/logo2.png"
+          alt="IMPACTRA"
+          class="h-9 w-auto object-contain"
+        />
+        <span class="font-extrabold text-xl tracking-tight text-slate-900"
+          >IMPACTRA</span
+        >
+      </div>
+
+      <p
+        class="px-6 pt-4 pb-2 text-xs font-medium tracking-widest uppercase text-slate-500"
+      >
+        Operational Menu
+      </p>
+
+      <nav
+        class="flex-1 overflow-y-auto px-3 space-y-1 text-base text-slate-600"
+      >
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 17 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0.708984 8.20898L2.37565 6.54232M2.37565 6.54232L8.20898 0.708984L14.0423 6.54232M2.37565 6.54232V14.8757C2.37565 15.3359 2.74875 15.709 3.20898 15.709H5.70898M14.0423 6.54232L15.709 8.20898M14.0423 6.54232V14.8757C14.0423 15.3359 13.6692 15.709 13.209 15.709H10.709M5.70898 15.709C6.16922 15.709 6.54232 15.3359 6.54232 14.8757V11.5423C6.54232 11.0821 6.91541 10.709 7.37565 10.709H9.04232C9.50255 10.709 9.87565 11.0821 9.87565 11.5423V14.8757C9.87565 15.3359 10.2487 15.709 10.709 15.709M5.70898 15.709H10.709"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Dashboard
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.5 9.99979L9.16667 11.6665L12.5 8.33312M17.1817 4.98646C14.5468 5.12639 11.9639 4.2153 10 2.45312C8.03606 4.2153 5.45325 5.12639 2.81834 4.98646C2.60628 5.80739 2.49931 6.65192 2.5 7.49979C2.5 12.159 5.68667 16.0748 10 17.1848C14.3133 16.0748 17.5 12.1598 17.5 7.49979C17.5 6.63146 17.3892 5.78979 17.1817 4.98646L7.5 9.99979"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Opportunities
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="14"
+            height="17"
+            viewBox="0 0 14 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.04232 8.20898H9.04232M4.04232 11.5423H9.04232M10.709 15.709H2.37565C1.45518 15.709 0.708984 14.9628 0.708984 14.0423V2.37565C0.708984 1.45518 1.45518 0.708984 2.37565 0.708984H7.03065C7.25165 0.709032 7.46357 0.79686 7.61982 0.953151L12.1315 5.46482C12.2878 5.62106 12.3756 5.83299 12.3757 6.05398V14.0423C12.3757 14.9628 11.6295 15.709 10.709 15.709L4.04232 8.20898"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Applications
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <img src="/impactra-frontend/images/volunteer2.png" class="w-5 h-5" />
+          Volunteers
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 17 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.87565 4.04232V0.708984M11.5423 4.04232V0.708984M4.04232 7.37565H12.3757M2.37565 15.709H14.0423C14.9628 15.709 15.709 14.9628 15.709 14.0423V4.04232C15.709 3.12184 14.9628 2.37565 14.0423 2.37565H2.37565C1.45518 2.37565 0.708984 3.12184 0.708984 4.04232V14.0423C0.708984 14.9628 1.45518 15.709 2.37565 15.709L4.87565 4.04232"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Activities
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.8333 5.83398H17.5M17.5 5.83398V12.5007M17.5 5.83398L10.8333 12.5007L7.5 9.16732L2.5 14.1673"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Impact
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#e8effe] text-blue-700 font-semibold"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 17 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5.72986 8.22986L7.39652 9.89652L10.7299 6.56319M4.75902 2.14402C5.35678 2.09631 5.92426 1.86127 6.38069 1.47236C7.4461 0.563902 9.01361 0.563902 10.079 1.47236C10.5355 1.86127 11.1029 2.09631 11.7007 2.14402C13.0963 2.25506 14.2047 3.36337 14.3157 4.75902C14.3634 5.35678 14.5984 5.92426 14.9874 6.38069C15.8958 7.4461 15.8958 9.01361 14.9874 10.079C14.5984 10.5355 14.3634 11.1029 14.3157 11.7007C14.2047 13.0963 13.0963 14.2047 11.7007 14.3157C11.1029 14.3634 10.5355 14.5984 10.079 14.9874C9.01361 15.8958 7.4461 15.8958 6.38069 14.9874C5.92426 14.5984 5.35678 14.3634 4.75902 14.3157C3.36337 14.2047 2.25506 13.0963 2.14402 11.7007C2.09631 11.1029 1.86127 10.5355 1.47236 10.079C0.563902 9.01361 0.563902 7.4461 1.47236 6.38069C1.86127 5.92426 2.09631 5.35678 2.14402 4.75902C2.25506 3.36337 3.36337 2.25506 4.75902 2.14402L5.72986 8.22986"
+              stroke="#0051D5"
+              stroke-width="1.58333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Certificates
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.60417 3.5975C8.95917 2.13417 11.0408 2.13417 11.3958 3.5975C11.5039 4.04338 11.8184 4.41085 12.2422 4.58645C12.6661 4.76206 13.1483 4.72467 13.54 4.48583C14.8258 3.7025 16.2983 5.17417 15.515 6.46083C15.2765 6.85238 15.2392 7.33423 15.4146 7.75782C15.59 8.1814 15.957 8.49583 16.4025 8.60417C17.8658 8.95917 17.8658 11.0408 16.4025 11.3958C15.9566 11.5039 15.5891 11.8184 15.4135 12.2422C15.2379 12.6661 15.2753 13.1483 15.5142 13.54C16.2975 14.8258 14.8258 16.2983 13.5392 15.515C13.1476 15.2765 12.6658 15.2392 12.2422 15.4146C11.8186 15.59 11.5042 15.957 11.3958 16.4025C11.0408 17.8658 8.95917 17.8658 8.60417 16.4025C8.49613 15.9566 8.18164 15.5891 7.75779 15.4135C7.33394 15.2379 6.85172 15.2753 6.46 15.5142C5.17417 16.2975 3.70167 14.8258 4.485 13.5392C4.72349 13.1476 4.76079 12.6658 4.58539 12.2422C4.41 11.8186 4.04298 11.5042 3.5975 11.3958C2.13417 11.0408 2.13417 8.95917 3.5975 8.60417C4.04338 8.49613 4.41085 8.18164 4.58645 7.75779C4.76206 7.33394 4.72467 6.85172 4.48583 6.46C3.7025 5.17417 5.17417 3.70167 6.46083 4.485C7.29083 4.99167 8.37417 4.54333 8.60417 3.5975V3.5975"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M7.5 10C7.5 11.3798 8.62021 12.5 10 12.5C11.3798 12.5 12.5 11.3798 12.5 10C12.5 8.62021 11.3798 7.5 10 7.5C8.62021 7.5 7.5 8.62021 7.5 10V10"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+            />
+          </svg>
+
+          Settings
+        </a>
+      </nav>
+
+      <div class="border-t border-slate-100 p-4">
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 text-base text-red-500 hover:bg-red-50 rounded-lg"
+        >
+          <svg
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Log out
+        </a>
+      </div>
+    </aside>
+
+    <!-- PAGE -->
+    <div class="lg:pl-64 min-h-screen flex flex-col">
+      <!-- TOP BAR -->
+      <header
+        class="sticky top-0 z-30 bg-white border-b border-slate-200 h-20 flex items-center gap-3 px-4 sm:px-8"
+      >
+        <button
+          id="menuBtn"
+          type="button"
+          class="lg:hidden p-2 -ml-2 text-slate-700"
+          aria-label="Open menu"
+        >
+          <svg
+            class="w-7 h-7"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <p class="text-base text-slate-500 truncate hidden sm:block">
+          <span class="mx-2">/</span>Create Certificate Template
+        </p>
+
+        <div class="flex-1"></div>
+
+        <div
+          class="hidden md:flex items-center gap-2 bg-[#f4f7fc] border border-slate-200 rounded-full px-4 py-2.5 w-full max-w-[360px]"
+        >
+          <svg
+            class="w-4 h-4 text-slate-500 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-4-4" stroke-linecap="round" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search volunteers, activities, certificates..."
+            class="bg-transparent outline-none text-sm w-full text-slate-700 placeholder:text-slate-400"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="relative p-2 text-slate-600"
+          aria-label="Notifications"
+        >
+          <svg
+            class="w-6 h-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path d="M6 17V11a6 6 0 1112 0v6l2 2H4z" stroke-linejoin="round" />
+            <path d="M10 21h4" stroke-linecap="round" />
+          </svg>
+          <span
+            class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
+          ></span>
+        </button>
+
+        <div class="flex items-center gap-3 pl-3 sm:border-l border-slate-200">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <rect
+              width="32"
+              height="32"
+              rx="16"
+              fill="url(#pattern0_644_735)"
+            />
+            <defs>
+              <pattern
+                id="pattern0_644_735"
+                patternContentUnits="objectBoundingBox"
+                width="1"
+                height="1"
+              >
+                <use xlink:href="#image0_644_735" transform="scale(0.015625)" />
+              </pattern>
+              <image
+                id="image0_644_735"
+                width="64"
+                height="64"
+                preserveAspectRatio="none"
+                xlink:href="data:image/jpeg;base64,/9j/2wBDAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNH/2wBDAQgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNH/wgARCABAAEADASIAAhEBAxEB/8QAHAAAAgMAAwEAAAAAAAAAAAAABgcDBAUAAQII/8QAGAEAAwEBAAAAAAAAAAAAAAAAAAECAwT/2gAMAwEAAhADEAAAAHT3amh4y7Ivn504tAHkxswTRgOXLnLkS2hCSwZyfWzHWjGG4LEWkQb81RPt5Ibq4RCG1ojULvwIYPBAOJdKQeyVTzt3M0ipfMnoIY9HQzr/xAAzEAACAQMDAwEECQUBAAAAAAABAgMABBEFEiEGEzFBIjJxkQcUJDNSYXKBsRUjQpLBYv/aAAgBAQABPwD+nv6Sj5ULKXJ9tavrd1hUkg+1Ws9d6Hpk7Ww7lzMpw4ixhT8TWmdUaVq2xI5DFMxIEUmAT8CODViADelgCBG2Qa05LSbv2faXDd1CMeA3OKu9Iuria9WGLcLYuZDn0Wo7mCSSaNJVZ4sdxQeVz4zSnO7n1r6Q9ZfS+nZ3jJWWWQQoa0DSodRZ57riEHCjONxq86c05tHuZbMpFd26GZApwSI+TSdQ9zSraWKaVZpgNzKByBkNR1K/iuGjg1HM2dx2oD+54q91bVLaSfaYCZtwkPaX28+c1pOorLqVzOiR/aXVRtaonkEku4+DnFfS6hn6WglU8RXiH/YEVpY059MslaV92PcXGD+ZJ9aR9Oi+1juKs1jMjc8ZRD5X/tWAuF0q099I2yA59w81Y6rpP1Oe2EfbvsZ77sSGwfUAVBcaAhY6pPHKT6r3Bg10vfajcanJAzAJE5bG3le2an1u0tjmfUII8/jcA11L1F0rPZXlpeX4nWZdpW39s1pIjiFyLffJEkmVWTAfafXjgGpntm6dt0v2nVLmft5VgZSpBJHwOKlSxZFXTRHIu77nODhfG5XPJqbRbu3fv3NqkccjRsQVyxJxuJb/AJXTVrZnUieyh4kBBAI4J9DWmW7WnUHUYUEYgkkU/rGaVolsopuTNI7BmJ/xFBw4wDzkV09JbJeCO4XKSEKSDgiuq5Fht7G3XOY5d6/xUn37t6YyRQ6hjn6d0q3ZyZ4d0Z+C7cEmumNU263N33iii2ylZW4HJ/OpZJ83k5aQO9uyM+feABrcVhjH/nPzq3fCE/mD8qt/aaQDzjcvxFahfTX0PdlOWVAv+tWyLJM+7xtNdNWcGrw3NpMzB0t5ZICGx/d81OjZIJPmpZfs84PrE/8AFSHj9uKicBBWnygOjn1Qg1PIgjcr6qagnKRzSD0U/wAV0xqP1HUbSUthQ6hv0+tXJsxqE7s6SQmV8Lu28ZqbQdROmzujHvGBisRXHtEeCSak0y8iZo5o9rjggkcUumXH4kxVrYyxgAyDyaaxJUgynGCPFR2KKm3exFWenWqEcfM1HpdizE/VFfJ8kE1//8QAIREAAgIDAAEFAQAAAAAAAAAAAQIAAxEhQTEEEiJRYXH/2gAIAQIBAT8A1GKopZvELqQtnAZ7w+17FrI1LkYV5PDKkY1HAJUn+xagU/BqVZ7LFFlTKeiejrKVBO5lnxz9E5gIHmC1MYJ5K7kXO49ysqqM5E//xAAgEQACAwACAgMBAAAAAAAAAAABAgADEQQxIUESEyJx/9oACAEDAQE/ADsrQ2MFEZPgWQkddxVxR+gY7adnFdfszOxOWyl89gRbCviPK3NdisPRnLsD2l/WRAG/oGTy3UNb71Hpdsi1MrFvE//Z"
+              />
+            </defs>
+          </svg>
+
+          <div class="hidden sm:block leading-tight">
+            <p class="text-sm font-bold text-slate-900">Toyin</p>
+            <p class="text-sm text-slate-500">NGO</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN -->
+      <main class="flex-1 px-4 sm:px-8 py-6 sm:py-8">
+        <h1
+          class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900"
+        >
+          Create Certificate Template
+        </h1>
+        <p class="text-slate-600 text-base mt-1">
+          Set up your certificate details. This template will be automatically
+          issued to volunteers when their contributions are verified.
+        </p>
+
+        <div
+          class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6 mt-6"
+        >
+          <!-- LEFT: FORM -->
+          <div class="space-y-6">
+            <!-- Card 1 -->
+            <section
+              class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-5"
+            >
+              <div>
+                <div class="flex justify-between items-baseline gap-2">
+                  <label
+                    for="title"
+                    class="text-base font-medium text-slate-900"
+                    >Certificate Title</label
+                  >
+                  <span id="titleCount" class="text-sm text-slate-400"
+                    >0/100</span
+                  >
+                </div>
+                <input
+                  id="title"
+                  maxlength="100"
+                  type="text"
+                  value="Certificate of Participation"
+                  class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-[#97969b] focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <div>
+                <div class="flex justify-between items-baseline gap-2">
+                  <label for="org" class="text-base font-medium text-slate-900"
+                    >Organization Name</label
+                  >
+                  <span id="orgCount" class="text-sm text-slate-400"
+                    >0/100</span
+                  >
+                </div>
+                <input
+                  id="org"
+                  maxlength="100"
+                  type="text"
+                  value="Hope Community Initiatives"
+                  class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-[#97969b] focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <div>
+                <div class="flex justify-between items-baseline gap-2">
+                  <label for="msg" class="text-base font-medium text-slate-900"
+                    >Recognition Message</label
+                  >
+                  <span id="msgCount" class="text-sm text-slate-400"
+                    >0/200</span
+                  >
+                </div>
+                <textarea
+                  id="msg"
+                  maxlength="200"
+                  rows="3"
+                  class="mt-1.5 text-[#97969b] w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+In recognition of dedicated service and verified impact. Total verified volunteering: {hours} Hours.</textarea
+                >
+                <p class="flex items-start gap-2 text-sm text-blue-700 mt-2">
+                  <svg
+                    class="w-4 h-4 mt-0.5 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2zm0-8h-2V7h2z"
+                    />
+                  </svg>
+                  You can use variables: {volunteer_name}, {hours}, {activity},
+                  {date}.
+                </p>
+              </div>
+            </section>
+
+            <!-- Card 2 -->
+            <section
+              class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6"
+            >
+              <h2 class="text-lg font-semibold text-slate-900">
+                Activity and Skills Information
+              </h2>
+              <p class="text-sm text-slate-600">
+                These details will be filled automatically based on each
+                verified contribution.
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+                <div>
+                  <label
+                    for="activityLabel"
+                    class="text-sm font-medium text-slate-900"
+                    >Activity Label</label
+                  >
+                  <input
+                    id="activityLabel"
+                    type="text"
+                    value="Volunteering Activity"
+                    class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  <p class="text-xs sm:text-sm text-slate-400 mt-1.5">
+                    Label for the activity or contribution section.
+                  </p>
+                </div>
+                <div>
+                  <label
+                    for="skillsLabel"
+                    class="text-sm font-medium text-slate-900"
+                    >Skills Label</label
+                  >
+                  <input
+                    id="skillsLabel"
+                    type="text"
+                    value="Skills Validated"
+                    class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  <p class="text-xs sm:text-sm text-slate-400 mt-1.5">
+                    Label for the skills section.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Card 3 -->
+            <section
+              class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6"
+            >
+              <h2 class="text-lg font-semibold text-slate-900">Signatories</h2>
+              <p class="text-sm text-slate-600">
+                Add the names, roles and signatures of the officials who will
+                appear on the certificate.
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+                <!-- Primary -->
+                <div
+                  class="bg-[#f8f9fc] border border-slate-200 rounded-xl p-4"
+                >
+                  <h3 class="text-sm font-bold text-slate-900">
+                    Primary Signatory
+                  </h3>
+
+                  <label class="block text-xs sm:text-sm text-slate-600 mt-3"
+                    >Name</label
+                  >
+                  <input
+                    id="name1"
+                    type="text"
+                    value="Amara Eze"
+                    class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+
+                  <label class="block text-xs sm:text-sm text-slate-600 mt-3"
+                    >Role</label
+                  >
+                  <input
+                    id="role1"
+                    type="text"
+                    value="Field Director"
+                    class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+
+                  <label class="block text-xs sm:text-sm text-slate-600 mt-3"
+                    >Signature</label
+                  >
+                  <div
+                    class="relative mt-1 h-[72px] bg-white border border-slate-200 rounded-lg flex items-center justify-center overflow-hidden"
+                  >
+                    <span
+                      id="sigText1"
+                      class="font-script text-3xl text-slate-800"
+                      >Amara Eze</span
+                    >
+                    <img
+                      id="sigImg1"
+                      class="hidden max-h-full object-contain"
+                      alt="Signature"
+                    />
+                    <button
+                      type="button"
+                      data-clear="1"
+                      class="absolute top-1 right-2 text-slate-400 hover:text-slate-700"
+                      aria-label="Remove signature"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <input
+                    id="file1"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                  <button
+                    type="button"
+                    data-upload="1"
+                    class="mt-3 w-full inline-flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50 transition"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M12 16V4M7 9l5-5 5 5M4 20h16"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    Change Signature
+                  </button>
+                </div>
+
+                <!-- Secondary -->
+                <div
+                  class="bg-[#f8f9fc] border border-slate-200 rounded-xl p-4"
+                >
+                  <h3 class="text-sm font-bold text-slate-900">
+                    Secondary Signatory
+                  </h3>
+
+                  <label class="block text-xs sm:text-sm text-slate-600 mt-3"
+                    >Name</label
+                  >
+                  <input
+                    id="name2"
+                    type="text"
+                    value="Toyin Balogun"
+                    class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+
+                  <label class="block text-xs sm:text-sm text-slate-600 mt-3"
+                    >Role</label
+                  >
+                  <input
+                    id="role2"
+                    type="text"
+                    value="Executive Secretary"
+                    class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+
+                  <label class="block text-xs sm:text-sm text-slate-600 mt-3"
+                    >Signature</label
+                  >
+                  <div
+                    class="relative mt-1 h-[72px] bg-white border border-slate-200 rounded-lg flex items-center justify-center overflow-hidden"
+                  >
+                    <span
+                      id="sigText2"
+                      class="font-script text-3xl text-slate-800"
+                      >Toyin Balogun</span
+                    >
+                    <img
+                      id="sigImg2"
+                      class="hidden max-h-full object-contain"
+                      alt="Signature"
+                    />
+                    <button
+                      type="button"
+                      data-clear="2"
+                      class="absolute top-1 right-2 text-slate-400 hover:text-slate-700"
+                      aria-label="Remove signature"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <input
+                    id="file2"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                  <button
+                    type="button"
+                    data-upload="2"
+                    class="mt-3 w-full inline-flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50 transition"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M12 16V4M7 9l5-5 5 5M4 20h16"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    Change Signature
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Actions -->
+            <section
+              class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3"
+            >
+              <button
+                type="button"
+                class="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 font-semibold text-base px-6 py-3 rounded-xl hover:bg-slate-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-base px-7 py-3 rounded-xl transition"
+              >
+                Save Template
+              </button>
+            </section>
+          </div>
+
+          <!-- RIGHT: PREVIEW -->
+          <aside class="xl:sticky xl:top-28 self-start">
+            <section
+              class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6"
+            >
+              <div
+                class="flex items-center justify-between border-b border-slate-100 pb-4"
+              >
+                <h2 class="text-lg font-semibold text-slate-900">
+                  Certificate Preview
+                </h2>
+                <button
+                  type="button"
+                  class="text-slate-400 hover:text-slate-700 text-xl leading-none"
+                  aria-label="Close preview"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div
+                class="bg-[#f4f6fb] border border-slate-200 rounded-2xl p-3 sm:p-5 mt-5"
+              >
+                <div
+                  class="bg-white border border-slate-200 rounded-xl px-4 sm:px-8 py-8 sm:py-10 text-center"
+                >
+                  <div
+                    class="w-14 h-14 rounded-full bg-[#e8effe] flex items-center justify-center mx-auto"
+                  >
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 28 28"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.5003 14.0003L12.8336 16.3336L17.5003 11.667M9.14115 5.48015C9.97801 5.41335 10.7725 5.0843 11.4115 4.53981C12.9031 3.26798 15.0976 3.26798 16.5891 4.53981C17.2282 5.0843 18.0226 5.41335 18.8595 5.48015C20.8134 5.6356 22.365 7.18724 22.5205 9.14115C22.5873 9.97801 22.9163 10.7725 23.4608 11.4115C24.7326 12.9031 24.7326 15.0976 23.4608 16.5891C22.9163 17.2282 22.5873 18.0226 22.5205 18.8595C22.365 20.8134 20.8134 22.365 18.8595 22.5205C18.0226 22.5873 17.2282 22.9163 16.5891 23.4608C15.0976 24.7326 12.9031 24.7326 11.4115 23.4608C10.7725 22.9163 9.97801 22.5873 9.14115 22.5205C7.18724 22.365 5.6356 20.8134 5.48015 18.8595C5.41335 18.0226 5.0843 17.2282 4.53981 16.5891C3.26798 15.0976 3.26798 12.9031 4.53981 11.4115C5.0843 10.7725 5.41335 9.97801 5.48015 9.14115C5.6356 7.18724 7.18724 5.6356 9.14115 5.48015L10.5003 14.0003"
+                        stroke="#0051D5"
+                        stroke-width="2.33333"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+
+                  <p
+                    id="pOrg"
+                    class="mt-4 text-xs sm:text-sm font-bold tracking-widest uppercase text-blue-700 break-words"
+                  ></p>
+                  <h3
+                    id="pTitle"
+                    class="mt-1 text-xl sm:text-2xl font-extrabold uppercase text-slate-900 break-words"
+                  ></h3>
+                  <p
+                    class="mt-3 text-xs tracking-wide uppercase text-slate-600"
+                  >
+                    This certificate is presented to
+                  </p>
+                  <p
+                    class="mt-2 font-serif2 font-bold text-2xl sm:text-3xl text-slate-900"
+                  >
+                    Chinyere Okafor
+                  </p>
+
+                  <p
+                    id="pMsg"
+                    class="mt-4 text-sm text-slate-600 max-w-[400px] mx-auto break-words"
+                  ></p>
+
+                  <div
+                    class="border-t border-slate-100 mt-8 pt-5 grid grid-cols-2 gap-4"
+                  >
+                    <div>
+                      <p
+                        id="pSig1"
+                        class="font-script text-2xl mt-6 sm:mt-0 sm:text-3xl text-slate-700 min-h-[40px] flex items-end justify-center"
+                      ></p>
+                      <div
+                        class="border-t border-slate-300 mt-1 pt-1 mx-auto max-w-[130px]"
+                      >
+                        <p id="pRole1" class="text-xs text-slate-500"></p>
+                      </div>
+                    </div>
+                    <div>
+                      <p
+                        id="pSig2"
+                        class="font-script text-2xl sm:text-3xl text-slate-700 min-h-[40px] flex items-end justify-center"
+                      ></p>
+                      <div
+                        class="border-t border-slate-300 mt-1 pt-1 mx-auto max-w-[130px]"
+                      >
+                        <p id="pRole2" class="text-xs text-slate-500"></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-end mt-5">
+                <button
+                  type="button"
+                  class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base px-7 py-2.5 rounded-lg transition"
+                >
+                  Close
+                </button>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      // Mobile sidebar
+      const sidebar = $("sidebar"),
+        overlay = $("overlay");
+      const toggleMenu = (open) => {
+        sidebar.classList.toggle("-translate-x-full", !open);
+        overlay.classList.toggle("hidden", !open);
+      };
+      $("menuBtn").addEventListener("click", () => toggleMenu(true));
+      overlay.addEventListener("click", () => toggleMenu(false));
+
+      // Escape text, then style the {hours} variable
+      const escapeHtml = (s) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      function render() {
+        $("titleCount").textContent = $("title").value.length + "/100";
+        $("orgCount").textContent = $("org").value.length + "/100";
+        $("msgCount").textContent = $("msg").value.length + "/200";
+
+        $("pTitle").textContent = $("title").value;
+        $("pOrg").textContent = $("org").value;
+
+        let msg = escapeHtml($("msg").value)
+          .replace(/\{volunteer_name\}/g, "Chinyere Okafor")
+          .replace(/\{activity\}/g, escapeHtml($("activityLabel").value))
+          .replace(/\{date\}/g, new Date().toLocaleDateString())
+          .replace(
+            /\{hours\}/g,
+            '<span class="font-semibold text-blue-700">4.0</span>',
+          );
+        $("pMsg").innerHTML = msg;
+
+        $("pRole1").textContent = $("role1").value;
+        $("pRole2").textContent = $("role2").value;
+
+        // Signature text shows only if no image is uploaded
+        [1, 2].forEach((n) => {
+          const hasImg = !$("sigImg" + n).classList.contains("hidden");
+          $("sigText" + n).textContent = $("name" + n).value;
+          if (!hasImg) {
+            $("pSig" + n).textContent = $("name" + n).value;
+          }
+        });
+      }
+
+      [
+        "title",
+        "org",
+        "msg",
+        "activityLabel",
+        "skillsLabel",
+        "name1",
+        "role1",
+        "name2",
+        "role2",
+      ].forEach((id) => $(id).addEventListener("input", render));
+
+      // Signature upload / remove
+      document.querySelectorAll("[data-upload]").forEach((btn) => {
+        const n = btn.dataset.upload;
+        btn.addEventListener("click", () => $("file" + n).click());
+        $("file" + n).addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const url = URL.createObjectURL(file);
+          $("sigImg" + n).src = url;
+          $("sigImg" + n).classList.remove("hidden");
+          $("sigText" + n).classList.add("hidden");
+          $("pSig" + n).innerHTML =
+            '<img src="' +
+            url +
+            '" class="max-h-10 object-contain" alt="Signature" />';
+        });
+      });
+
+      document.querySelectorAll("[data-clear]").forEach((btn) => {
+        const n = btn.dataset.clear;
+        btn.addEventListener("click", () => {
+          $("sigImg" + n).classList.add("hidden");
+          $("sigImg" + n).removeAttribute("src");
+          $("sigText" + n).classList.remove("hidden");
+          $("file" + n).value = "";
+          render();
+        });
+      });
+
+      render();
+    </script>
+  </body>
+</html>
