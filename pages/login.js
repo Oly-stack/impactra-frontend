@@ -152,15 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      //  Call API 
-      let res = null;
-      if (window.API) {
-        res = await API.auth.login(email, password);
-      } else {
-        // Offline fallback so the page still feels responsive during dev
-        await new Promise((r) => setTimeout(r, 400));
-      }
-
+  //  Call API (bypassed for now — backend CORS not ready)
+  let res = null;
+  // res = await API.auth.login(email, password);
+  await new Promise((r) => setTimeout(r, 400));
       //  Remember me 
       try {
         if (rememberBox?.checked) {
@@ -168,19 +163,19 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           localStorage.removeItem(REMEMBER_KEY);
         }
-      } catch (_) { /* ignore storage errors */ }
+      } catch (_) {  }
 
       // store user object for other pages 
       try {
         const user = res?.user || res?.data?.user;
         if (user) sessionStorage.setItem("impactra_user", JSON.stringify(user));
-      } catch (_) { /* ignore */ }
+      } catch (_) {  }
 
       toast("Signed in — redirecting…", "success");
 
       
       // Adjust the destination to match your app's landing page
-      const destination = "Dashboard.html";
+      const destination = "../Dashboard.html";
       setTimeout(() => {
         window.location.href = destination;
       }, 600);
