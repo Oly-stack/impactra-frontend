@@ -206,8 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
             phone: payload.phone,
             accountType: selectedAccountType,
           }));
-          window.location.href = "verify-email.html";
-          return;
+                    window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
         }
 
         const res = await API.auth.register(payload);

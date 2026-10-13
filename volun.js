@@ -21,32 +21,32 @@
 
   /*0. TOAST*/
   function toast(message, variant = "default") {
-    let host = $("#toasthost");
-    if (!host) {
-      host = document.createElement("div");
-      host.id = "toasthost";
-      host.className =
-        "pointereventsnone fixed bottom6 left1/2 z[90] flex translatex1/2 flexcol itemscenter gap2";
-      document.body.appendChild(host);
-    }
-    const palette = {
-      default: "bg[#0F172A] textwhite",
-      success: "bg[#065F46] textwhite",
-      error:   "bg[#991B1B] textwhite",
-      info:    "bg[#1D4ED8] textwhite",
-    };
-    const el = document.createElement("div");
-    el.className = `pointereventsauto roundedlg px4 py2.5 textsm fontmedium shadowlg ${palette[variant]}`;
-    el.setAttribute("role", "status");
-    el.textContent = message;
-    host.appendChild(el);
-    setTimeout(() => {
-      el.style.transition = "opacity .25s ease, transform .25s ease";
-      el.style.opacity = "0";
-      el.style.transform = "translateY(8px)";
-      setTimeout(() => el.remove(), 260);
-    }, 2800);
+  let host = $("#toast-host");
+  if (!host) {
+    host = document.createElement("div");
+    host.id = "toast-host";
+    host.className =
+      "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+    document.body.appendChild(host);
   }
+  const palette = {
+    default: "bg-[#0F172A] text-white",
+    success: "bg-[#065F46] text-white",
+    error:   "bg-[#991B1B] text-white",
+    info:    "bg-[#1D4ED8] text-white",
+  };
+  const el = document.createElement("div");
+  el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+  el.setAttribute("role", "status");
+  el.textContent = message;
+  host.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = "opacity .25s ease, transform .25s ease";
+    el.style.opacity = "0";
+    el.style.transform = "translateY(8px)";
+    setTimeout(() => el.remove(), 260);
+  }, 2800);
+}
 
   /* Button busy helper */
   function withBusy(btn, label, fn) {

@@ -12,9 +12,15 @@
   const urlParams      = new URLSearchParams(window.location.search);
   const CONTRIBUTION_ID = urlParams.get("id") || "CONTRIB-DEMO-001";
 
+  /* Demo detection — skip API calls when no real id was supplied */
+  const IS_DEMO =
+    !CONTRIBUTION_ID ||
+    CONTRIBUTION_ID.startsWith("CONTRIB-DEMO") ||
+    CONTRIBUTION_ID === "demo";
+
   /* Global API guard */
   if (!window.API) {
-    console.error("[contri.js] API client not found. Did you load api.js before contri.js?");
+    console.warn("[contri.js] API client not found. Did you load api.js before contri.js?");
   }
 
   /* Cached contribution data (populated on hydrate) */
@@ -232,6 +238,86 @@
     if (e.key === "Escape") closeDrawer();
   });
 
+  /*3b. SUCCESS CARD — centered confirmation after verify*/
+  function showSuccessCard({ hours = "4.0", volunteerName = "Mary" } = {}) {
+    console.log("[contri] showSuccessCard called with", { hours, volunteerName });
+
+    let host = document.getElementById("success-portal");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "success-portal";
+      host.className = "fixed inset-0 z-[95] flex items-center justify-center p-4";
+      document.body.appendChild(host);
+
+      host.addEventListener("click", (e) => {
+        if (e.target.matches("[data-success-overlay]")) hideSuccessCard();
+      });
+    }
+
+    // Always rebuild inner markup so values reflect the latest call
+    host.innerHTML = `
+      <div data-success-overlay
+           class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-200"></div>
+      <div data-success-card
+           role="dialog" aria-modal="true"
+           class="relative z-10 w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-2xl
+                  opacity-0 scale-95 transition duration-200 ease-out">
+
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#ECFDF5]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#009842"/>
+            <path d="M7.8 12.5L10.6 15.3L16.2 9.7"
+                  stroke="white" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  fill="none"/>
+          </svg>
+        </div>
+
+        <h3 class="mt-5 text-lg font-bold leading-7 tracking-[-0.2px] text-[#0F172A]">
+          Contribution verified successfully
+        </h3>
+
+        <p class="mt-2 text-sm leading-5 text-[#4B5563]">
+          <strong>${hours} hours</strong> have been added to ${volunteerName}'s verified volunteer record.
+        </p>
+      </div>
+    `;
+
+    const card    = host.querySelector("[data-success-card]");
+    const overlay = host.querySelector("[data-success-overlay]");
+
+    host.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    // Force a reflow so the browser paints the initial state before animating
+    void card.offsetWidth;
+
+    requestAnimationFrame(() => {
+      overlay.classList.remove("opacity-0");
+      card.classList.remove("opacity-0", "scale-95");
+    });
+  }
+
+  function hideSuccessCard() {
+    const host = document.getElementById("success-portal");
+    if (!host || host.classList.contains("hidden")) return;
+
+    const card    = host.querySelector("[data-success-card]");
+    const overlay = host.querySelector("[data-success-overlay]");
+
+    if (overlay) overlay.classList.add("opacity-0");
+    if (card)    card.classList.add("opacity-0", "scale-95");
+
+    setTimeout(() => {
+      host.classList.add("hidden");
+      document.body.style.overflow = "";
+    }, 200);
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") hideSuccessCard();
+  });
+
   /*4. HEADER: ⌘K + NOTIFICATIONS*/
   const globalSearch = $('header input[type="text"]');
   document.addEventListener("keydown", (e) => {
@@ -246,8 +332,10 @@
   bellBtn?.addEventListener("click", async () => {
     bellBtn.querySelector("span.h-2.w-2")?.remove();
     try {
-      await API.notifications.markAllRead();
-    } catch (_) {  }
+      if (window.API && !IS_DEMO) {
+        await API.notifications.markAllRead();
+      }
+    } catch (_) { /* ignore */ }
     toast("You're all caught up", "success");
   });
 
@@ -259,7 +347,6 @@
     red:    "bg-[#BA1A1A]",
   };
 
-  /* Fallback events — replaced by API response when it arrives */
   let auditEvents = [
     { time: "—", title: "Loading audit log…", detail: "Fetching events from server.", tone: "blue" },
   ];
@@ -306,20 +393,29 @@
   }
 
   findByText("button", "Audit Log")?.addEventListener("click", async (e) => {
-    // Show drawer with placeholder, then fetch and re-render
     openDrawer({ title: "Audit Log", body: renderAuditLog(auditEvents) });
+
+    // In demo mode, skip the network call and show a small placeholder set
+    if (IS_DEMO || !window.API) {
+      auditEvents = [
+        { time: new Date().toISOString(), title: "Contribution submitted", detail: "Volunteer submitted hours for review.", tone: "blue" },
+        { time: new Date().toISOString(), title: "Awaiting verification",     detail: "Routed to NGO reviewer queue.",       tone: "amber" },
+      ];
+      const bodyWrap = $("[data-drawer-panel]")?.querySelector(".scroll-thin");
+      if (bodyWrap) bodyWrap.innerHTML = renderAuditLog(auditEvents);
+      return;
+    }
+
     try {
       const res = await API.activities.contributions.auditLog(CONTRIBUTION_ID);
       const events = Array.isArray(res) ? res : (res?.events || res?.data || []);
       if (events.length) {
         auditEvents = events;
-        const panel = $("[data-drawer-panel]");
-        const bodyWrap = panel?.querySelector(".scroll-thin");
+        const bodyWrap = $("[data-drawer-panel]")?.querySelector(".scroll-thin");
         if (bodyWrap) bodyWrap.innerHTML = renderAuditLog(events);
       }
     } catch (err) {
-      const panel = $("[data-drawer-panel]");
-      const bodyWrap = panel?.querySelector(".scroll-thin");
+      const bodyWrap = $("[data-drawer-panel]")?.querySelector(".scroll-thin");
       if (bodyWrap) {
         bodyWrap.innerHTML = `
           <p class="text-sm text-[#991B1B]">
@@ -330,7 +426,6 @@
   });
 
   /*6. EVIDENCE — VIEW*/
-  // Bind "View" buttons now; also re-bind after hydration if new ones appear
   function bindEvidenceButtons() {
     $$("button").forEach((btn) => {
       if (btn.dataset.evidenceBound) return;
@@ -365,9 +460,14 @@
   findByText("a", "Download PDF")?.addEventListener("click", async (e) => {
     e.preventDefault();
     const link = e.currentTarget;
+
+    if (IS_DEMO || !window.API) {
+      toast("Signed sheet not attached", "info");
+      return;
+    }
+
     withBusy(link, "Preparing…", async () => {
       try {
-        // Try to fetch evidence metadata and find the signed sheet's URL
         const res = await API.activities.contributions.evidence(CONTRIBUTION_ID);
         const files = Array.isArray(res) ? res : (res?.files || res?.data || []);
         const sheet = files.find((f) =>
@@ -380,7 +480,6 @@
           toast("Download ready", "success");
           return;
         }
-        // No URL found — fall back to a friendly message
         toast("Signed sheet not attached", "info");
       } catch (err) {
         toast(err.message || "Couldn't prepare download", "error");
@@ -390,21 +489,30 @@
 
   /*8. VIEW FULL VOLUNTEER PROFILE*/
   findByText("a", "View Full Volunteer Profile")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    const volunteerId = contribution?.volunteerId || contribution?.volunteer?.id;
-    if (volunteerId) {
-      window.location.href = `volunteer-profile.html?id=${encodeURIComponent(volunteerId)}`;
-    } else {
-      toast("Volunteer ID not available", "error");
-    }
-  });
+  e.preventDefault();
+
+  const linkEl = e.currentTarget;
+
+  const volunteerId =
+    linkEl.dataset.volunteerId ||
+    new URLSearchParams(window.location.search).get("volunteerId") ||
+    contribution?.volunteerId ||
+    contribution?.volunteer?.id ||
+    (IS_DEMO ? "VOL-4029" : null);
+
+  if (!volunteerId) {
+    toast("Volunteer ID not available", "error");
+    return;
+  }
+
+  window.location.href = `volunteer-profile.html?id=${encodeURIComponent(volunteerId)}`;
+});
 
   /*9. VERIFY / REQUEST CHANGES*/
   const verifyBtn  = findByText("button", "Verify Contribution");
   const requestBtn = findByText("button", "Request Changes");
 
   function markVerified() {
-    // Header badge
     const badge = findByText("span", "Pending Verification");
     if (badge) {
       badge.innerHTML = `
@@ -414,7 +522,6 @@
       badge.classList.add("bg-[#ECFDF5]");
     }
 
-    // Decision card state
     const card = verifyBtn?.closest("section");
     card?.querySelectorAll("button").forEach((b) => {
       b.disabled = true;
@@ -488,13 +595,37 @@
     $("[data-modal-confirm]")?.addEventListener("click", (ev) => {
       withBusy(ev.currentTarget, "Verifying…", async () => {
         try {
-          await API.activities.contributions.verify(CONTRIBUTION_ID);
+          if (window.API && !IS_DEMO) {
+            await API.activities.contributions.verify(CONTRIBUTION_ID);
+          } else {
+            console.log("[contri] Demo mode — skipping API verify call");
+            await new Promise((r) => setTimeout(r, 400));
+          }
+
           closeModal();
+
+          // Small delay so the confirm modal animates out first
           setTimeout(() => {
             markVerified();
-            toast(`Contribution verified — ${hours} hours added`, "success");
-          }, 220);
+
+            const hoursValue =
+              contribution?.hours != null
+                ? Number(contribution.hours).toFixed(1)
+                : "4.0";
+
+            const fullName =
+              contribution?.volunteerName ||
+              contribution?.volunteer?.name ||
+              "Mary Adeyemi";
+            const firstName = fullName.split(" ")[0];
+
+            showSuccessCard({
+              hours: hoursValue,
+              volunteerName: firstName,
+            });
+          }, 240);
         } catch (err) {
+          console.error("[contri] verify failed:", err);
           toast(err.message || "Couldn't verify contribution", "error");
         }
       });
@@ -551,7 +682,12 @@
 
       withBusy(ev.currentTarget, "Sending…", async () => {
         try {
-          await API.activities.contributions.reject(CONTRIBUTION_ID, reason, msg);
+          if (window.API && !IS_DEMO) {
+            await API.activities.contributions.reject(CONTRIBUTION_ID, reason, msg);
+          } else {
+            console.log("[contri] Demo mode — skipping API reject call");
+            await new Promise((r) => setTimeout(r, 400));
+          }
           closeModal();
           setTimeout(() => {
             markChangesRequested();
@@ -618,7 +754,11 @@
 
   /*14. HYDRATE FROM API ON LOAD*/
   (async function loadContribution() {
-    if (!window.API) return;
+    // Skip in demo mode
+    if (IS_DEMO || !window.API) {
+      console.log("[contri] Demo mode — using static page data");
+      return;
+    }
 
     try {
       const res = await API.activities.contributions.get(CONTRIBUTION_ID);
@@ -631,36 +771,36 @@
 
       const c = contribution;
 
-      //  Header: volunteer name 
+      //  Header: volunteer name
       const nameEl = byText("p", "Mary Adeyemi");
       const displayName = c.volunteerName || c.volunteer?.name || c.volunteer?.fullName;
       if (nameEl && displayName) nameEl.textContent = displayName;
 
-      //  Header: VOL id 
+      //  Header: VOL id
       const volIdEl = byText("span", "#VOL-");
       const volId   = c.volunteerId || c.volunteer?.id;
       if (volIdEl && volId) volIdEl.textContent = `#${volId}`;
 
-      //  Header: submitted date 
+      //  Header: submitted date
       const submittedEl = byText("span", "Submitted ");
       if (submittedEl && (c.submittedAt || c.createdAt)) {
         const d = new Date(c.submittedAt || c.createdAt);
         submittedEl.textContent = `Submitted ${d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
       }
 
-      //  Activity card title 
+      //  Activity card title
       const titleEl = $("main h2");
       if (titleEl && (c.activity?.title || c.activityName)) {
         titleEl.textContent = c.activity?.title || c.activityName;
       }
 
-      //  Organization 
+      //  Organization
       const orgEl = byText("p", "Green Future Initiative");
       if (orgEl && (c.organization?.name || c.organizationName)) {
         orgEl.textContent = c.organization?.name || c.organizationName;
       }
 
-      //  Metadata grid 
+      //  Metadata grid
       const metaMap = {
         Date:     c.date ? new Date(c.date).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }) : null,
         Time:     c.startTime && c.endTime ? `${c.startTime} – ${c.endTime}` : null,
@@ -674,13 +814,13 @@
         if (valueEl) valueEl.textContent = value;
       });
 
-      //  Volunteer statement 
+      //  Volunteer statement
       const quote = byText("blockquote", "I helped");
       if (quote && (c.statement || c.volunteerStatement)) {
         quote.textContent = `“${c.statement || c.volunteerStatement}”`;
       }
 
-      //  Hours comparison 
+      //  Hours comparison
       const expectedBadge = byText("span", "Expected:");
       const submittedBadge = byText("span", "Submitted:");
       if (c.expectedHours != null && expectedBadge?.parentElement) {
@@ -692,7 +832,7 @@
         if (strong) strong.textContent = `${c.hours} hrs`;
       }
 
-      //  Volunteer snapshot (right column) 
+      //  Volunteer snapshot (right column)
       const snapshotName = byText("h2", "Mary Adeyemi");
       if (snapshotName && displayName) snapshotName.textContent = displayName;
 
@@ -705,26 +845,25 @@
         if (parts.length) snapshotMeta.innerHTML = parts.join(" · ") + (snapshotMeta.querySelector("br") ? "<br/>" : "");
       }
 
-      //  Avatar in snapshot 
+      //  Avatar in snapshot
       const snapshotImg = $$("img[alt]").find((img) => /mary|volunteer|avatar/i.test(img.alt || ""));
       if (snapshotImg && c.volunteer?.avatarUrl) {
         snapshotImg.src = c.volunteer.avatarUrl;
       }
 
-      //  Verified hours note in snapshot 
+      //  Verified hours note in snapshot
       const verifiedNote = byText("p", "pending verification");
       if (verifiedNote && c.hours != null) {
         verifiedNote.textContent = `+${c.hours} pending verification`;
       }
 
-      //  If already verified, reflect that 
+      //  If already verified, reflect that
       const status = (c.status || "").toLowerCase();
       if (status === "verified" || status === "approved") markVerified();
       else if (status === "rejected" || status === "changes_requested") markChangesRequested();
 
     } catch (err) {
       console.warn("[contri.js] Failed to hydrate contribution:", err);
-      // Page keeps its static sample data — no toast needed
     }
   })();
 

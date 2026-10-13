@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<title>IMPACTRA | Impact Page</title>
+<link
+rel="shortcut icon"
+href="img/impactra logo.jpeg"
+type="image/x icon"
+/>
+<script src="API.js" defer></script>
+<script src="impact.js" defer></script>
+</head>
+
+<body class="min-h-screen font-['Inter'] bg-[#f8fafc] antialiased overflow-x-hidden">
+
+  <div class="flex min-h-screen w-full">
+
+    <!-- Mobile sidebar toggle -->
+    <input type="checkbox" id="sidebar-toggle" class="peer sr-only" />
+
+    <!-- Mobile overlay -->
+    <label
+      for="sidebar-toggle"
+      class="fixed inset-0 z-30 hidden bg-black/40 peer-checked:block lg:!hidden"
+      aria-label="Close sidebar"
+    ></label>
+
+    <!-- SIDEBAR (off-canvas on mobile, static on lg+) -->
+    <aside
+      class="fixed inset-y-0 left-0 z-40 flex h-dvh w-64 shrink-0 -translate-x-full flex-col justify-between border-r border-[#C6C6CD]/60 bg-white transition-transform duration-300 ease-in-out peer-checked:translate-x-0 lg:static lg:h-auto lg:translate-x-0"
+    >
+
+      <!-- Brand -->
+      <div class="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-[#94A3B8]/40 px-4">
+        <div class="flex min-w-0 items-center gap-2">
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0046b8] shadow-sm">
+            <span
+                    ><svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <rect width="32" height="32" fill="url(#pattern0_171_9299)" />
+                      <defs>
+                        <pattern
+                          id="pattern0_171_9299"
+                          patternContentUnits="objectBoundingBox"
+                          width="1"
+                          height="1"
+                        >
+                          <use
+                            xlink:href="#image0_171_9299"
+                            transform="scale(0.000925926)"
+                          />
+                        </pattern>
+                        <image
+                          id="image0_171_9299"
+                          width="1080"
+                          height="1080"
+                          preserveAspectRatio="none"
+                          xlink:href="img/impactra logo white.jpeg"
+                        />
+                      </defs>
+                    </svg>
+                  </span>
+          </div>
+          <p class="truncate text-base font-semibold leading-4 tracking-[-0.4px]">IMPACTRA</p>
+        </div>
+
+        <!-- Close (mobile only) -->
+        <label
+          for="sidebar-toggle"
+          class="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"
+          aria-label="Close sidebar"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </label>
+      </div>
+
+      <!-- Nav -->
+      <nav class="scroll-thin flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2 py-4">
+
+        <p class="px-2 text-[11px] font-semibold uppercase leading-4 tracking-[0.55px]">
+          Operations
+        </p>
+
+        <a
+              href="Dashboard.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path d="M22 8.52V3.98C22 2.57 21.36 2 19.77 2H15.73C14.14 2 13.5 2.57 13.5 3.98V8.51C13.5 9.93 14.14 10.49 15.73 10.49H19.77C21.36 10.5 22 9.93 22 8.52Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M22 19.77V15.73C22 14.14 21.36 13.5 19.77 13.5H15.73C14.14 13.5 13.5 14.14 13.5 15.73V19.77C13.5 21.36 14.14 22 15.73 22H19.77C21.36 22 22 21.36 22 19.77Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M10.5 8.52V3.98C10.5 2.57 9.86 2 8.27 2H4.23C2.64 2 2 2.57 2 3.98V8.51C2 9.93 2.64 10.49 4.23 10.49H8.27C9.86 10.5 10.5 9.93 10.5 8.52Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M10.5 19.77V15.73C10.5 14.14 9.86 13.5 8.27 13.5H4.23C2.64 13.5 2 14.14 2 15.73V19.77C2 21.36 2.64 22 4.23 22H8.27C9.86 22 10.5 21.36 10.5 19.77Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg
+              ></span>
+              Dashboard
+            </a>
+
+            <a
+              href="pages/opportunities-list.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M21.25 16.8383V12.122C22.1239 11.8131 22.75 10.9797 22.75 10C22.75 9.02034 22.1239 8.18691 21.25 7.87803V3.16171C21.25 2.1059 20.3941 1.25 19.3383 1.25C18.9747 1.25 18.6187 1.35368 18.3119 1.54887L16.1683 2.91302C14.283 4.11276 12.0947 4.75 9.85999 4.75H6.5C3.60051 4.75 1.25 7.10051 1.25 10C1.25 12.874 3.55936 15.2086 6.42366 15.2495L8.07737 21.4509C8.28165 22.2169 8.97544 22.7499 9.76828 22.7499H11C11.9665 22.7499 12.75 21.9664 12.75 20.9999V15.611C13.9547 15.9167 15.1093 16.4131 16.1683 17.087L18.3119 18.4511C18.6187 18.6463 18.9747 18.75 19.3383 18.75C20.3941 18.75 21.25 17.8941 21.25 16.8383ZM19.3383 2.75C19.26 2.75 19.1833 2.77233 19.1173 2.81437L16.9736 4.17851C15.6717 5.00698 14.2417 5.59759 12.75 5.93099L12.75 14.069C14.2417 14.4024 15.6717 14.993 16.9736 15.8215L19.1173 17.1856C19.1833 17.2277 19.26 17.25 19.3383 17.25C19.5657 17.25 19.75 17.0657 19.75 16.8383V3.16171C19.75 2.93433 19.5657 2.75 19.3383 2.75ZM11.25 13.8231L11.25 6.1769C10.7897 6.22545 10.3257 6.25 9.85999 6.25H6.5C4.42893 6.25 2.75 7.92893 2.75 10C2.75 12.0711 4.42893 13.75 6.5 13.75H6.98143C6.99417 13.7497 7.00687 13.7497 7.01953 13.75H9.85999C10.3257 13.75 10.7897 13.7745 11.25 13.8231ZM9.52672 21.0644L7.97623 15.25H9.85999C10.3261 15.25 10.7902 15.2777 11.25 15.3325V20.9999C11.25 21.138 11.1381 21.2499 11 21.2499H9.76828C9.65502 21.2499 9.55591 21.1738 9.52672 21.0644Z" fill="currentColor"/>
+                </svg>
+              </span>
+              Opportunities
+            </a>
+
+            <a
+              href="application.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.9996 6.75C9.9284 6.75 8.24963 8.42941 8.24963 10.5007C8.24963 12.572 9.9284 14.2514 11.9996 14.2514C14.0709 14.2514 15.7496 12.572 15.7496 10.5007C15.7496 8.42941 14.0709 6.75 11.9996 6.75ZM9.74963 10.5007C9.74963 9.25751 10.7572 8.25 11.9996 8.25C13.2421 8.25 14.2496 9.25751 14.2496 10.5007C14.2496 11.7439 13.2421 12.7514 11.9996 12.7514C10.7572 12.7514 9.74963 11.7439 9.74963 10.5007Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8.367 1.25H15.633C16.7251 1.24999 17.5906 1.24999 18.2883 1.30699C19.0017 1.36527 19.6053 1.48688 20.1565 1.76772C21.0502 2.22312 21.7769 2.94978 22.2323 3.84355C22.5131 4.39472 22.6347 4.99834 22.693 5.71173C22.75 6.40935 22.75 7.27484 22.75 8.36698V15.633C22.75 16.7252 22.75 17.5906 22.693 18.2883C22.6347 19.0017 22.5131 19.6053 22.2323 20.1565C21.7769 21.0502 21.0502 21.7769 20.1565 22.2323C19.6053 22.5131 19.0017 22.6347 18.2883 22.693C17.5906 22.75 16.7252 22.75 15.633 22.75H8.36698C7.27484 22.75 6.40935 22.75 5.71173 22.693C4.99834 22.6347 4.39472 22.5131 3.84355 22.2323C2.94978 21.7769 2.22312 21.0502 1.76772 20.1565C1.48688 19.6053 1.36527 19.0017 1.30699 18.2883C1.24999 17.5906 1.24999 16.7252 1.25 15.633V8.367C1.24999 7.27486 1.24999 6.40935 1.30699 5.71173C1.36527 4.99834 1.48688 4.39472 1.76772 3.84355C2.22312 2.94978 2.94978 2.22312 3.84355 1.76772C4.39472 1.48688 4.99834 1.36527 5.71173 1.30699C6.40935 1.24999 7.27486 1.24999 8.367 1.25ZM5.83388 2.80201C5.21325 2.85271 4.829 2.94909 4.52453 3.10423C3.913 3.41582 3.41582 3.913 3.10423 4.52453C2.94909 4.829 2.85271 5.21325 2.80201 5.83388C2.75058 6.46327 2.75 7.26752 2.75 8.4V15.6C2.75 16.7325 2.75058 17.5367 2.80201 18.1661C2.85271 18.7867 2.94909 19.171 3.10423 19.4755C3.41582 20.087 3.913 20.5842 4.52453 20.8958C4.54933 20.9084 4.57465 20.9207 4.60059 20.9325C5.71031 18.4663 8.36832 16.25 11.9999 16.25C15.6315 16.25 18.2898 18.4662 19.3996 20.9324C19.4255 20.9206 19.4507 20.9084 19.4755 20.8958C20.087 20.5842 20.5842 20.087 20.8958 19.4755C21.0509 19.171 21.1473 18.7867 21.198 18.1661C21.2494 17.5367 21.25 16.7325 21.25 15.6V8.4C21.25 7.26752 21.2494 6.46327 21.198 5.83388C21.1473 5.21325 21.0509 4.829 20.8958 4.52453C20.5842 3.913 20.087 3.41582 19.4755 3.10423C19.171 2.94909 18.7867 2.85271 18.1661 2.80201C17.5367 2.75058 16.7325 2.75 15.6 2.75H8.4C7.26752 2.75 6.46327 2.75058 5.83388 2.80201ZM8.4 21.25C7.43725 21.25 6.71171 21.2496 6.12917 21.2179C7.10099 19.3713 9.18296 17.75 11.9999 17.75C14.817 17.75 16.8991 19.3713 17.871 21.2178C17.2885 21.2496 16.5629 21.25 15.6 21.25H8.4Z" fill="currentColor"/></svg></span>
+              Applications
+            </a>
+
+            <a
+              href="volunteer-profile.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C9.37665 1.25 7.25 3.37665 7.25 6C7.25 8.62335 9.37665 10.75 12 10.75C14.6234 10.75 16.75 8.62335 16.75 6C16.75 3.37665 14.6234 1.25 12 1.25ZM8.75 6C8.75 4.20507 10.2051 2.75 12 2.75C13.7949 2.75 15.25 4.20507 15.25 6C15.25 7.79493 13.7949 9.25 12 9.25C10.2051 9.25 8.75 7.79493 8.75 6Z" fill="currentColor"/>
+                  <path d="M18 3.25C17.5858 3.25 17.25 3.58579 17.25 4C17.25 4.41421 17.5858 4.75 18 4.75C19.3765 4.75 20.25 5.65573 20.25 6.5C20.25 7.34427 19.3765 8.25 18 8.25C17.5858 8.25 17.25 8.58579 17.25 9C17.25 9.41421 17.5858 9.75 18 9.75C19.9372 9.75 21.75 8.41715 21.75 6.5C21.75 4.58285 19.9372 3.25 18 3.25Z" fill="currentColor"/>
+                  <path d="M6.75 4C6.75 3.58579 6.41421 3.25 6 3.25C4.06278 3.25 2.25 4.58285 2.25 6.5C2.25 8.41715 4.06278 9.75 6 9.75C6.41421 9.75 6.75 9.41421 6.75 9C6.75 8.58579 6.41421 8.25 6 8.25C4.62351 8.25 3.75 7.34427 3.75 6.5C3.75 5.65573 4.62351 4.75 6 4.75C6.41421 4.75 6.75 4.41421 6.75 4Z" fill="currentColor"/>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 12.25C10.2157 12.25 8.56645 12.7308 7.34133 13.5475C6.12146 14.3608 5.25 15.5666 5.25 17C5.25 18.4334 6.12146 19.6392 7.34133 20.4525C8.56645 21.2692 10.2157 21.75 12 21.75C13.7843 21.75 15.4335 21.2692 16.6587 20.4525C17.8785 19.6392 18.75 18.4334 18.75 17C18.75 15.5666 17.8785 14.3608 16.6587 13.5475C15.4335 12.7308 13.7843 12.25 12 12.25ZM6.75 17C6.75 16.2242 7.22169 15.4301 8.17338 14.7956C9.11984 14.1646 10.4706 13.75 12 13.75C13.5294 13.75 14.8802 14.1646 15.8266 14.7956C16.7783 15.4301 17.25 16.2242 17.25 17C17.25 17.7758 16.7783 18.5699 15.8266 19.2044C14.8802 19.8354 13.5294 20.25 12 20.25C10.4706 20.25 9.11984 19.8354 8.17338 19.2044C7.22169 18.5699 6.75 17.7758 6.75 17Z" fill="currentColor"/>
+                  <path d="M19.2674 13.8393C19.3561 13.4347 19.7561 13.1787 20.1607 13.2674C21.1225 13.4783 21.9893 13.8593 22.6328 14.3859C23.2758 14.912 23.75 15.6352 23.75 16.5C23.75 17.3648 23.2758 18.088 22.6328 18.6141C21.9893 19.1407 21.1225 19.5217 20.1607 19.7326C19.7561 19.8213 19.3561 19.5653 19.2674 19.1607C19.1787 18.7561 19.4347 18.3561 19.8393 18.2674C20.6317 18.0936 21.2649 17.7952 21.6829 17.4532C22.1014 17.1108 22.25 16.7763 22.25 16.5C22.25 16.2237 22.1014 15.8892 21.6829 15.5468C21.2649 15.2048 20.6317 14.9064 19.8393 14.7326C19.4347 14.6439 19.1787 14.2439 19.2674 13.8393Z" fill="currentColor"/>
+                  <path d="M3.83935 13.2674C4.24395 13.1787 4.64387 13.4347 4.73259 13.8393C4.82132 14.2439 4.56525 14.6439 4.16065 14.7326C3.36829 14.9064 2.73505 15.2048 2.31712 15.5468C1.89863 15.8892 1.75 16.2237 1.75 16.5C1.75 16.7763 1.89863 17.1108 2.31712 17.4532C2.73505 17.7952 3.36829 18.0936 4.16065 18.2674C4.56525 18.3561 4.82132 18.7561 4.73259 19.1607C4.64387 19.5653 4.24395 19.8213 3.83935 19.7326C2.87746 19.5217 2.0107 19.1407 1.36719 18.6141C0.724248 18.088 0.25 17.3648 0.25 16.5C0.25 15.6352 0.724248 14.912 1.36719 14.3859C2.0107 13.8593 2.87746 13.4783 3.83935 13.2674Z" fill="currentColor"/></svg
+              ></span>
+              Volunteers
+            </a>
+
+            <a
+              href="contribution.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path d="M16.0303 13.7803C16.3232 13.4874 16.3232 13.0126 16.0303 12.7197C15.7374 12.4268 15.2626 12.4268 14.9697 12.7197L11 16.6893L9.03033 14.7197C8.73744 14.4268 8.26256 14.4268 7.96967 14.7197C7.67678 15.0126 7.67678 15.4874 7.96967 15.7803L10.4697 18.2803C10.7626 18.5732 11.2374 18.5732 11.5303 18.2803L16.0303 13.7803Z" fill="currentColor"/>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0.25C8.41421 0.25 8.75 0.585786 8.75 1V2.25H15.25V1C15.25 0.585786 15.5858 0.25 16 0.25C16.4142 0.25 16.75 0.585786 16.75 1V2.25007C17.5561 2.25064 18.2154 2.25569 18.7599 2.30018C19.3899 2.35165 19.9318 2.45963 20.4295 2.71322C21.2291 3.12068 21.8793 3.77085 22.2868 4.57054C22.5404 5.06824 22.6483 5.61012 22.6998 6.24013C22.75 6.85438 22.75 7.6149 22.75 8.5673V17.4326C22.75 18.385 22.75 19.1456 22.6998 19.7599C22.6483 20.3899 22.5404 20.9318 22.2868 21.4295C21.8793 22.2291 21.2291 22.8793 20.4295 23.2868C19.9318 23.5404 19.3899 23.6483 18.7599 23.6998C18.1456 23.75 17.3851 23.75 16.4327 23.75H7.56737C6.61496 23.75 5.85438 23.75 5.24013 23.6998C4.61012 23.6483 4.06824 23.5404 3.57054 23.2868C2.77085 22.8793 2.12068 22.2291 1.71322 21.4295C1.45963 20.9318 1.35165 20.3899 1.30018 19.7599C1.24999 19.1456 1.24999 18.3851 1.25 17.4326V8.56739C1.24999 7.61495 1.24999 6.85439 1.30018 6.24013C1.35165 5.61012 1.45963 5.06824 1.71322 4.57054C2.12068 3.77085 2.77085 3.12068 3.57054 2.71322C4.06824 2.45963 4.61012 2.35165 5.24013 2.30018C5.78458 2.25569 6.44395 2.25064 7.25 2.25007V1C7.25 0.585786 7.58579 0.25 8 0.25ZM7.6 3.75C6.60753 3.75 5.90829 3.75058 5.36228 3.79519C4.82503 3.83909 4.50252 3.92184 4.25153 4.04973C3.73408 4.31338 3.31338 4.73408 3.04973 5.25153C2.92184 5.50252 2.83909 5.82503 2.79519 6.36228C2.76455 6.7374 2.75468 7.18484 2.7515 7.75H21.2485C21.2453 7.18484 21.2355 6.7374 21.2048 6.36228C21.1609 5.82503 21.0782 5.50252 20.9503 5.25153C20.6866 4.73408 20.2659 4.31338 19.7485 4.04973C19.4975 3.92184 19.175 3.83909 18.6377 3.79519C18.0917 3.75058 17.3925 3.75 16.4 3.75H7.6ZM2.75 17.4V9.25H21.25V17.4C21.25 18.3925 21.2494 19.0917 21.2048 19.6377C21.1609 20.175 21.0782 20.4975 20.9503 20.7485C20.6866 21.2659 20.2659 21.6866 19.7485 21.9503C19.4975 22.0782 19.175 22.1609 18.6377 22.2048C18.0917 22.2494 17.3925 22.25 16.4 22.25H7.6C6.60753 22.25 5.90829 22.2494 5.36228 22.2048C4.82503 22.1609 4.50252 22.0782 4.25153 21.9503C3.73408 21.6866 3.31338 21.2659 3.04973 20.7485C2.92184 20.4975 2.83909 20.175 2.79519 19.6377C2.75058 19.0917 2.75 18.3925 2.75 17.4Z" fill="currentColor"/>
+                </svg></span>
+              Activities
+            </a>
+
+            <!-- ACTIVE: Impact -->
+            <a
+              href="#"
+              class="flex items-center gap-2 rounded-lg bg-[#dfe8ff] px-4 py-2.5 text-sm font-medium text-[#4a7cf4]"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <rect x="17.6666" y="3.6667" width="3.3333" height="16.6666" rx="1.3333" ry="1.3333" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></rect>
+                  <rect x="10.3333" y="10.3333" width="3.3333" height="10" rx="1.3333" ry="1.3333" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></rect>
+                  <rect x="3" y="15.6666" width="3.3333" height="4.6667" rx="1.3333" ry="1.3333" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></rect>
+                  <polyline points="8.3333 3.6667 11.6666 3.6667 11.6666 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
+                  <line x1="11.3333" y1="4" x2="3.6667" y2="11.6666" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></line></svg
+              ></span>
+              Impact
+            </a>
+
+            <a
+              href="pages/Certificate.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path d="M 12.8573 16.1773 L 13.8933 15.308 C 14.1333 15.1066 14.4373 14.996 14.7506 14.996 H 16.1026 C 16.7493 14.996 17.304 14.532 17.416 13.8946 L 17.6506 12.5626 C 17.7053 12.2533 17.8666 11.9746 18.1066 11.7733 L 19.1426 10.904 C 19.6386 10.488 19.764 9.776 19.44 9.216 L 18.764 8.044 C 18.6066 7.772 18.5506 7.4546 18.6053 7.1453 L 18.84 5.8133 C 18.952 5.176 18.5906 4.5507 17.9826 4.3293 L 16.712 3.8667 C 16.4173 3.76 16.1706 3.552 16.0133 3.28 L 15.3373 2.108 C 15.0133 1.548 14.3346 1.3 13.7266 1.5213 L 12.456 1.984 C 12.1613 2.0907 11.8386 2.0907 11.544 1.984 L 10.2733 1.5213 C 9.6653 1.3 8.9866 1.5467 8.6626 2.108 L 7.9866 3.28 C 7.8293 3.552 7.5826 3.7587 7.288 3.8667 L 6.0173 4.3293 C 5.4093 4.5507 5.048 5.176 5.16 5.8133 L 5.3946 7.1453 C 5.4493 7.4546 5.3933 7.772 5.236 8.044 L 4.56 9.216 C 4.236 9.776 4.3613 10.488 4.8573 10.904 L 5.8933 11.7733 C 6.1333 11.9746 6.2947 12.2546 6.3493 12.5626 L 6.584 13.8946 C 6.696 14.532 7.2506 14.996 7.8973 14.996 H 9.2493 C 9.5626 14.996 9.8666 15.1066 10.1066 15.308 L 11.1426 16.1773 C 11.6386 16.5933 12.3613 16.5933 12.8573 16.1773 Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                  <path d="M 16.3333 18.9908 V 22.9999 L 12 19.6666 L 7.6666 22.9999 V 18.9908" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                  <path d="M 12 11.632 C 13.4733 11.632 14.6666 10.4381 14.6666 8.9653 C 14.6666 7.4925 13.4733 6.2987 12 6.2987 C 10.5266 6.2987 9.3333 7.4925 9.3333 8.9653 C 9.3333 10.4381 10.5266 11.632 12 11.632 Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg
+              ></span>
+              Certificates
+            </a>
+
+            <a
+              href="#"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M10.4606 1.25H13.5394C15.1427 1.24999 16.3997 1.24999 17.4039 1.34547C18.4274 1.44279 19.2655 1.64457 20.0044 2.09732C20.7781 2.57144 21.4286 3.22194 21.9027 3.99563C22.3554 4.73445 22.5572 5.57256 22.6545 6.59611C22.75 7.60029 22.75 8.85725 22.75 10.4606V11.5278C22.75 12.6691 22.75 13.564 22.7007 14.2868C22.6505 15.0223 22.5468 15.6344 22.3123 16.2004C21.7287 17.6093 20.6093 18.7287 19.2004 19.3123C18.3955 19.6457 17.4786 19.7197 16.2233 19.7413C15.7842 19.7489 15.5061 19.7545 15.2941 19.7779C15.096 19.7999 15.0192 19.832 14.9742 19.8582C14.9268 19.8857 14.8622 19.936 14.7501 20.0898C14.6287 20.2564 14.4916 20.4865 14.2742 20.8539L13.7321 21.7697C12.9585 23.0767 11.0415 23.0767 10.2679 21.7697L9.72579 20.8539C9.50835 20.4865 9.37122 20.2564 9.24985 20.0898C9.13772 19.936 9.07313 19.8857 9.02572 19.8582C8.98078 19.832 8.90399 19.7999 8.70588 19.7779C8.49387 19.7545 8.21575 19.7489 7.77666 19.7413C6.52138 19.7197 5.60454 19.6457 4.79957 19.3123C3.39066 18.7287 2.27128 17.6093 1.68769 16.2004C1.45323 15.6344 1.3495 15.0223 1.29932 14.2868C1.24999 13.564 1.25 12.6691 1.25 11.5278L1.25 10.4606C1.24999 8.85726 1.24999 7.60029 1.34547 6.59611C1.44279 5.57256 1.64457 4.73445 2.09732 3.99563C2.57144 3.22194 3.22194 2.57144 3.99563 2.09732C4.73445 1.64457 5.57256 1.44279 6.59611 1.34547C7.60029 1.24999 8.85726 1.24999 10.4606 1.25ZM6.73809 2.83873C5.82434 2.92561 5.24291 3.09223 4.77938 3.37628C4.20752 3.72672 3.72672 4.20752 3.37628 4.77938C3.09223 5.24291 2.92561 5.82434 2.83873 6.73809C2.75079 7.663 2.75 8.84876 2.75 10.5V11.5C2.75 12.6751 2.75041 13.5189 2.79584 14.1847C2.84081 14.8438 2.92737 15.2736 3.07351 15.6264C3.50486 16.6678 4.33223 17.4951 5.3736 17.9265C5.88923 18.1401 6.54706 18.2199 7.8025 18.2416L7.83432 18.2421C8.23232 18.249 8.58109 18.2549 8.87097 18.287C9.18246 18.3215 9.4871 18.3912 9.77986 18.5615C10.0702 18.7304 10.2795 18.9559 10.4621 19.2063C10.6307 19.4378 10.804 19.7306 11.0004 20.0623L11.5587 21.0057C11.7515 21.3313 12.2485 21.3313 12.4412 21.0057L12.9996 20.0623C13.1959 19.7306 13.3692 19.4378 13.5379 19.2063C13.7204 18.9559 13.9298 18.7304 14.2201 18.5615C14.5129 18.3912 14.8175 18.3215 15.129 18.287C15.4189 18.2549 15.7676 18.249 16.1656 18.2421L16.1975 18.2416C17.4529 18.2199 18.1108 18.1401 18.6264 17.9265C19.6678 17.4951 20.4951 16.6678 20.9265 15.6264C21.0726 15.2736 21.1592 14.8438 21.2042 14.1847C21.2496 13.5189 21.25 12.6751 21.25 11.5V10.5C21.25 8.84876 21.2492 7.663 21.1613 6.73809C21.0744 5.82434 20.9078 5.24291 20.6237 4.77938C20.2733 4.20752 19.7925 3.72672 19.2206 3.37628C18.7571 3.09223 18.1757 2.92561 17.2619 2.83873C16.337 2.75079 15.1512 2.75 13.5 2.75H10.5C8.84876 2.75 7.663 2.75079 6.73809 2.83873ZM7.25 9C7.25 8.58579 7.58579 8.25 8 8.25H16C16.4142 8.25 16.75 8.58579 16.75 9C16.75 9.41421 16.4142 9.75 16 9.75H8C7.58579 9.75 7.25 9.41421 7.25 9ZM7.25 12.5C7.25 12.0858 7.58579 11.75 8 11.75H13.5C13.9142 11.75 14.25 12.0858 14.25 12.5C14.25 12.9142 13.9142 13.25 13.5 13.25H8C7.58579 13.25 7.25 12.9142 7.25 12.5Z" fill="currentColor"/>
+                </svg
+              ></span>
+              Messages
+            </a>
+
+            <!-- Divider -->
+            <div class="my-3 h-[2px] w-full shrink-0 bg-[#94A3B8]/20"></div>
+
+            <!-- Section: SYSTEM -->
+            <p class="px-3 pb-2 text-[10px] font-bold uppercase leading-[15px] tracking-[0.5px] text-[#94A3B8]">
+              System
+            </p>
+            <a
+              href="settings.html"
+              class="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm transition hover:bg-slate-50"
+            >
+              <span
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M2 12.8799V11.1199C2 10.0799 2.85 9.21994 3.9 9.21994C5.71 9.21994 6.45 7.93994 5.54 6.36994C5.02 5.46994 5.33 4.29994 6.24 3.77994L7.97 2.78994C8.76 2.31994 9.78 2.59994 10.25 3.38994L10.36 3.57994C11.26 5.14994 12.74 5.14994 13.65 3.57994L13.76 3.38994C14.23 2.59994 15.25 2.31994 16.04 2.78994L17.77 3.77994C18.68 4.29994 18.99 5.46994 18.47 6.36994C17.56 7.93994 18.3 9.21994 20.11 9.21994C21.15 9.21994 22.01 10.0699 22.01 11.1199V12.8799C22.01 13.9199 21.16 14.7799 20.11 14.7799C18.3 14.7799 17.56 16.0599 18.47 17.6299C18.99 18.5399 18.68 19.6999 17.77 20.2199L16.04 21.2099C15.25 21.6799 14.23 21.3999 13.76 20.6099L13.65 20.4199C12.75 18.8499 11.27 18.8499 10.36 20.4199L10.25 20.6099C9.78 21.3999 8.76 21.6799 7.97 21.2099L6.24 20.2199C5.33 19.6999 5.02 18.5299 5.54 17.6299C6.45 16.0599 5.71 14.7799 3.9 14.7799C2.85 14.7799 2 13.9199 2 12.8799Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path></svg
+              ></span>
+              Settings
+            </a>
+      </nav>
+
+      <!-- Profile footer -->
+      <div class="shrink-0 border-t border-[#C6C6CD]/20 bg-white p-4">
+        <div class="flex items-center gap-2">
+          <img src="img/Mary.jpeg" alt="Mary"
+               class="h-8 w-8 shrink-0 rounded-full object-cover" />
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-semibold leading-5">Mary</p>
+            <p class="truncate text-xs font-medium leading-4 tracking-[0.12px]">NGO Administrator</p>
+          </div>
+          <span>
+            <svg class="rotate-90" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 10C3.9 10 3 10.9 3 12C3 13.1 3.9 14 5 14C6.1 14 7 13.1 7 12C7 10.9 6.1 10 5 10Z" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"/><path d="M19 10C17.9 10 17 10.9 17 12C17 13.1 17.9 14 19 14C20.1 14 21 13.1 21 12C21 10.9 20.1 10 19 10Z" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"/><path d="M12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"/></svg></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <div class="flex min-w-0 flex-1 flex-col">
+
+      <!-- HEADER -->
+      <header class="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-[#94A3B8]/40 bg-white/90 px-4 backdrop-blur-sm sm:gap-6 sm:px-6">
+
+        <!-- Left: hamburger + breadcrumb -->
+        <div class="flex min-w-0 items-center gap-2 sm:gap-3">
+          <label
+            for="sidebar-toggle"
+            class="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg transition hover:bg-slate-100 lg:hidden"
+            aria-label="Open sidebar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </label>
+
+          <nav class="flex min-w-0 items-center gap-1 text-[13px]">
+            <span class="hidden sm:inline">/</span>
+            <a href="#" class="truncate font-semibold">Management Console</a>
+          </nav>
+        </div>
+
+        <!-- Right controls -->
+        <div class="flex shrink-0 items-center gap-2 sm:gap-4">
+
+          <!-- Notification -->
+          <button type="button" class="relative flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-slate-100">
+            <span class="text-slate-500"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12.02 2.90991C8.70997 2.90991 6.01997 5.59991 6.01997 8.90991V11.7999C6.01997 12.4099 5.75997 13.3399 5.44997 13.8599L4.29997 15.7699C3.58997 16.9499 4.07997 18.2599 5.37997 18.6999C9.68997 20.1399 14.34 20.1399 18.65 18.6999C19.86 18.2999 20.39 16.8699 19.73 15.7699L18.58 13.8599C18.28 13.3399 18.02 12.4099 18.02 11.7999V8.90991C18.02 5.60991 15.32 2.90991 12.02 2.90991Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/><path d="M13.87 3.19994C13.56 3.10994 13.24 3.03994 12.91 2.99994C11.95 2.87994 11.03 2.94994 10.17 3.19994C10.46 2.45994 11.18 1.93994 12.02 1.93994C12.86 1.93994 13.58 2.45994 13.87 3.19994Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.02 19.0601C15.02 20.7101 13.67 22.0601 12.02 22.0601C11.2 22.0601 10.44 21.7201 9.90002 21.1801C9.36002 20.6401 9.02002 19.8801 9.02002 19.0601" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"/></svg></span>
+            <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#BA1A1A]"></span>
+          </button>
+
+          <div class="hidden h-6 w-px bg-[#C6C6CD]/60 sm:block"></div>
+
+          <!-- Profile -->
+          <div class="flex items-center gap-2.5 pl-1">
+            <img src="img/Mary.jpeg" alt="Mary" class="h-8 w-8 rounded-full object-cover" />
+            <p class="hidden text-sm font-semibold sm:block">Mary</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN -->
+      <main class="scroll-thin min-h-0 flex-1 overflow-y-auto">
+        <div class="mx-auto flex w-full max-w-[1184px] flex-col gap-5 px-4 pb-12 pt-6 sm:gap-6 sm:px-6 sm:pb-16 sm:pt-8 lg:px-6 lg:pt-10">
+
+          <!-- PAGE HEADER -->
+          <section class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+
+            <div class="max-w-xl">
+              <!-- Eyebrow -->
+              <div class="flex items-center gap-2">
+                <span class="h-1 w-1 rounded-full bg-[#C6C6CD]"></span>
+                <span class="text-[11px] font-semibold uppercase leading-4 tracking-[0.55px]">
+                  Green future initiative
+                </span>
+              </div>
+
+              <h1 class="mt-2 text-2xl font-bold leading-9 tracking-[-0.8px] sm:text-[32px] sm:leading-10">Your Organization's Impact</h1>
+
+              <p class="mt-1 text-sm leading-5">
+                See the difference your volunteers are making through verified contributions and community activities.
+              </p>
+            </div>
+
+            <!-- Action cluster -->
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 lg:shrink-0">
+
+              <!-- Date period picker -->
+              <button type="button" class="flex h-10 items-center justify-between gap-2.5 rounded-lg bg-white px-3.5 text-sm font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.05)] ring-1 ring-[#C6C6CD]/40 transition hover:bg-slate-50 sm:justify-start">
+                <span class="shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 14C17.5523 14 18 13.5523 18 13C18 12.4477 17.5523 12 17 12C16.4477 12 16 12.4477 16 13C16 13.5523 16.4477 14 17 14Z" fill="currentColor"/><path d="M17 18C17.5523 18 18 17.5523 18 17C18 16.4477 17.5523 16 17 16C16.4477 16 16 16.4477 16 17C16 17.5523 16.4477 18 17 18Z" fill="currentColor"/><path d="M13 13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13C11 12.4477 11.4477 12 12 12C12.5523 12 13 12.4477 13 13Z" fill="currentColor"/><path d="M13 17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17C11 16.4477 11.4477 16 12 16C12.5523 16 13 16.4477 13 17Z" fill="currentColor"/><path d="M7 14C7.55229 14 8 13.5523 8 13C8 12.4477 7.55229 12 7 12C6.44772 12 6 12.4477 6 13C6 13.5523 6.44772 14 7 14Z" fill="currentColor"/><path d="M7 18C7.55229 18 8 17.5523 8 17C8 16.4477 7.55229 16 7 16C6.44772 16 6 16.4477 6 17C6 17.5523 6.44772 18 7 18Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7 1.75C7.41421 1.75 7.75 2.08579 7.75 2.5V3.26272C8.412 3.24999 9.14133 3.24999 9.94346 3.25H14.0564C14.8586 3.24999 15.588 3.24999 16.25 3.26272V2.5C16.25 2.08579 16.5858 1.75 17 1.75C17.4142 1.75 17.75 2.08579 17.75 2.5V3.32709C18.0099 3.34691 18.2561 3.37182 18.489 3.40313C19.6614 3.56076 20.6104 3.89288 21.3588 4.64124C22.1071 5.38961 22.4392 6.33855 22.5969 7.51098C22.75 8.65018 22.75 10.1058 22.75 11.9435V14.0564C22.75 15.8941 22.75 17.3498 22.5969 18.489C22.4392 19.6614 22.1071 20.6104 21.3588 21.3588C20.6104 22.1071 19.6614 22.4392 18.489 22.5969C17.3498 22.75 15.8942 22.75 14.0565 22.75H9.94359C8.10585 22.75 6.65018 22.75 5.51098 22.5969C4.33856 22.4392 3.38961 22.1071 2.64124 21.3588C1.89288 20.6104 1.56076 19.6614 1.40314 18.489C1.24997 17.3498 1.24998 15.8942 1.25 14.0564V11.9436C1.24998 10.1058 1.24997 8.65019 1.40314 7.51098C1.56076 6.33855 1.89288 5.38961 2.64124 4.64124C3.38961 3.89288 4.33856 3.56076 5.51098 3.40313C5.7439 3.37182 5.99006 3.34691 6.25 3.32709V2.5C6.25 2.08579 6.58579 1.75 7 1.75ZM5.71085 4.88976C4.70476 5.02502 4.12511 5.27869 3.7019 5.7019C3.27869 6.12511 3.02502 6.70476 2.88976 7.71085C2.86685 7.88123 2.8477 8.06061 2.83168 8.25H21.1683C21.1523 8.06061 21.1331 7.88124 21.1102 7.71085C20.975 6.70476 20.7213 6.12511 20.2981 5.7019C19.8749 5.27869 19.2952 5.02502 18.2892 4.88976C17.2615 4.75159 15.9068 4.75 14 4.75H10C8.09318 4.75 6.73851 4.75159 5.71085 4.88976ZM2.75 12C2.75 11.146 2.75032 10.4027 2.76309 9.75H21.2369C21.2497 10.4027 21.25 11.146 21.25 12V14C21.25 15.9068 21.2484 17.2615 21.1102 18.2892C20.975 19.2952 20.7213 19.8749 20.2981 20.2981C19.8749 20.7213 19.2952 20.975 18.2892 21.1102C17.2615 21.2484 15.9068 21.25 14 21.25H10C8.09318 21.25 6.73851 21.2484 5.71085 21.1102C4.70476 20.975 4.12511 20.7213 3.7019 20.2981C3.27869 19.8749 3.02502 19.2952 2.88976 18.2892C2.75159 17.2615 2.75 15.9068 2.75 14V12Z" fill="currentColor"/></svg></span>
+                <span class="truncate">Jan 1, 2026 – Oct 12, 2026</span>
+                <span class="shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6.46967 9.46967C6.76256 9.17678 7.23744 9.17678 7.53033 9.46967L12 13.9393L16.4697 9.46967C16.7626 9.17678 17.2374 9.17678 17.5303 9.46967C17.8232 9.76256 17.8232 10.2374 17.5303 10.5303L12.5303 15.5303C12.2374 15.8232 11.7626 15.8232 11.4697 15.5303L6.46967 10.5303C6.17678 10.2374 6.17678 9.76256 6.46967 9.46967Z" fill="currentColor"/></svg></span>
+              </button>
+
+              <!-- Export report -->
+              <button type="button" class="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#0046b8] px-4 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition hover:bg-[#003da3]">
+                <span class="text-white"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><line x1="7.6666" y1="9" x2="10.3333" y2="9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></line><line x1="7.6666" y1="13" x2="16.3333" y2="13" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></line><line x1="7.6666" y1="17" x2="16.3333" y2="17" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></line><path d="M 3.6667 19 V 5 c 0 -1.4733 1.1933 -2.6667 2.6667 -2.6667 h 7.448 c 0.3533 0 0.6933 0.14 0.9427 0.3907 l 5.2187 5.2187 c 0.2507 0.2507 0.3907 0.5893 0.3907 0.9427 v 10.1146 c 0 1.4733 -1.1933 2.6667 -2.6667 2.6667 H 6.3333 c -1.4733 0 -2.6667 -1.1933 -2.6667 -2.6667 Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M 20.2133 8.3333 h -4.5467 c -0.736 0 -1.3333 -0.5973 -1.3333 -1.3333 V 2.4693" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+                Export Report
+              </button>
+            </div>
+          </section>
+
+          <!-- KEY METRICS ROW -->
+          <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+            <!-- Active Volunteers -->
+            <div class="flex flex-col justify-between rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-sm font-semibold leading-4 tracking-[0.275px] sm:text-base">
+                  Active Volunteers
+                </p>
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                  <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C9.37665 1.25 7.25 3.37665 7.25 6C7.25 8.62335 9.37665 10.75 12 10.75C14.6234 10.75 16.75 8.62335 16.75 6C16.75 3.37665 14.6234 1.25 12 1.25ZM8.75 6C8.75 4.20507 10.2051 2.75 12 2.75C13.7949 2.75 15.25 4.20507 15.25 6C15.25 7.79493 13.7949 9.25 12 9.25C10.2051 9.25 8.75 7.79493 8.75 6Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 12.25C10.2157 12.25 8.56645 12.7308 7.34133 13.5475C6.12146 14.3608 5.25 15.5666 5.25 17C5.25 18.4334 6.12146 19.6392 7.34133 20.4525C8.56645 21.2692 10.2157 21.75 12 21.75C13.7843 21.75 15.4335 21.2692 16.6587 20.4525C17.8785 19.6392 18.75 18.4334 18.75 17C18.75 15.5666 17.8785 14.3608 16.6587 13.5475C15.4335 12.7308 13.7843 12.25 12 12.25ZM6.75 17C6.75 16.2242 7.22169 15.4301 8.17338 14.7956C9.11984 14.1646 10.4706 13.75 12 13.75C13.5294 13.75 14.8802 14.1646 15.8266 14.7956C16.7783 15.4301 17.25 16.2242 17.25 17C17.25 17.7758 16.7783 18.5699 15.8266 19.2044C14.8802 19.8354 13.5294 20.25 12 20.25C10.4706 20.25 9.11984 19.8354 8.17338 19.2044C7.22169 18.5699 6.75 17.7758 6.75 17Z" fill="currentColor"/></svg></span>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-baseline gap-2">
+                <span class="text-2xl font-bold leading-10 tracking-[-0.64px] sm:text-[32px]">146</span>
+                <span class="flex items-center gap-1 rounded-full bg-[#CAF0D1]/30 px-2 py-0.5">
+                  <span class="text-[#005320]">↑</span>
+                  <span class="text-xs font-medium leading-4 tracking-[0.12px] text-[#005320]">12%</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Verified hrs -->
+            <div class="flex flex-col justify-between rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-sm font-semibold leading-4 tracking-[0.275px] sm:text-base">
+                  Verified hrs
+                </p>
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                  <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12.75 6C12.75 5.58579 12.4142 5.25 12 5.25C11.5858 5.25 11.25 5.58579 11.25 6V12C11.25 12.2586 11.3832 12.4989 11.6025 12.636L15.6025 15.136C15.9538 15.3555 16.4165 15.2488 16.636 14.8975C16.8555 14.5462 16.7488 14.0835 16.3975 13.864L12.75 11.5843V6Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 0.25C5.51065 0.25 0.25 5.51065 0.25 12C0.25 18.4893 5.51065 23.75 12 23.75C18.4893 23.75 23.75 18.4893 23.75 12C23.75 5.51065 18.4893 0.25 12 0.25ZM1.75 12C1.75 6.33908 6.33908 1.75 12 1.75C17.6609 1.75 22.25 6.33908 22.25 12C22.25 17.6609 17.6609 22.25 12 22.25C6.33908 22.25 1.75 17.6609 1.75 12Z" fill="currentColor"/></svg></span>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-baseline gap-2">
+                <span class="text-2xl font-bold leading-10 tracking-[-0.64px] sm:text-[32px]">5,214</span>
+                <span class="flex items-center gap-1 rounded-full bg-[#CAF0D1]/30 px-2 py-0.5">
+                  <span class="text-[#005320]">↑</span>
+                  <span class="text-xs font-medium leading-4 tracking-[0.12px] text-[#005320]">18%</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Completed Activities -->
+            <div class="flex flex-col justify-between rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-sm font-semibold leading-4 tracking-[0.275px] sm:text-base">
+                  Completed Activities
+                </p>
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                  <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16.0303 13.7803C16.3232 13.4874 16.3232 13.0126 16.0303 12.7197C15.7374 12.4268 15.2626 12.4268 14.9697 12.7197L11 16.6893L9.03033 14.7197C8.73744 14.4268 8.26256 14.4268 7.96967 14.7197C7.67678 15.0126 7.67678 15.4874 7.96967 15.7803L10.4697 18.2803C10.7626 18.5732 11.2374 18.5732 11.5303 18.2803L16.0303 13.7803Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0.25C8.41421 0.25 8.75 0.585786 8.75 1V2.25H15.25V1C15.25 0.585786 15.5858 0.25 16 0.25C16.4142 0.25 16.75 0.585786 16.75 1V2.25007C17.5561 2.25064 18.2154 2.25569 18.7599 2.30018C19.3899 2.35165 19.9318 2.45963 20.4295 2.71322C21.2291 3.12068 21.8793 3.77085 22.2868 4.57054C22.5404 5.06824 22.6483 5.61012 22.6998 6.24013C22.75 6.85438 22.75 7.6149 22.75 8.5673V17.4326C22.75 18.385 22.75 19.1456 22.6998 19.7599C22.6483 20.3899 22.5404 20.9318 22.2868 21.4295C21.8793 22.2291 21.2291 22.8793 20.4295 23.2868C19.9318 23.5404 19.3899 23.6483 18.7599 23.6998C18.1456 23.75 17.3851 23.75 16.4327 23.75H7.56737C6.61496 23.75 5.85438 23.75 5.24013 23.6998C4.61012 23.6483 4.06824 23.5404 3.57054 23.2868C2.77085 22.8793 2.12068 22.2291 1.71322 21.4295C1.45963 20.9318 1.35165 20.3899 1.30018 19.7599C1.24999 19.1456 1.24999 18.3851 1.25 17.4326V8.56739C1.24999 7.61495 1.24999 6.85439 1.30018 6.24013C1.35165 5.61012 1.45963 5.06824 1.71322 4.57054C2.12068 3.77085 2.77085 3.12068 3.57054 2.71322C4.06824 2.45963 4.61012 2.35165 5.24013 2.30018C5.78458 2.25569 6.44395 2.25064 7.25 2.25007V1C7.25 0.585786 7.58579 0.25 8 0.25ZM7.6 3.75C6.60753 3.75 5.90829 3.75058 5.36228 3.79519C4.82503 3.83909 4.50252 3.92184 4.25153 4.04973C3.73408 4.31338 3.31338 4.73408 3.04973 5.25153C2.92184 5.50252 2.83909 5.82503 2.79519 6.36228C2.76455 6.7374 2.75468 7.18484 2.7515 7.75H21.2485C21.2453 7.18484 21.2355 6.7374 21.2048 6.36228C21.1609 5.82503 21.0782 5.50252 20.9503 5.25153C20.6866 4.73408 20.2659 4.31338 19.7485 4.04973C19.4975 3.92184 19.175 3.83909 18.6377 3.79519C18.0917 3.75058 17.3925 3.75 16.4 3.75H7.6ZM2.75 17.4V9.25H21.25V17.4C21.25 18.3925 21.2494 19.0917 21.2048 19.6377C21.1609 20.175 21.0782 20.4975 20.9503 20.7485C20.6866 21.2659 20.2659 21.6866 19.7485 21.9503C19.4975 22.0782 19.175 22.1609 18.6377 22.2048C18.0917 22.2494 17.3925 22.25 16.4 22.25H7.6C6.60753 22.25 5.90829 22.2494 5.36228 22.2048C4.82503 22.1609 4.50252 22.0782 4.25153 21.9503C3.73408 21.6866 3.31338 21.2659 3.04973 20.7485C2.92184 20.4975 2.83909 20.175 2.79519 19.6377C2.75058 19.0917 2.75 18.3925 2.75 17.4Z" fill="currentColor"/></svg></span>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-baseline gap-2">
+                <span class="text-2xl font-bold leading-10 tracking-[-0.64px] sm:text-[32px]">5</span>
+                <span class="flex items-center gap-1 rounded-full bg-[#CAF0D1]/30 px-2 py-0.5">
+                  <span class="text-[#005320]">↑</span>
+                  <span class="text-xs font-medium leading-4 tracking-[0.12px] text-[#005320]">25%</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- People Reached -->
+            <div class="flex flex-col justify-between rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-sm font-semibold leading-4 tracking-[0.275px] sm:text-base">
+                  People Reached
+                </p>
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                  <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.583 1.41995C16.895 1.86149 17.7501 3.09602 17.7501 4.71455C17.7501 5.73209 17.1716 6.66866 16.527 7.41588C15.8644 8.184 15.0257 8.8733 14.2921 9.40806C14.2607 9.43097 14.2295 9.45375 14.1986 9.47635C13.4866 9.99659 12.8992 10.4258 12.0001 10.4258C11.1009 10.4258 10.5135 9.99659 9.80154 9.47634C9.77061 9.45374 9.73944 9.43097 9.708 9.40805C8.97441 8.87329 8.13575 8.18399 7.47311 7.41587C6.82851 6.66865 6.25006 5.73209 6.25006 4.71456C6.25006 3.09603 7.10508 1.8615 8.41713 1.41996C9.5362 1.04335 10.8388 1.29193 12.0001 2.13723C13.1613 1.29193 14.4639 1.04335 15.583 1.41995ZM15.1046 2.84161C14.4525 2.62218 13.4802 2.76414 12.5076 3.65812C12.2206 3.92189 11.7795 3.92189 11.4925 3.65812C10.5199 2.76414 9.5476 2.62218 8.89556 2.84161C8.27008 3.0521 7.75006 3.65592 7.75006 4.71456C7.75006 5.18213 8.03458 5.77033 8.60889 6.43607C9.16518 7.08091 9.90138 7.69278 10.5916 8.19592C11.4347 8.81053 11.6351 8.92578 12.0001 8.92578C12.365 8.92578 12.5654 8.81054 13.4085 8.19593C14.0987 7.69279 14.8349 7.08093 15.3912 6.43609C15.9655 5.77034 16.2501 5.18213 16.2501 4.71455C16.2501 3.65592 15.73 3.0521 15.1046 2.84161ZM8.68397 14.448C10.5498 14.0865 12.5471 14.1676 14.1633 15.1316C14.3903 15.267 14.6031 15.4357 14.7888 15.6442C15.1646 16.0664 15.3588 16.5911 15.3679 17.1172C15.5592 16.9938 15.7508 16.8568 15.9454 16.7098L17.7526 15.3446C18.6572 14.6613 19.9718 14.6612 20.8765 15.3443C21.7125 15.9755 22.0457 17.1083 21.4473 18.0675C21.022 18.7493 20.3815 19.6922 19.7296 20.296C19.0707 20.9063 18.1329 21.4194 17.4236 21.7618C16.5621 22.1776 15.6316 22.4075 14.7269 22.5539C12.8777 22.8532 10.9535 22.8074 9.12505 22.4308C8.19064 22.2382 7.21961 22.1382 6.25999 22.1382H4.00006C3.58585 22.1382 3.25006 21.8024 3.25006 21.3882C3.25006 20.974 3.58585 20.6382 4.00006 20.6382H6.25999C7.3221 20.6382 8.39454 20.7487 9.42772 20.9616C11.0798 21.302 12.8202 21.343 14.4872 21.0732C15.3161 20.939 16.0901 20.7398 16.7715 20.4109C17.4549 20.081 18.2233 19.6466 18.7104 19.1955C19.2029 18.7393 19.7541 17.9477 20.1747 17.2736C20.3016 17.0701 20.284 16.7765 19.9727 16.5414C19.6029 16.2622 19.0264 16.2623 18.6567 16.5415L16.8496 17.9067C16.1281 18.4516 15.2402 19.0347 14.1388 19.2103C14.0276 19.2281 13.9119 19.2443 13.7918 19.2586C13.7345 19.2689 13.6749 19.2758 13.6133 19.2781C13.051 19.334 12.3998 19.347 11.6813 19.2791C11.2689 19.2402 10.9662 18.8743 11.0051 18.4619C11.0441 18.0495 11.41 17.7468 11.8223 17.7858C12.4498 17.845 13.0127 17.8319 13.4903 17.7829C13.5 17.7819 13.5096 17.7809 13.5192 17.7799C13.5392 17.7683 13.5697 17.7472 13.6096 17.7122C13.9291 17.4334 13.9576 16.9665 13.6684 16.6416C13.5951 16.5593 13.5049 16.4854 13.3949 16.4198C12.2138 15.7153 10.6363 15.5976 8.96927 15.9206C7.31174 16.2417 5.66497 16.9815 4.43392 17.8545C4.09604 18.0941 3.6279 18.0144 3.38828 17.6766C3.14867 17.3387 3.22833 16.8706 3.5662 16.6309C4.96457 15.6393 6.80866 14.8113 8.68397 14.448Z" fill="currentColor"/></svg></span>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-baseline gap-2">
+                <span class="text-2xl font-bold leading-10 tracking-[-0.64px] sm:text-[32px]">1,240</span>
+                <span class="flex items-center gap-1 rounded-full bg-[#CAF0D1]/30 px-2 py-0.5">
+                  <span class="text-[#005320]">↑</span>
+                  <span class="text-xs font-medium leading-4 tracking-[0.12px] text-[#005320]">22%</span>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ANALYTICS GRID -->
+          <section class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_363px]">
+
+            <!-- Chart card -->
+            <div class="flex flex-col rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-6">
+
+              <!-- Header & toggle -->
+              <div class="flex flex-col gap-3 border-b border-[#f8fafc] pb-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-semibold leading-7 tracking-[-0.2px] sm:text-xl">
+                      Verified Volunteer Hours
+                    </h2>
+                    <span class="flex h-4 w-4 items-center justify-center">
+                      <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V13C12.75 13.4142 12.4142 13.75 12 13.75C11.5858 13.75 11.25 13.4142 11.25 13V7C11.25 6.58579 11.5858 6.25 12 6.25Z" fill="currentColor"/><path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z" fill="currentColor"/></svg></span>
+                    </span>
+                  </div>
+                  <p class="mt-0.5 text-[13px] leading-[18px]">
+                    Total hours contributed over time.
+                  </p>
+                </div>
+
+                <!-- Segmented toggle -->
+                <div class="flex items-center rounded-lg p-1">
+                  <div class="flex gap-2">
+                    <input type="radio" name="billing_cycle" id="btn-monthly" class="hidden peer/monthly" checked>
+                    <input type="radio" name="billing_cycle" id="btn-yearly" class="hidden peer/yearly">
+
+                    <label for="btn-monthly" class="cursor-pointer rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors bg-[#f8fafc] text-slate-700 hover:bg-slate-200 peer-checked/monthly:bg-[#0046b8] peer-checked/monthly:text-white peer-checked/monthly:hover:bg-[#003da3]">
+                      Monthly
+                    </label>
+
+                    <label for="btn-yearly" class="cursor-pointer rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors bg-[#f8fafc] text-slate-700 hover:bg-slate-200 peer-checked/yearly:bg-[#0046b8] peer-checked/yearly:text-white peer-checked/yearly:hover:bg-[#003da3]">
+                      Yearly
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chart area -->
+              <div class="relative mt-6 h-[260px] w-full sm:h-[320px]">
+                <!-- Y-axis labels -->
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex flex-col justify-between py-4 text-[10px] text-[#76777D]">
+                  <span>800</span>
+                  <span>600</span>
+                  <span>400</span>
+                  <span>200</span>
+                  <span>0</span>
+                </div>
+
+                <!-- Chart SVG -->
+                <svg viewBox="0 0 700 280" preserveAspectRatio="none" class="ml-10 h-full w-[calc(100%-2.5rem)]">
+                  <!-- Grid lines -->
+                  <line x1="0" y1="20"  x2="700" y2="20"  stroke="#E8EEFF" stroke-width="1" stroke-dasharray="4 4" />
+                  <line x1="0" y1="80"  x2="700" y2="80"  stroke="#E8EEFF" stroke-width="1" stroke-dasharray="4 4" />
+                  <line x1="0" y1="140" x2="700" y2="140" stroke="#E8EEFF" stroke-width="1" stroke-dasharray="4 4" />
+                  <line x1="0" y1="200" x2="700" y2="200" stroke="#E8EEFF" stroke-width="1" stroke-dasharray="4 4" />
+                  <line x1="0" y1="260" x2="700" y2="260" stroke="#D9E3FB" stroke-width="1" />
+
+                  <!-- Area fill -->
+                  <path
+                    d="M 20,180 L 90,165 L 160,158 L 230,148 L 300,150 L 370,132 L 440,108 L 510,100 L 580,96 L 660,74 L 660,260 L 20,260 Z"
+                    fill="url(#areaGrad)"
+                  />
+
+                  <!-- Line path -->
+                  <path
+                    d="M 20,180 L 90,165 L 160,158 L 230,148 L 300,150 L 370,132 L 440,108 L 510,100 L 580,96 L 660,74"
+                    fill="none"
+                    stroke="#0051D5"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+
+                  <!-- Data nodes -->
+                  <circle cx="20"  cy="180" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="90"  cy="165" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="160" cy="158" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="230" cy="148" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="300" cy="150" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="370" cy="132" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="440" cy="108" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="510" cy="100" r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+                  <circle cx="580" cy="96"  r="4" fill="#FFFFFF" stroke="#0051D5" stroke-width="2.5" />
+
+                  <!-- Highlighted point -->
+                  <circle cx="660" cy="74" r="6" fill="#0051D5" stroke="#FFFFFF" stroke-width="2.5" />
+
+                  <!-- Gradient -->
+                  <defs>
+                    <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="13.66%" stop-color="#0051D5" stop-opacity="0.18" />
+                      <stop offset="109.81%" stop-color="#0051D5" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                <!-- Floating value badge -->
+                <div class="pointer-events-none absolute right-2 top-4 rounded-md bg-[#0046b8] px-2 py-1 text-[10px] font-semibold text-white shadow">
+                  742 hrs
+                </div>
+
+                <!-- X-axis labels -->
+                <div class="absolute -bottom-1 left-10 right-0 flex justify-between text-[10px] text-[#9CA3AF]">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+                  <span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span class="font-semibold text-[#0046b8]">Oct</span>
+                </div>
+              </div>
+
+              <!-- Trend summary block -->
+              <div class="mt-6 flex flex-col gap-4 rounded-xl border-t border-[#f8fafc] bg-[#f8fafc] px-4 pb-4 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-start gap-3.5">
+                  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#7FFC97]/30">
+                    <span class="text-[#005320]"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6679 7C15.6679 6.58579 16.0036 6.25 16.4179 6.25H22C22.4142 6.25 22.75 6.58579 22.75 7V12.5458C22.75 12.96 22.4142 13.2958 22 13.2958C21.5858 13.2958 21.25 12.96 21.25 12.5458V8.80286L15.1142 14.9013C14.6452 15.3674 14.241 15.7692 13.8739 16.0477C13.4804 16.3462 13.0432 16.572 12.505 16.572C11.9668 16.5719 11.5297 16.346 11.1362 16.0474C10.7692 15.7688 10.3651 15.367 9.89629 14.9007L9.62203 14.628C9.10787 14.1167 8.77452 13.7875 8.49695 13.5769C8.23672 13.3794 8.11506 13.3573 8.03449 13.3574C7.95393 13.3574 7.83228 13.3795 7.57219 13.5772C7.29478 13.7881 6.96167 14.1175 6.44789 14.6292L2.52922 18.5314C2.23571 18.8237 1.76084 18.8227 1.46856 18.5292C1.17628 18.2357 1.17728 17.7608 1.47078 17.4686L5.42433 13.5315C5.89326 13.0645 6.29742 12.662 6.66452 12.383C7.05802 12.0839 7.49535 11.8576 8.03395 11.8574C8.57254 11.8572 9.01003 12.0832 9.40375 12.382C9.77105 12.6607 10.1755 13.063 10.6448 13.5296L10.919 13.8024C11.4327 14.3132 11.7658 14.6421 12.0431 14.8526C12.3031 15.0499 12.4247 15.072 12.5052 15.072C12.5857 15.072 12.7073 15.0499 12.9673 14.8527C13.2447 14.6423 13.5778 14.3134 14.0916 13.8027L20.1815 7.75H16.4179C16.0036 7.75 15.6679 7.41421 15.6679 7Z" fill="currentColor"/></svg></span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lg font-bold leading-5 tracking-[-0.2px] text-[#005320] sm:text-xl">+18%</span>
+                      <span class="text-sm font-semibold leading-5">from last month</span>
+                    </div>
+                    <p class="mt-0.5 max-w-md text-[13px] leading-[18px]">
+                      Volunteer hours increased by 18% in October compared to September, driven by higher participation in our community education and food relief programs.
+                    </p>
+                  </div>
+                </div>
+
+                <a href="#" class="flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-[#0046b8] hover:underline sm:self-auto">
+                  View Breakdown
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.4697 5.46967C13.7626 5.17678 14.2374 5.17678 14.5303 5.46967L20.5303 11.4697C20.8232 11.7626 20.8232 12.2374 20.5303 12.5303L14.5303 18.5303C14.2374 18.8232 13.7626 18.8232 13.4697 18.5303C13.1768 18.2374 13.1768 17.7626 13.4697 17.4697L18.1893 12.75H4C3.58579 12.75 3.25 12.4142 3.25 12C3.25 11.5858 3.58579 11.25 4 11.25H18.1893L13.4697 6.53033C13.1768 6.23744 13.1768 5.76256 13.4697 5.46967Z" fill="currentColor"/></svg></span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Programme Breakdown -->
+            <div class="flex flex-col rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-6">
+
+              <!-- Header -->
+              <div class="flex items-start justify-between gap-3">
+                <h2 class="max-w-[200px] text-lg font-semibold leading-7 tracking-[-0.2px] sm:text-xl">
+                  People Reached by Programme
+                </h2>
+                <button type="button" class="flex h-4 w-4 shrink-0 items-center justify-center">
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V13C12.75 13.4142 12.4142 13.75 12 13.75C11.5858 13.75 11.25 13.4142 11.25 13V7C11.25 6.58579 11.5858 6.25 12 6.25Z" fill="currentColor"/><path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z" fill="currentColor"/></svg></span>
+                </button>
+              </div>
+
+              <p class="mt-1 text-[13px] leading-[18px]">
+                Total number of unique people reached in 2026.
+              </p>
+
+              <!-- Programme list -->
+              <div class="mt-5 flex flex-col gap-4 border-b border-[#f8fafc] pb-5">
+
+                <!-- Food Relief -->
+                <div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex min-w-0 items-center gap-2.5">
+                      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                        <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="none"><path fill="currentColor" d="M161.15 72.65A62.08 62.08 0 0 0 198 16a6 6 0 0 0-6-6h-8a62.08 62.08 0 0 0-56 35.42A62.08 62.08 0 0 0 72 10h-8a6 6 0 0 0 0 12h8a50.06 50.06 0 0 1 49.66 44.26a85.95 85.95 0 1 0 39.49 6.39M184 22h1.64A50.07 50.07 0 0 1 136 66h-1.64A50.07 50.07 0 0 1 184 22m-56 204a74 74 0 1 1 74-74a74.09 74.09 0 0 1-74 74m53.92-65A55.48 55.48 0 0 1 137 205.92a7 7 0 0 1-1 .08a6 6 0 0 1-1-11.92A43.29 43.29 0 0 0 170.08 159a6 6 0 1 1 11.84 2"/></svg></span>
+                      </div>
+                      <p class="truncate text-sm font-semibold leading-5">Food Relief Distribution</p>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2">
+                      <span class="text-sm font-semibold leading-5">4,620</span>
+                      <span class="text-xs font-medium leading-4 tracking-[0.12px]">50%</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 h-2 w-full rounded-full bg-[#E8EEFF]">
+                    <div class="h-full rounded-full bg-[#0046b8]" style="width:50%"></div>
+                  </div>
+                </div>
+
+                <!-- Community Education -->
+                <div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex min-w-0 items-center gap-2.5">
+                      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                        <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"><g fill="none"><path fill="currentColor" d="M17.13 3.44c2.04 0 3.43.4 4.25.73c.36.16.54.23.7.48c.18.25.18.5.18.99v12.13c0 1.26 0 1.9-.35 2.2s-1.03.2-2.4-.01a16 16 0 0 0-4.77 0c-1.36.2-2.05.3-2.4 0c-.34-.3-.34-.93-.34-2.19V5.64c0-.5 0-.74.17-.99s.35-.32.71-.48c.82-.33 2.2-.73 4.25-.73" opacity=".2"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.87 3.12c2.2 0 3.65.59 4.43 1.03c.28.16.43.24.56.48s.14.44.14.86v12.25c0 1.27 0 1.9-.37 2.2s-1.04.17-2.38-.1c-.77-.16-1.6-.28-2.38-.28s-1.6.12-2.38.27c-1.34.28-2.01.41-2.38.11s-.37-.93-.37-2.2V6.35c0-.82 0-1.24.34-1.74s.6-.62 1.14-.83a10 10 0 0 1 3.65-.66m10.26 0c2.2 0 3.64.59 4.42 1.03c.3.16.44.24.57.48c.14.23.14.44.14.86v12.25c0 1.27 0 1.9-.37 2.2s-1.04.17-2.38-.1c-.77-.16-1.61-.28-2.38-.28s-1.61.12-2.38.27c-1.34.28-2.01.41-2.38.11s-.37-.93-.37-2.2V6.35c0-.82 0-1.24.34-1.74s.6-.62 1.13-.83a10 10 0 0 1 3.66-.66"/></g></svg></span>
+                      </div>
+                      <p class="truncate text-sm font-semibold leading-5">Community Education</p>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2">
+                      <span class="text-sm font-semibold leading-5">2,150</span>
+                      <span class="text-xs font-medium leading-4 tracking-[0.12px]">23%</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 h-2 w-full rounded-full bg-[#E8EEFF]">
+                    <div class="h-full rounded-full bg-[#0046b8]" style="width:23%"></div>
+                  </div>
+                </div>
+
+                <!-- Environmental Outreach -->
+                <div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex min-w-0 items-center gap-2.5">
+                      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                        <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M20.89 2.3C20.47 2.22 10.42.55 5.07 5.9c-.71.71-1.33 1.54-1.85 2.47c-2.06 3.7-1.48 7.99 1.47 10.94C6.47 21.09 8.73 22 11.05 22c1.54 0 3.11-.4 4.58-1.22c.93-.52 1.76-1.14 2.47-1.85c5.35-5.35 3.67-15.39 3.6-15.82a.99.99 0 0 0-.81-.81m-4.2 15.22c-.58.58-1.26 1.09-2.03 1.51c-2.65 1.47-5.17 1.07-7 .04C8.3 15.1 10.73 11.35 14 9c-3.7 1.65-6.72 4.58-8.47 8.23c-1.43-1.85-2.29-4.78-.56-7.89c.43-.77.94-1.45 1.51-2.03c3.86-3.86 11.05-3.4 13.34-3.14c.26 2.29.72 9.48-3.14 13.34Z"/></svg></span>
+                      </div>
+                      <p class="truncate text-sm font-semibold leading-5">Environmental Outreach</p>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2">
+                      <span class="text-sm font-semibold leading-5">1,208</span>
+                      <span class="text-xs font-medium leading-4 tracking-[0.12px]">14%</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 h-2 w-full rounded-full bg-[#E8EEFF]">
+                    <div class="h-full rounded-full bg-[#0046b8]" style="width:14%"></div>
+                  </div>
+                </div>
+
+                <!-- Health Awareness -->
+                <div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex min-w-0 items-center gap-2.5">
+                      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                        <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3C4.239 3 2 5.216 2 7.95c0 2.207.875 7.445 9.488 12.74a.99.99 0 0 0 1.024 0C21.126 15.395 22 10.157 22 7.95C22 5.216 19.761 3 17 3s-5 3-5 3s-2.239-3-5-3"/></svg></span>
+                      </div>
+                      <p class="truncate text-sm font-semibold leading-5">Health Awareness</p>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2">
+                      <span class="text-sm font-semibold leading-5">820</span>
+                      <span class="text-xs font-medium leading-4 tracking-[0.12px]">9%</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 h-2 w-full rounded-full bg-[#E8EEFF]">
+                    <div class="h-full rounded-full bg-[#0046b8]" style="width:9%"></div>
+                  </div>
+                </div>
+
+                <!-- Other Programmes -->
+                <div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex min-w-0 items-center gap-2.5">
+                      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#f8fafc]">
+                        <span class="text-[#0046b8]"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"><path fill="currentColor" fill-rule="evenodd" d="M2 12a2 2 0 1 1 4 0a2 2 0 0 1-4 0m8 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0m8 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0" clip-rule="evenodd"/></svg></span>
+                      </div>
+                      <p class="truncate text-sm font-semibold leading-5">Other Programmes</p>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2">
+                      <span class="text-sm font-semibold leading-5">340</span>
+                      <span class="text-xs font-medium leading-4 tracking-[0.12px]">4%</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 h-2 w-full rounded-full bg-[#E8EEFF]">
+                    <div class="h-full rounded-full bg-[#0046b8]" style="width:4%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer total -->
+              <div class="flex items-center justify-between border-t border-[#f8fafc] pt-4">
+                <p class="text-xs font-medium leading-4 tracking-[0.12px]">Total Documented Beneficiaries</p>
+                <p class="text-base font-bold leading-6 tracking-[-0.08px]">9,210</p>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

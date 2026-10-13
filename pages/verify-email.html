@@ -30,7 +30,7 @@
     <!-- Title & Description -->
     <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Check your email</h1>
     <p class="text-slate-500 text-xs sm:text-sm leading-relaxed mb-8">
-      We sent a 6-digit verification code to <span class="font-bold text-slate-700" id="userEmail">toyin@youthrise.org</span>
+      We sent a 6-digit verification code to <span class="font-bold text-slate-700" id="userEmail"></span>
     </p>
 
     <!-- OTP Input Form -->
@@ -61,56 +61,258 @@
   </div>
 
   <script>
-    // Verify email from URL parameter (e.g. verify-email.html?email=user@domain.com)
-    const urlParams = new URLSearchParams(window.location.search);
-    const emailParam = urlParams.get('email');
-    if (emailParam) {
-      document.getElementById('userEmail').textContent = emailParam;
+(() => {
+  "use strict";
+
+  if (!window.API) {
+    console.warn("[verify-email] API client not found. Did you load API.js first?");
+  }
+
+  /*  TOAST  */
+  function toast(message, variant = "default") {
+    let host = document.getElementById("toast-host");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "toast-host";
+      host.className =
+        "pointer-events-none fixed bottom-6 left-1/2 z-[95] flex -translate-x-1/2 flex-col items-center gap-2";
+      document.body.appendChild(host);
+    }
+    const palette = {
+      default: "bg-[#0F172A] text-white",
+      success: "bg-[#065F46] text-white",
+      error:   "bg-[#991B1B] text-white",
+      info:    "bg-[#1D4ED8] text-white",
+    };
+    const el = document.createElement("div");
+    el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+    el.setAttribute("role", "status");
+    el.textContent = message;
+    host.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = "opacity .25s ease, transform .25s ease";
+      el.style.opacity = "0";
+      el.style.transform = "translateY(8px)";
+      setTimeout(() => el.remove(), 260);
+    }, 2800);
+  }
+
+  /*  EMAIL DISPLAY  */
+  const urlParams   = new URLSearchParams(window.location.search);
+  const emailParam  = urlParams.get("email");
+  const emailSpan   = document.getElementById("userEmail");
+
+  let displayEmail = emailParam;
+
+  if (!displayEmail) {
+    try {
+      const raw = sessionStorage.getItem("pendingUser");
+      if (raw) {
+        const pending = JSON.parse(raw);
+        if (pending?.email) displayEmail = pending.email;
+      }
+    } catch (err) {
+      console.error("[verify-email] couldn't parse pendingUser:", err);
+    }
+  }
+
+  emailSpan.textContent = displayEmail || "your email address";
+
+  /*  OTP INPUT AUTO-TAB  */
+  const inputs = Array.from(document.querySelectorAll(".otp-box"));
+
+  inputs.forEach((input, index) => {
+    // Keep only digits and auto-advance
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/[^0-9]/g, "");
+      if (input.value && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+    });
+
+    // Backspace moves to the previous box when empty
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        inputs[index - 1].focus();
+      }
+    });
+
+    // Arrow keys for quick navigation
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" && index > 0)  inputs[index - 1].focus();
+      if (e.key === "ArrowRight" && index < inputs.length - 1) inputs[index + 1].focus();
+    });
+
+    // Paste a full 6-digit code
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const pasted = ((e.clipboardData || window.clipboardData).getData("text") || "")
+        .replace(/[^0-9]/g, "")
+        .trim();
+      if (pasted.length === 6) {
+        pasted.split("").forEach((char, i) => {
+          if (inputs[i]) inputs[i].value = char;
+        });
+        inputs[inputs.length - 1].focus();
+      }
+    });
+  });
+
+  /*  HELPERS  */
+  function getCode() {
+    return inputs.map((i) => i.value.trim()).join("");
+  }
+
+  function setOtpLoading(loading) {
+    inputs.forEach((i) => (i.disabled = loading));
+  }
+
+  function clearOtp() {
+    inputs.forEach((i) => (i.value = ""));
+    inputs[0]?.focus();
+  }
+
+  /*  VERIFY EMAIL  */
+  const form      = document.getElementById("otpForm");
+  const submitBtn = form?.querySelector('button[type="submit"]');
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault(); // stop the default GET navigation to step1-profile.html
+
+    if (!displayEmail) {
+      toast("We don't know which email to verify. Start over.", "error");
+      return;
     }
 
-    const inputs = document.querySelectorAll('.otp-box');
+    const code = getCode();
 
-    // Event handling
-    inputs.forEach((input, index) => {
-      input.addEventListener('input', (e) => {
-        // non-numeric characters
-        input.value = input.value.replace(/[^0-9]/g, '');
+    if (code.length !== 6) {
+      toast("Please enter all 6 digits", "error");
+      // Focus the first empty box
+      const firstEmpty = inputs.find((i) => !i.value);
+      firstEmpty?.focus();
+      return;
+    }
 
-        if (input.value && index < inputs.length - 1) {
-          inputs[index + 1].focus();
+    const original = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Verifying…";
+    setOtpLoading(true);
+
+    try {
+      if (window.API) {
+        await API.post("/auth/verify-email", { email: displayEmail, code });
+      } else {
+        await new Promise((r) => setTimeout(r, 500)); // dev fallback
+      }
+
+      // Clear any pending-registration stash
+      try {
+        const raw = sessionStorage.getItem("pendingUser");
+        if (raw) {
+          const user = JSON.parse(raw);
+          // Keep the email for step1, drop nothing else
+          sessionStorage.setItem("pendingUser", JSON.stringify({
+            email: user.email,
+            fullName: user.fullName,
+            accountType: user.accountType,
+            verifiedAt: new Date().toISOString(),
+          }));
         }
-      });
+      } catch (_) { /* ignore */ }
 
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !input.value && index > 0) {
-          inputs[index - 1].focus();
-        }
-      });
+      toast("Email verified — let's finish your profile", "success");
 
-      // allow code pasting
-      input.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const pasteData = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').trim();
-        if (pasteData.length === 6) {
-          pasteData.split('').forEach((char, i) => {
-            if (inputs[i]) inputs[i].value = char;
-          });
-          inputs[inputs.length - 1].focus();
-        }
-      });
-    });
-
-    // Resend OTP
-    document.getElementById('resendBtn').addEventListener('click', function() {
-      this.innerText = 'Code Sent!';
-      this.classList.remove('text-blue-600');
-      this.classList.add('text-emerald-600');
+      // Where to next?
       setTimeout(() => {
-        this.innerText = 'Resend code';
-        this.classList.remove('text-emerald-600');
-        this.classList.add('text-blue-600');
-      }, 3000);
-    });
-  </script>
+        window.location.href = `step1-profile.html?email=${encodeURIComponent(displayEmail)}`;
+      }, 600);
+
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = original;
+      setOtpLoading(false);
+      clearOtp();
+
+      const msg = err?.message || "Invalid or expired code";
+
+      // If the code is wrong, highlight the OTP boxes
+      const lower = msg.toLowerCase();
+      if (lower.includes("code") || lower.includes("invalid") || lower.includes("expired")) {
+        inputs.forEach((i) => {
+          i.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
+          setTimeout(() => {
+            i.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
+          }, 2000);
+        });
+      }
+
+      toast(msg, "error");
+    }
+  });
+
+  // RESEND CODE  
+  const resendBtn = document.getElementById("resendBtn");
+  let   resendCooldown = 0;
+
+  resendBtn?.addEventListener("click", async () => {
+    if (resendCooldown > 0) return;
+
+    if (!displayEmail) {
+      toast("No email on file — please start over", "error");
+      return;
+    }
+
+    const originalHTML = resendBtn.innerHTML;
+    resendBtn.disabled = true;
+    resendBtn.textContent = "Sending…";
+
+    try {
+      if (window.API) {
+        await API.post("/auth/resend-verification", { email: displayEmail });
+      } else {
+        await new Promise((r) => setTimeout(r, 500));
+      }
+
+      resendBtn.classList.remove("text-blue-600");
+      resendBtn.classList.add("text-emerald-600");
+      resendBtn.textContent = "Code sent!";
+
+      toast("A new code is on its way", "success");
+
+      // 30-second cooldown
+      resendCooldown = 30;
+      const tick = () => {
+        if (resendCooldown <= 0) {
+          resendBtn.disabled = false;
+          resendBtn.classList.remove("text-emerald-600");
+          resendBtn.classList.add("text-blue-600");
+          resendBtn.innerHTML = originalHTML;
+          return;
+        }
+        resendBtn.textContent = `Resend in ${resendCooldown}s`;
+        resendCooldown--;
+        setTimeout(tick, 1000);
+      };
+      tick();
+
+    } catch (err) {
+      resendBtn.disabled = false;
+      resendBtn.innerHTML = originalHTML;
+      toast(err?.message || "Couldn't resend the code", "error");
+    }
+  });
+
+  /*  GLOBAL 401  */
+  document.addEventListener("api:unauthorized", () => {
+    toast("Session expired — please sign in again", "error");
+    setTimeout(() => (window.location.href = "login.html"), 900);
+  });
+
+ 
+  // Focus first OTP box on load
+  inputs[0]?.focus();
+})();
+</script>
 </body>
 </html>
