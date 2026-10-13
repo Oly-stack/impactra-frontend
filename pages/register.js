@@ -198,20 +198,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        // If the API client is missing, fall back to the old behavior
-        if (!window.API) {
-          sessionStorage.setItem("pendingUser", JSON.stringify({
-            fullName,
-            email,
-            phone: payload.phone,
-            accountType: selectedAccountType,
-          }));
-                    window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
-        }
+  // If the API client is missing, fall back to the old behavior
+  if (!window.API) {
+    sessionStorage.setItem("pendingUser", JSON.stringify({
+      fullName,
+      email,
+      phone: payload.phone,
+      accountType: selectedAccountType,
+    }));
+    window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
+    return;   
+  }
 
-        const res = await API.auth.register(payload);
+  const res = await window.API.auth.register(payload);   
 
-        // We store whatever we get (if anything) but always route to verify-email
+        
         try {
           if (res?.accessToken || res?.token) {
             API.tokens.set({
@@ -219,9 +220,9 @@ document.addEventListener("DOMContentLoaded", () => {
               refreshToken: res.refreshToken,
             });
           }
-        } catch (_) { /* ignore token shape differences */ }
+        } catch (_) {  }
 
-        // Persist just enough for the verify-email page to show the address
+        
         sessionStorage.setItem("pendingUser", JSON.stringify({
           fullName,
           email,

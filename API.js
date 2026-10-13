@@ -292,7 +292,7 @@ const API = (() => {
     assignReviewer: (id, reviewerId) =>
       post(`/volunteers/${id}/assign`, { reviewerId }),
 
-    /** POST /volunteers/:id/flag */
+    /* POST /volunteers/:id/flag */
     flag: (id, reason) => post(`/volunteers/${id}/flag`, { reason }),
   };
 
