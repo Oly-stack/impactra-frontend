@@ -701,7 +701,7 @@
   /* GLOBAL 401 */
   document.addEventListener("api:unauthorized", () => {
     toast("Session expired — please sign in again", "error");
-    setTimeout(() => (window.location.href = "login.html"), 900);
+    // setTimeout(() => (window.location.href = "login.html"), 900);
   });
 
   /* HYDRATE FROM API ON LOAD */

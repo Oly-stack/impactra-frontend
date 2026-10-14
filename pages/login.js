@@ -152,10 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-  //  Call API (bypassed for now — backend CORS not ready)
-  let res = null;
-  // res = await API.auth.login(email, password);
-  await new Promise((r) => setTimeout(r, 400));
+  //  Call API 
+  // let res = null;
+  // await new Promise((r) => setTimeout(r, 400));
+  const res = await API.auth.login(email, password);
       //  Remember me 
       try {
         if (rememberBox?.checked) {
