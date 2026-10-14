@@ -176,7 +176,7 @@ const API = (() => {
     me: () => get("/auth/me"),
 
     /* POST /auth/register */
-    register: (payload) => post("/auth/register", payload, { auth: false }),
+    register: (payload) => post("/auth/signup", payload, { auth: false }),
 
     /* POST /auth/forgot-password */
     forgotPassword: (email) =>

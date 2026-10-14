@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         emailInput.value = saved;
         rememberBox.checked = true;
       }
-    } catch (_) { /* ignore storage access errors */ }
+    } catch (_) {  }
   }
 
   /* Forgot password*/

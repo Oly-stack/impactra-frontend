@@ -3,7 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
   if (!window.API) {
-    console.error("[register.js] API client not found. Did you load api.js first?");
+    console.error(
+      "[register.js] API client not found. Did you load api.js first?",
+    );
   }
 
   /* Small toast helper */
@@ -19,8 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const palette = {
       default: "bg-[#0F172A] text-white",
       success: "bg-[#065F46] text-white",
-      error:   "bg-[#991B1B] text-white",
-      info:    "bg-[#1D4ED8] text-white",
+      error: "bg-[#991B1B] text-white",
+      info: "bg-[#1D4ED8] text-white",
     };
     const el = document.createElement("div");
     el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
@@ -37,39 +39,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* 1. Password Visibility Toggles*/
   const togglePassword = document.getElementById("togglePassword");
-  const passwordInput  = document.getElementById("password");
+  const passwordInput = document.getElementById("password");
 
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
-      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      const type =
+        passwordInput.getAttribute("type") === "password" ? "text" : "password";
       passwordInput.setAttribute("type", type);
       togglePassword.setAttribute("aria-pressed", String(type === "text"));
       togglePassword.setAttribute(
         "aria-label",
-        type === "text" ? "Hide password" : "Show password"
+        type === "text" ? "Hide password" : "Show password",
       );
     });
   }
 
-  const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
-  const confirmPasswordInput  = document.getElementById("confirmPassword");
+  const toggleConfirmPassword = document.getElementById(
+    "toggleConfirmPassword",
+  );
+  const confirmPasswordInput = document.getElementById("confirmPassword");
 
   if (toggleConfirmPassword && confirmPasswordInput) {
     toggleConfirmPassword.addEventListener("click", () => {
-      const type = confirmPasswordInput.getAttribute("type") === "password" ? "text" : "password";
+      const type =
+        confirmPasswordInput.getAttribute("type") === "password"
+          ? "text"
+          : "password";
       confirmPasswordInput.setAttribute("type", type);
-      toggleConfirmPassword.setAttribute("aria-pressed", String(type === "text"));
+      toggleConfirmPassword.setAttribute(
+        "aria-pressed",
+        String(type === "text"),
+      );
       toggleConfirmPassword.setAttribute(
         "aria-label",
-        type === "text" ? "Hide password" : "Show password"
+        type === "text" ? "Hide password" : "Show password",
       );
     });
   }
 
   /* 2. Account Type Selection*/
-  let selectedAccountType = "ngo";
-  const ngoCard         = document.getElementById("ngoCard");
-  const volunteerCard   = document.getElementById("volunteerCard");
+  let selectedAccountType = "organization";
+  const ngoCard = document.getElementById("ngoCard");
+  const volunteerCard = document.getElementById("volunteerCard");
   const ngoSelectedBadge = document.getElementById("ngoSelected");
 
   const ACTIVE_CARD_CLASSES =
@@ -79,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (ngoCard && volunteerCard) {
     ngoCard.addEventListener("click", () => {
-      selectedAccountType = "ngo";
+      selectedAccountType = "organization";
       ngoCard.className = ACTIVE_CARD_CLASSES;
       volunteerCard.className = INACTIVE_CARD_CLASSES;
       if (ngoSelectedBadge) ngoSelectedBadge.style.display = "flex";
@@ -114,10 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function pwStrength(pw) {
     let s = 0;
-    if (pw.length >= 8)          s++;
-    if (/[A-Z]/.test(pw))        s++;
-    if (/[a-z]/.test(pw))        s++;
-    if (/\d/.test(pw))           s++;
+    if (pw.length >= 8) s++;
+    if (/[A-Z]/.test(pw)) s++;
+    if (/[a-z]/.test(pw)) s++;
+    if (/\d/.test(pw)) s++;
     if (/[^A-Za-z0-9]/.test(pw)) s++;
     return s;
   }
@@ -127,92 +138,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (registerForm) {
     // Clear error styling on input
-    ["fullName", "email", "phone", "password", "confirmPassword"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("input", () => clearInvalid(el));
-    });
+    ["Name", "email", "password", "confirmPassword"].forEach(
+      (id) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", () => clearInvalid(el));
+      },
+    );
 
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const fullNameEl = document.getElementById("fullName");
-      const emailEl    = document.getElementById("email");
-      const phoneEl    = document.getElementById("phone");
+      const emailEl = document.getElementById("email");
+      
 
-      const fullName        = fullNameEl?.value.trim() || "";
-      const email           = emailEl?.value.trim() || "";
-      const phone           = phoneEl?.value.trim() || "";
-      const password        = passwordInput?.value || "";
+      const fullName = fullNameEl?.value.trim() || "";
+      const email = emailEl?.value.trim() || "";
+     
+      const password = passwordInput?.value || "";
       const confirmPassword = confirmPasswordInput?.value || "";
 
-      //  Validate full name 
+      //  Validate full name
       if (!fullName) {
         markInvalid(fullNameEl, "Please enter your full name");
         return;
       }
 
-      //  Validate email 
+      //  Validate email
       if (!email || !EMAIL_RE.test(email)) {
         markInvalid(emailEl, "Please enter a valid email address");
         return;
       }
 
-      //  Validate phone (digits only, min 10) 
-      const digits = phone.replace(/\D/g, "");
-      if (!digits || digits.length < 10) {
-        markInvalid(phoneEl, "Please enter a valid phone number");
-        return;
-      }
+     
 
-      //  Validate password 
+      //  Validate password
       if (!password || password.length < 8) {
         markInvalid(passwordInput, "Password must be at least 8 characters");
         return;
       }
       if (pwStrength(password) < 3) {
-        markInvalid(passwordInput, "Password is too weak — add uppercase, numbers or symbols");
+        markInvalid(
+          passwordInput,
+          "Password is too weak — add uppercase, numbers or symbols",
+        );
         return;
       }
 
-      //  Confirm password 
+      //  Confirm password
       if (password !== confirmPassword) {
         markInvalid(confirmPasswordInput, "Passwords do not match");
         return;
       }
 
-      //  Build payload for the API 
+      //  Build payload for the API
       const payload = {
-        fullName,
+        name: fullName,
         email,
-        phone: `+234${digits}`,
+       
         password,
-        accountType: selectedAccountType, // "ngo" | "volunteer"
+        accountType: selectedAccountType, 
       };
 
-      //  Submit 
+      //  Submit
       const submitBtn = registerForm.querySelector('button[type="submit"]');
-      const original  = submitBtn ? submitBtn.innerHTML : "";
+      const original = submitBtn ? submitBtn.innerHTML : "";
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = "Creating account…";
       }
 
       try {
-  // If the API client is missing, fall back to the old behavior
-  if (!window.API) {
-    sessionStorage.setItem("pendingUser", JSON.stringify({
-      fullName,
-      email,
-      phone: payload.phone,
-      accountType: selectedAccountType,
-    }));
-    window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
-    return;   
-  }
+        // If the API client is missing, fall back to the old behavior
+        if (!window.API) {
+          sessionStorage.setItem(
+            "pendingUser",
+            JSON.stringify({
+              fullName,
+              email,
+              phone: payload.phone,
+              accountType: selectedAccountType,
+            }),
+          );
+          window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
+          return;
+        }
 
-  const res = await window.API.auth.register(payload);   
+        const res = await window.API.auth.register(payload);
 
-        
         try {
           if (res?.accessToken || res?.token) {
             API.tokens.set({
@@ -220,20 +233,21 @@ document.addEventListener("DOMContentLoaded", () => {
               refreshToken: res.refreshToken,
             });
           }
-        } catch (_) {  }
+        } catch (_) {}
 
-        
-        sessionStorage.setItem("pendingUser", JSON.stringify({
-          fullName,
-          email,
-          phone: payload.phone,
-          accountType: selectedAccountType,
-        }));
+        sessionStorage.setItem(
+          "pendingUser",
+          JSON.stringify({
+            fullName,
+            email,
+            phone: payload.phone,
+            accountType: selectedAccountType,
+          }),
+        );
 
         toast("Account created — check your email to verify", "success");
         setTimeout(() => {
-          window.location.href =
-            `verify-email.html?email=${encodeURIComponent(email)}`;
+          window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
         }, 700);
       } catch (err) {
         // Roll back the button and show the server's message
@@ -242,9 +256,10 @@ document.addEventListener("DOMContentLoaded", () => {
           submitBtn.innerHTML = original;
         }
 
-        const msg = err?.message || "Couldn't create account — please try again";
+        const msg =
+          err?.message || "Couldn't create account — please try again";
 
-        // Highlight the relevant field if the backend hints at the cause
+        // Highlight the relevant field 
         const lower = msg.toLowerCase();
         if (lower.includes("email")) {
           markInvalid(emailEl, msg);
