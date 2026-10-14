@@ -1,4 +1,4 @@
-/* IMPACTRA — Activities Dashboard */
+/* IMPACTRA — Activities Dashboard*/
 (() => {
   "use strict";
 
@@ -9,6 +9,14 @@
       el.textContent.replace(/\s+/g, " ").trim().toLowerCase()
         .includes(text.toLowerCase())
     );
+
+  /* Global API guard */
+  if (!window.API) {
+    console.error("[activities] API client not found. Did you load api.js first?");
+  }
+
+  /* Cache of API contributions keyed by volunteer name (lowercased) */
+  const contribIndex = new Map();
 
   /* TOAST */
   function toast(message, variant = "default") {
@@ -36,6 +44,20 @@
       el.style.transform = "translateY(8px)";
       setTimeout(() => el.remove(), 260);
     }, 2600);
+  }
+
+  /* Button busy helper */
+  function withBusy(btn, label, fn) {
+    if (!btn) return Promise.resolve();
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    if (label) btn.textContent = label;
+    return Promise.resolve()
+      .then(fn)
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      });
   }
 
   /* SIDEBAR */
@@ -66,6 +88,20 @@
     });
   }
 
+  /* LOG OUT */
+  byText("aside button", "Log out")?.addEventListener("click", () => {
+    openConfirmLogout();
+  });
+
+  function openConfirmLogout() {
+    const ok = window.confirm("You'll be signed out of IMPACTRA on this device. Continue?");
+    if (!ok) return;
+    (async () => {
+      try { await API.auth.logout(); } catch (_) { /* ignore */ }
+      window.location.href = "login.html";
+    })();
+  }
+
   /* TABS */
   const tabWrap = $(".table-x-scroll");
   const tabs = tabWrap ? $$("button", tabWrap) : [];
@@ -93,7 +129,7 @@
   const allRows = tbody ? $$("tr", tbody) : [];
   const selectAll = table ? $('thead input[type="checkbox"]', table) : null;
 
-  // Pre-cache searchable text on each row
+  // Pre-cache searchable text + tags on each row
   allRows.forEach((row) => {
     row.dataset.searchText = row.textContent.replace(/\s+/g, " ").trim().toLowerCase();
     row.dataset.opportunity = /food relief/i.test(row.textContent)
@@ -104,7 +140,7 @@
       : /verified|complete/i.test(row.textContent) ? "completed" : "";
   });
 
-  // Empty state row (created once, toggled by filters)
+  // Empty state row
   let emptyRow = null;
   if (tbody) {
     emptyRow = document.createElement("tr");
@@ -168,7 +204,6 @@
     return diff >= 0 && diff <= days;
   }
 
-  // Date filter is ignored until the user actually changes the select.
   let dateFilterTouched = false;
   dateSelect?.addEventListener("change", () => { dateFilterTouched = true; });
 
@@ -185,21 +220,17 @@
     allRows.forEach((row) => {
       const status = row.dataset.status;
 
-      // Tab mode
       let modeOk = true;
       if (currentMode === "verify")         modeOk = status === "pending";
       else if (currentMode === "completed") modeOk = status === "completed";
       else if (currentMode === "active")    modeOk = status !== "pending" && status !== "completed";
 
-      // Search
       const qOk = !q || row.dataset.searchText.includes(q);
 
-      // Opportunity
       let oppOk = true;
       if (opp === "food")          oppOk = row.dataset.opportunity === "food";
       else if (opp === "literacy") oppOk = row.dataset.opportunity === "literacy";
 
-      // Date range
       const rangeOk = inRange(row, range);
 
       const show = modeOk && qOk && oppOk && rangeOk;
@@ -213,10 +244,7 @@
       }
     });
 
-    // Empty state
     if (emptyRow) emptyRow.hidden = visible !== 0;
-
-    // Summary
     if (summaryRange) summaryRange.textContent = visible ? `1 to ${visible}` : "0";
     if (summaryTotal) summaryTotal.textContent = String(visible);
 
@@ -268,21 +296,66 @@
     if (e.target.matches('input[type="checkbox"]')) syncSelection();
   });
 
+  /* Resolve a contribution ID for a row (from data-id or the name index) */
+  function contribIdFor(row) {
+    if (row.dataset.contribId) return row.dataset.contribId;
+    const name = $("td:nth-child(2) p", row)?.textContent.trim().toLowerCase();
+    if (name && contribIndex.has(name)) {
+      const id = contribIndex.get(name).id;
+      row.dataset.contribId = id;
+      return id;
+    }
+    return null;
+  }
+
   /* REVIEW ACTIONS */
   allRows.forEach((row) => {
     const btn = byText("button", "Review", row);
     if (!btn) return;
     btn.addEventListener("click", () => {
+      const id = contribIdFor(row);
       const name = $("td:nth-child(2) p", row)?.textContent.trim() || "volunteer";
-      const id   = $("td:nth-child(2) .font-mono", row)?.textContent.trim() || "";
-      toast(`Opening review — ${name} ${id}`, "info");
+      const ref  = $("td:nth-child(2) .font-mono", row)?.textContent.trim() || "";
+
+      if (id) {
+        // Navigate to the contribution review page
+        window.location.href = `contribution.html?id=${encodeURIComponent(id)}`;
+      } else {
+        // Fallback while the API hasn't resolved an ID yet
+        toast(`Opening review — ${name} ${ref}`, "info");
+      }
     });
   });
 
-  bulkReviewBtn?.addEventListener("click", () => {
-    const count = rowBoxes().filter((b) => b.checked).length;
-    if (!count) { toast("Select at least one contribution", "error"); return; }
-    toast(`Reviewing ${count} contribution${count > 1 ? "s" : ""}…`, "info");
+  bulkReviewBtn?.addEventListener("click", async (e) => {
+    const selectedRows = allRows.filter((r) => !r.hidden && $('input[type="checkbox"]', r)?.checked);
+    if (!selectedRows.length) {
+      toast("Select at least one contribution", "error");
+      return;
+    }
+
+    const ids = selectedRows.map(contribIdFor).filter(Boolean);
+    if (!ids.length) {
+      toast("Selected rows have no API ID yet", "error");
+      return;
+    }
+
+    // Confirm
+    const ok = window.confirm(
+      `Verify ${ids.length} contribution${ids.length > 1 ? "s" : ""}? This will add hours to each volunteer's verified record.`
+    );
+    if (!ok) return;
+
+    await withBusy(e.currentTarget, "Verifying…", async () => {
+      try {
+        await API.activities.contributions.bulkVerify(ids);
+        toast(`Verified ${ids.length} contribution${ids.length > 1 ? "s" : ""}`, "success");
+        // Best-effort refresh from server
+        await hydrateContributions();
+      } catch (err) {
+        toast(err.message || "Bulk verify failed", "error");
+      }
+    });
   });
 
   if (bannerReviewBtn && bannerReviewBtn !== bulkReviewBtn) {
@@ -308,8 +381,11 @@
   });
 
   const bell = $$("header button").find((b) => b.querySelector('span.bg-\\[\\#BA1A1A\\]'));
-  bell?.addEventListener("click", () => {
+  bell?.addEventListener("click", async () => {
     bell.querySelector('span.bg-\\[\\#BA1A1A\\]')?.remove();
+    try {
+      await API.notifications.markAllRead();
+    } catch (_) { /* non-blocking */ }
     toast("No new notifications", "success");
   });
 
@@ -321,6 +397,106 @@
   });
   oppSelect?.addEventListener("change", applyAllFilters);
 
+  /* GLOBAL 401 */
+  document.addEventListener("api:unauthorized", () => {
+    toast("Session expired — please sign in again", "error");
+    setTimeout(() => (window.location.href = "login.html"), 900);
+  });
+
+  /* HYDRATE METRICS STRIP */
+  async function hydrateMetrics() {
+    if (!window.API) return;
+    try {
+      const res = await API.activities.metrics();
+      const m = res?.data || res || {};
+
+      const setCard = (label, value) => {
+        const labelEl = byText("p", label);
+        if (!labelEl) return;
+        const card = labelEl.closest("div")?.parentElement;
+        const valueEl = card ? $$("p", card).find((p) => /^\d+$/.test(p.textContent.trim())) : null;
+        if (valueEl && value != null) valueEl.textContent = String(value);
+      };
+
+      // Match the four bento cards by their label text
+      if (m.active       != null) setCard("active activities",  m.active);
+      if (m.upcoming     != null) setCard("upcoming activities", m.upcoming);
+      if (m.awaiting     != null || m.pending != null) {
+        const awaiting = m.awaiting ?? m.pending;
+        const labelEl = byText("span", "awaiting");
+        if (labelEl) {
+          const card = labelEl.closest("div")?.parentElement?.parentElement;
+          const valueEl = card ? $$("span", card).find((s) => /^\d+$/.test(s.textContent.trim())) : null;
+          if (valueEl) valueEl.textContent = String(awaiting);
+        }
+      }
+      if (m.completed    != null) setCard("completed activities", m.completed);
+    } catch (err) {
+      console.warn("[activities] metrics hydrate failed:", err);
+    }
+  }
+
+  /* HYDRATE CONTRIBUTIONS (attach IDs, refresh submitted-at, recompute tags) */
+  async function hydrateContributions() {
+    if (!window.API) return;
+    try {
+      const res = await API.activities.contributions.list({ limit: 50 });
+      const list = Array.isArray(res) ? res : (res?.data || res?.contributions || []);
+
+      list.forEach((c) => {
+        const key = (c.volunteerName || c.volunteer?.name || "")
+          .toString().trim().toLowerCase();
+        if (key) contribIndex.set(key, c);
+      });
+
+      // Attach IDs and refresh row metadata
+      allRows.forEach((row) => {
+        const name = $("td:nth-child(2) p", row)?.textContent.trim().toLowerCase();
+        if (!name) return;
+        const c = contribIndex.get(name);
+        if (!c) return;
+
+        row.dataset.contribId = c.id;
+        if (c.status) row.dataset.status =
+          /verified|approved/i.test(c.status) ? "completed"
+          : /pending/i.test(c.status)         ? "pending"
+          : "pending";
+
+        // Rewrite the "Submitted" cell's date/time if the server sent one
+        const ts = c.submittedAt || c.createdAt;
+        if (ts) {
+          const d = new Date(ts);
+          if (!isNaN(d.getTime())) {
+            const dateEl = $("td:nth-child(5) p", row);
+            const timeEl = $("td:nth-child(5) p:nth-child(2)", row);
+            if (dateEl) {
+              dateEl.textContent = d.toLocaleDateString(undefined, {
+                month: "short", day: "numeric", year: "numeric",
+              });
+            }
+            if (timeEl) {
+              timeEl.textContent = d.toLocaleTimeString(undefined, {
+                hour: "numeric", minute: "2-digit",
+              });
+            }
+          }
+        }
+      });
+
+      // Recompute searchable text now that labels may have changed
+      allRows.forEach((row) => {
+        row.dataset.searchText = row.textContent.replace(/\s+/g, " ").trim().toLowerCase();
+      });
+
+      applyAllFilters();
+    } catch (err) {
+      console.warn("[activities] contributions hydrate failed:", err);
+    }
+  }
+
   /* KICK-OFF */
   setTab("verify");
+  hydrateMetrics();
+  hydrateContributions();
+
 })();

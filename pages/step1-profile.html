@@ -21,17 +21,6 @@
         theme: { extend: { fontFamily: { sans: ["Inter", "sans-serif"] } } },
       };
     </script>
-    <style>
-      html,
-      body {
-        max-width: 100%;
-        overflow-x: hidden;
-      }
-      img {
-        max-width: 100%;
-        height: auto;
-      }
-    </style>
   </head>
 
   <body
@@ -127,20 +116,32 @@
           >Coordinator Help</a
         >
       </nav>
-    </header>
 
-    <!-- Content -->
-    <main class="max-w-[1100px] mx-auto w-full px-4 sm:px-6 pt-6 sm:pt-8 pb-12">
-      <!-- Top row -->
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <div class="flex items-center gap-4 text-xs font-medium">
+        <span
+          class="inline-flex items-center gap-1.5 text-[8px] lg:text-[12px] text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200/60 font-semibold"
+        >
+          <img src="/impactra-frontend/images/verify.png" class="w-3 h-3" />
+          Portal Status: Ready
+        </span>
+        <button
+          class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-semibold text-xs"
+        >
+          ?
+        </button>
         <div
           class="flex items-center gap-2 text-slate-700 font-bold text-base sm:text-lg"
         >
-          <img
-            src="/impactra-frontend/images/four.png"
-            class="w-6 h-6 object-contain"
-            alt=""
-          />
+          <img src="/impactra-frontend/images/user2.png" class="w-3 h-3" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Content 1 -->
+    <main class="max-w-[1000px] mx-auto w-full px-4 pt-8 pb-12">
+      <div class="flex items-center justify-between text-xs font-bold mb-6">
+        <div class="flex items-center gap-1.5 text-slate-700">
+          <img src="/impactra-frontend/images/four.png" class="w-5 h-5" />
           <span>Organization Profile</span>
         </div>
         <span

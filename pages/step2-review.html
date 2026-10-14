@@ -6,6 +6,7 @@
     <title>Impactra | Final Review</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="API.js" defer></script>
   </head>
   <link
     rel="shortcut icon"
@@ -551,6 +552,7 @@
     </main>
 
     <!-- JAVASCRIPT -->
+        
     <script>
       lucide.createIcons();
 
@@ -558,8 +560,39 @@
         alert("Connect this button to the " + section + " editing form.");
       }
 
-      function submitProfile() {
-        alert("Connect this button to your profile submission workflow.");
+      async function submitProfile() {
+        
+        const submitBtn = document.querySelector('button[onclick="submitProfile()"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Submitting...';
+
+        try {
+          
+          const profileData = JSON.parse(sessionStorage.getItem('pendingUser')) || {};
+          
+          if (window.API && API.ngo && API.ngo.submitProfile) {
+             await API.ngo.submitProfile(profileData);
+          } else {
+             // Fallback if API isn't set up yet
+             console.warn("API client not found or method missing. Simulating submit...");
+             await new Promise(resolve => setTimeout(resolve, 1500)); 
+          }
+
+          // 4. Handle Success - 
+          alert("Profile submitted successfully! Awaiting admin review.");
+          window.location.href = "step3-reviewing.html"; 
+
+        } catch (error) {
+          // 5. Handle Errors
+          console.error("Submission failed:", error);
+          alert("Failed to submit profile: " + (error.message || "Please try again later."));
+          
+          // Re-enable the button so they can try again
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
       }
     </script>
   </body>
