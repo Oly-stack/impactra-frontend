@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMPACTRA - Applications</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+            colors: { brand: "#0b4fd6" },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-[#f8f9fd] font-sans text-slate-900 min-h-screen">
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden"
+    ></div>
+
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 w-72 z-40 flex flex-col bg-white border-r border-slate-200 -translate-x-full lg:translate-x-0 transition-transform duration-300"
+    >
+      <div
+        class="h-[70px] px-6 flex items-center justify-between border-b border-slate-200"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full border-2 border-brand grid place-items-center text-brand"
+          >
+            <img src="/images/logo2.png" />
+          </div>
+          <span class="text-lg font-bold">IMPACTRA</span>
+        </div>
+        <button
+          id="closeBtn"
+          type="button"
+          class="lg:hidden p-1 text-slate-600"
+          aria-label="Close menu"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <nav class="flex-1 p-2.5 space-y-2 overflow-y-auto">
+        <a
+          href="index.html"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+        </a>
+        <a
+          href="applications.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-100 text-brand font-medium"
+        >
+          <i data-lucide="building-2" class="w-5 h-5"></i> Applications
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="shield-alert" class="w-5 h-5"></i> Reports
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="headset" class="w-5 h-5"></i> Support
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="users" class="w-5 h-5"></i> User Management
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="settings" class="w-5 h-5"></i> Settings
+        </a>
+      </nav>
+
+      <div class="border-t border-slate-200 px-4 py-4 flex items-center gap-3">
+        <i data-lucide="more-vertical" class="w-4 h-4 text-slate-500"></i>
+        <a href="#" class="flex items-center gap-2 text-red-600 font-medium">
+          <i data-lucide="log-out" class="w-5 h-5"></i> Log out
+        </a>
+      </div>
+    </aside>
+
+    <div class="lg:ml-72">
+      <header
+        class="h-[70px] bg-white border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+          <button
+            id="openBtn"
+            type="button"
+            class="lg:hidden p-1 text-slate-700"
+            aria-label="Open menu"
+          >
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+          <div
+            class="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2.5 w-full max-w-sm"
+          >
+            <i data-lucide="search" class="w-5 h-5 text-slate-700 shrink-0"></i>
+            <input
+              type="text"
+              placeholder="Search administrative logs, orgs, entities..."
+              class="bg-transparent outline-none w-full text-sm placeholder:text-slate-600"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5 ml-4">
+          <button class="relative">
+            <i data-lucide="bell" class="w-5 h-5 text-slate-600"></i>
+            <span
+              class="absolute -top-1 -right-0.5 w-2.5 h-2.5 bg-red-600 rounded-full"
+            ></span>
+          </button>
+          <div class="h-8 w-px bg-slate-200"></div>
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-full bg-slate-700 text-white grid place-items-center text-sm font-semibold"
+            >
+              EV
+            </div>
+            <span class="font-medium hidden sm:block">Eleanor V.</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ================= CONTENT ================= -->
+      <main class="p-4 sm:p-8">
+        <!-- Title + mini stats -->
+        <div
+          class="flex flex-col xl:flex-row xl:items-start justify-between gap-6"
+        >
+          <div>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">
+              Organization Applications
+            </h1>
+            <p class="text-slate-600 mt-1 max-w-md">
+              Review, audit credentials, and verify NGO registration
+              submissions.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-4">
+            <div
+              class="bg-white rounded-xl shadow-sm px-5 py-4 flex items-center justify-between gap-6 min-w-[220px]"
+            >
+              <div>
+                <p
+                  class="text-[11px] tracking-wider text-slate-700 uppercase font-medium"
+                >
+                  Clearance Rate
+                </p>
+                <p class="font-semibold mt-1">91.4%</p>
+              </div>
+              <svg width="52" height="28" viewBox="0 0 52 28" fill="none">
+                <path
+                  d="M2 22 C14 24, 20 6, 30 12 S44 8, 50 6"
+                  stroke="#0b4fd6"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+
+            <div
+              class="bg-white rounded-xl shadow-sm px-5 py-4 flex items-center justify-between gap-6 min-w-[220px]"
+            >
+              <div>
+                <p
+                  class="text-[11px] tracking-wider text-slate-700 uppercase font-medium"
+                >
+                  Avg SLA Turnaround
+                </p>
+                <p class="font-semibold mt-1">36.2 hrs</p>
+              </div>
+              <i data-lucide="timer" class="w-6 h-6 text-brand"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TABLE CARD ================= -->
+        <section class="bg-white rounded-2xl shadow-sm mt-8 overflow-hidden">
+          <!-- Table: cards on mobile, real table from md up -->
+          <div class="overflow-x-auto">
+            <table class="block md:table w-full md:min-w-[700px] text-left">
+              <thead
+                class="hidden md:table-header-group bg-indigo-50 text-xs tracking-wider text-slate-700 uppercase"
+              >
+                <tr>
+                  <th class="px-6 py-3.5 font-medium">Organization Name</th>
+                  <th class="px-6 py-3.5 font-medium">Date Submitted</th>
+                  <th class="px-6 py-3.5 font-medium">Status</th>
+                  <th class="px-6 py-3.5 font-medium text-center">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody
+                class="block md:table-row-group divide-y divide-slate-100 border-t border-slate-100 md:border-0"
+              >
+                <!-- Row 1 -->
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 grid place-items-center font-bold text-sm"
+                        >GE</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">
+                          Green Earth Initiative
+                        </p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-018 • Environmental Conservation
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>12
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-amber-100 text-amber-900 rounded-full px-2.5 py-1"
+                      ><span
+                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                      ></span
+                      >Pending</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto bg-brand text-white text-sm font-medium px-5 py-2.5 md:py-2 rounded-lg hover:bg-blue-800"
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 grid place-items-center font-bold text-sm"
+                        >YC</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">Youth for Change</p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-017 • Youth Empowerment
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>10
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-amber-100 text-amber-900 rounded-full px-2.5 py-1"
+                      ><span
+                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                      ></span
+                      >Pending</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto bg-brand text-white text-sm font-medium px-5 py-2.5 md:py-2 rounded-lg hover:bg-blue-800"
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-green-100 text-green-700 grid place-items-center font-bold text-sm"
+                        >WE</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">
+                          Women Empowerment Network
+                        </p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-016 • Gender Equality
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>9
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-full px-2.5 py-1"
+                      ><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span
+                      >Info Requested</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto inline-flex items-center justify-center gap-1.5 bg-blue-50 text-brand text-sm font-medium px-4 py-2.5 md:py-2 rounded-lg hover:bg-blue-100"
+                    >
+                      View <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 grid place-items-center font-bold text-sm"
+                        >CW</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">Clean Water Project</p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-015 • Public Infrastructure
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>8
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-amber-100 text-amber-900 rounded-full px-2.5 py-1"
+                      ><span
+                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                      ></span
+                      >Pending</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto bg-brand text-white text-sm font-medium px-5 py-2.5 md:py-2 rounded-lg hover:bg-blue-800"
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 grid place-items-center font-bold text-sm"
+                        >BF</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">
+                          Bright Future Foundation
+                        </p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-014 • Child Welfare
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>7
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-amber-100 text-amber-900 rounded-full px-2.5 py-1"
+                      ><span
+                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                      ></span
+                      >Pending</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto bg-brand text-white text-sm font-medium px-5 py-2.5 md:py-2 rounded-lg hover:bg-blue-800"
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 6 -->
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100 text-purple-700 grid place-items-center font-bold text-sm"
+                        >CH</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">
+                          Community Health Alliance
+                        </p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-013 • Healthcare Outreach
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>7
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-amber-100 text-amber-900 rounded-full px-2.5 py-1"
+                      ><span
+                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                      ></span
+                      >Pending</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto bg-brand text-white text-sm font-medium px-5 py-2.5 md:py-2 rounded-lg hover:bg-blue-800"
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 7 (Info requested) -->
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 grid place-items-center font-bold text-sm"
+                        >ST</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">Skills for Tomorrow</p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-012 • Tech Literacy
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>5
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-full px-2.5 py-1"
+                      ><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span
+                      >Info Requested</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto inline-flex items-center justify-center gap-1.5 bg-blue-50 text-brand text-sm font-medium px-4 py-2.5 md:py-2 rounded-lg hover:bg-blue-100"
+                    >
+                      View <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="grid grid-cols-2 gap-3 p-4 md:table-row md:p-0">
+                  <td class="col-span-2 md:table-cell md:px-6 md:py-4">
+                    <div class="flex items-center gap-4">
+                      <span
+                        class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 grid place-items-center font-bold text-sm"
+                        >EA</span
+                      >
+                      <div class="min-w-0">
+                        <p class="font-medium text-sm">Education for All</p>
+                        <p class="text-xs text-slate-600">
+                          #ORG-2024-011 • Literacy &amp; Schools
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="self-center text-sm text-slate-700 md:table-cell md:px-6 md:py-4 whitespace-nowrap"
+                  >
+                    <span class="md:hidden text-slate-500">Submitted: </span>4
+                    Aug 2024
+                  </td>
+                  <td
+                    class="self-center justify-self-end md:table-cell md:px-6 md:py-4"
+                  >
+                    <span
+                      class="inline-flex items-center gap-1.5 text-xs font-medium bg-amber-100 text-amber-900 rounded-full px-2.5 py-1"
+                      ><span
+                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                      ></span
+                      >Pending</span
+                    >
+                  </td>
+                  <td
+                    class="col-span-2 md:table-cell md:px-6 md:py-4 md:text-center"
+                  >
+                    <button
+                      class="w-full md:w-auto bg-brand text-white text-sm font-medium px-5 py-2.5 md:py-2 rounded-lg hover:bg-blue-800"
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mt-8">
+          <div class="bg-white rounded-2xl shadow-sm p-6 flex gap-4">
+            <span
+              class="w-12 h-12 shrink-0 rounded-xl bg-amber-50 grid place-items-center"
+            >
+              <i
+                data-lucide="clipboard-clock"
+                class="w-6 h-6 text-amber-700"
+              ></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Urgent Document Audits</h3>
+              <p class="text-sm text-slate-600 mt-1">
+                3 organizations have pending clearances past the 48-hour SLA
+                deadline.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-sm p-6 flex gap-4">
+            <span
+              class="w-12 h-12 shrink-0 rounded-xl bg-blue-50 grid place-items-center"
+            >
+              <i data-lucide="shield-check" class="w-6 h-6 text-brand"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">CAC Registry Direct Sync</h3>
+              <p class="text-sm text-slate-600 mt-1">
+                Automated tax identification verification connected and active.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl shadow-sm p-6 flex gap-4 md:col-span-2 xl:col-span-1"
+          >
+            <span
+              class="w-12 h-12 shrink-0 rounded-xl bg-green-50 grid place-items-center"
+            >
+              <i data-lucide="user-check" class="w-6 h-6 text-green-700"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Active Volunteers Mobilized</h3>
+              <p class="text-sm text-slate-600 mt-1">
+                Approved NGOs deployed 1,420 volunteers this month.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var sidebar = document.getElementById("sidebar");
+        var overlay = document.getElementById("overlay");
+        var openBtn = document.getElementById("openBtn");
+        var closeBtn = document.getElementById("closeBtn");
+
+        function openMenu() {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        }
+        function closeMenu() {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        }
+
+        openBtn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+        overlay.addEventListener("click", closeMenu);
+
+        try {
+          lucide.createIcons();
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    </script>
+  </body>
+</html>
