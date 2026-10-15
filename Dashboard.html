@@ -112,6 +112,7 @@
       font-weight: 700;
       text-decoration: none;
       border-radius: 10px;
+      cursor: pointer;
     }
 
     .logout-link:hover {
@@ -201,6 +202,7 @@
       top: 0;
       right: 0;
       border: 2px solid white;
+      display: none;
     }
 
     .avatar-wrapper {
@@ -584,7 +586,7 @@
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      background: conic-gradient(#2563eb 0% 82%, #e2e8f0 82% 100%);
+      background: conic-gradient(#2563eb 0% 0%, #e2e8f0 0% 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -673,8 +675,14 @@
       color: #94a3b8;
       font-weight: 500;
     }
+
+    @media (max-width: 1100px) {
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .main-grid { grid-template-columns: 1fr; }
+    }
   </style>
   <script src="API.js" defer></script>
+  <script src="dashboard.js" defer></script>
 </head>
 <body>
 
@@ -682,7 +690,7 @@
   <aside>
     <div>
       <a href="index.html" class="brand-header">
-        <img src="img/impactra logo.jpeg" alt="IMPACTRA Logo" class="brand-logo-img" />
+        <img src="img/impactra-logo.jpeg" alt="IMPACTRA Logo" class="brand-logo-img" />
         <span class="brand-title">IMPACTRA</span>
       </a>
 
@@ -712,7 +720,7 @@
           <span>⚡</span>
           <span>Impact</span>
         </a>
-        <a href="pages/certificate.html" class="nav-item">
+        <a href="pages/Certificate.html" class="nav-item">
           <span>🏆</span>
           <span>Certificates</span>
         </a>
@@ -730,7 +738,7 @@
     </div>
 
     <div class="logout-btn">
-      <a href="index.html" class="logout-link">
+      <a href="#" id="logoutBtn" class="logout-link">
         <span>🚪</span>
         <span>Log out</span>
       </a>
@@ -749,15 +757,15 @@
       </div>
 
       <div class="user-profile">
-        <button class="bell-icon">
+        <button class="bell-icon" id="bellBtn">
           🔔
           <span class="bell-badge"></span>
         </button>
         
         <div class="avatar-wrapper">
-          <img src="img/Profile.png" alt="Toyin Avatar" class="avatar-img" />
+          <img src="img/Profile.png" alt="User Avatar" class="avatar-img" />
           <div class="avatar-info">
-            <p>Toyin</p>
+            <p>Loading...</p>
             <p>NGO</p>
           </div>
         </div>
@@ -781,7 +789,7 @@
         <div class="header-actions">
           <div class="date-pill">
             <span>📅</span>
-            <span>Friday, Oct 13, 2026</span>
+            <span id="currentDate">Loading...</span>
           </div>
           <a href="pages/create-opportunities-step-1.html" class="btn-primary">
             <span>+</span>
@@ -792,56 +800,56 @@
 
       <!-- Metrics Top Grid -->
       <div class="metrics-grid">
-        <!-- Card 1 -->
+        <!-- Card 1: Applications -->
         <div class="metric-card">
           <div class="metric-header">
             <span class="metric-title">APPLICATIONS</span>
             <div class="metric-icon">📄</div>
           </div>
           <div class="metric-value-row">
-            <span class="metric-number">14</span>
-            <span class="pill-blue">↗+6 today</span>
+            <span class="metric-number" id="metricApplications">0</span>
+            <span class="pill-blue" id="metricApplicationsTrend">↗ +0 today</span>
           </div>
-          <p class="metric-footer text-red">• 4 urgent for this weekend</p>
+          <p class="metric-footer" id="metricApplicationsFooter">Loading…</p>
         </div>
 
-        <!-- Card 2 -->
+        <!-- Card 2: Activities -->
         <div class="metric-card">
           <div class="metric-header">
             <span class="metric-title">ACTIVITIES</span>
             <div class="metric-icon">⏱️</div>
           </div>
           <div class="metric-value-row">
-            <span class="metric-number">6</span>
-            <span class="pill-gray">3 Programs</span>
+            <span class="metric-number" id="metricActivities">0</span>
+            <span class="pill-gray" id="metricActivitiesPrograms">0 Programs</span>
           </div>
-          <p class="metric-footer">⏱ 18.5 hours pending confirmation</p>
+          <p class="metric-footer" id="metricActivitiesFooter">Loading…</p>
         </div>
 
-        <!-- Card 3 -->
+        <!-- Card 3: Opportunities -->
         <div class="metric-card">
           <div class="metric-header">
             <span class="metric-title">OPPORTUNITIES</span>
             <div class="metric-icon">📋</div>
           </div>
           <div class="metric-value-row">
-            <span class="metric-number">8</span>
-            <span class="pill-green">100% deployed</span>
+            <span class="metric-number" id="metricOpportunities">0</span>
+            <span class="pill-green" id="metricOpportunitiesDeployed">0% deployed</span>
           </div>
-          <p class="metric-footer">Surulere, Yaba, Ikeja centres</p>
+          <p class="metric-footer" id="metricOpportunitiesFooter">Loading…</p>
         </div>
 
-        <!-- Card 4 -->
+        <!-- Card 4: Volunteers -->
         <div class="metric-card">
           <div class="metric-header">
             <span class="metric-title">TOTAL VOLUNTEERS</span>
             <div class="metric-icon">👥</div>
           </div>
           <div class="metric-value-row">
-            <span class="metric-number">126</span>
-            <span class="pill-blue">↗+9.5%</span>
+            <span class="metric-number" id="metricVolunteers">0</span>
+            <span class="pill-blue" id="metricVolunteersTrend">↗ +0%</span>
           </div>
-          <p class="metric-footer">+12 onboarded this month</p>
+          <p class="metric-footer" id="metricVolunteersFooter">Loading…</p>
         </div>
       </div>
 
@@ -857,7 +865,7 @@
                 <h3>Active Opportunities</h3>
                 <p>Live deployment rosters across regional zones</p>
               </div>
-              <a href="pages/opportunities-list.html" class="view-link">View all (8) →</a>
+              <a href="pages/opportunities-list.html" class="view-link">View all →</a>
             </div>
 
             <table>
@@ -870,88 +878,10 @@
                   <th style="text-align: right;">ACTION</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="activeOpportunitiesBody">
                 <tr>
-                  <td>
-                    <div class="cell-title">Food Relief Distribution</div>
-                    <div class="cell-sub">Community Support</div>
-                  </td>
-                  <td>
-                    <div class="cell-title">Surulere, Lagos</div>
-                    <div class="cell-sub">Sat Oct 14</div>
-                  </td>
-                  <td>
-                    <div style="display: flex; gap: 8px; font-weight: 700; font-size: 10px;">
-                      <span>8/10 Filled</span>
-                      <span style="color: #94a3b8;">80%</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                      <div class="progress-fill-blue" style="width: 80%;"></div>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="status-badge-active">
-                      <span class="dot-green"></span> Active
-                    </span>
-                  </td>
-                  <td style="text-align: right;">
-                    <a href="pages/opportunity-details.html" class="manage-link">Manage →</a>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="cell-title">School Literacy Support</div>
-                    <div class="cell-sub">Education</div>
-                  </td>
-                  <td>
-                    <div class="cell-title">Yaba, Lagos</div>
-                    <div class="cell-sub">Wed Oct 18</div>
-                  </td>
-                  <td>
-                    <div style="display: flex; gap: 8px; font-weight: 700; font-size: 10px;">
-                      <span>4/6 Filled</span>
-                      <span style="color: #94a3b8;">66%</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                      <div class="progress-fill-blue" style="width: 66%;"></div>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="status-badge-active">
-                      <span class="dot-green"></span> Active
-                    </span>
-                  </td>
-                  <td style="text-align: right;">
-                    <a href="pages/opportunity-details.html" class="manage-link">Manage →</a>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="cell-title">Community Health Outreach</div>
-                    <div class="cell-sub">Health</div>
-                  </td>
-                  <td>
-                    <div class="cell-title">Ikeja, Lagos</div>
-                    <div class="cell-sub" style="color: #ef4444; font-weight: 700;">Tomorrow 9:00 AM</div>
-                  </td>
-                  <td>
-                    <div style="display: flex; gap: 8px; font-weight: 700; font-size: 10px;">
-                      <span>7/10 Filled</span>
-                      <span style="color: #ef4444;">70%</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                      <div class="progress-fill-red" style="width: 70%;"></div>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="status-badge-urgent">
-                      <span class="dot-red"></span> Urgent
-                    </span>
-                  </td>
-                  <td style="text-align: right;">
-                    <a href="pages/opportunity-list.html" class="manage-link">Manage →</a>
+                  <td colspan="5" style="text-align:center; padding: 40px; color: #94a3b8;">
+                    Loading opportunities…
                   </td>
                 </tr>
               </tbody>
@@ -983,29 +913,29 @@
             <p style="font-size: 11px; color: #94a3b8; font-weight: 500;">Aggregated verified service hours across all civic mobilization missions.</p>
 
             <div class="target-box">
-              <div class="circle-chart">
+              <div class="circle-chart" id="targetChart">
                 <div class="circle-inner">
-                  <span class="chart-percent">82%</span>
+                  <span class="chart-percent" id="targetPercent">0%</span>
                   <span class="chart-label">ON TRACK</span>
                 </div>
               </div>
 
               <div class="target-stats">
-                <h4>1,640 <span>/ 2,000 hrs</span></h4>
-                <p class="target-desc">360 hours remaining with <span style="color: #2563eb;">32 days left</span> in Q4.</p>
-                <p class="target-mob">● Mobilization rate: +42h / week</p>
+                <h4><span id="targetVerified">0</span> <span>/ <span id="targetGoal">2,000</span> hrs</span></h4>
+                <p class="target-desc" id="targetDescription">Loading quarterly progress…</p>
+                <p class="target-mob" id="targetRate">● Mobilization rate: —</p>
               </div>
             </div>
 
             <div class="target-bottom-grid">
               <div>
                 <div class="stat-title">DIRECT IMPACT</div>
-                <div class="stat-val">4,280</div>
+                <div class="stat-val" id="statDirectImpact">0</div>
                 <div class="stat-sub">Beneficiaries reached</div>
               </div>
               <div>
                 <div class="stat-title">RETENTION RATE</div>
-                <div class="stat-val">91.4%</div>
+                <div class="stat-val" id="statRetention">0%</div>
                 <div class="stat-sub">Returning volunteers</div>
               </div>
             </div>

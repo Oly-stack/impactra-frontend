@@ -1,21 +1,17 @@
-/*IMPACTRA — API Client*/
+/* IMPACTRA — API Client */
 
 const API = (() => {
   "use strict";
 
-  /*CONFIG*/
+  /*  CONFIG  */
   const BASE_URL = "https://impactra-api-dev.onrender.com/api/v1";
   const TOKEN_KEY = "impactra_token";
   const REFRESH_KEY = "impactra_refresh";
 
-  /*TOKEN STORAGE*/
+  /*  TOKEN STORAGE  */
   const tokens = {
-    get access() {
-      return localStorage.getItem(TOKEN_KEY);
-    },
-    get refresh() {
-      return localStorage.getItem(REFRESH_KEY);
-    },
+    get access() { return localStorage.getItem(TOKEN_KEY); },
+    get refresh() { return localStorage.getItem(REFRESH_KEY); },
     set({ accessToken, refreshToken } = {}) {
       if (accessToken) localStorage.setItem(TOKEN_KEY, accessToken);
       if (refreshToken) localStorage.setItem(REFRESH_KEY, refreshToken);
@@ -29,7 +25,7 @@ const API = (() => {
     },
   };
 
-  /*CORE REQUEST WRAPPER*/
+  /*  ERROR TYPE  */
   class ApiError extends Error {
     constructor(message, status, body) {
       super(message);
@@ -39,6 +35,7 @@ const API = (() => {
     }
   }
 
+  /*  CORE REQUEST WRAPPER  */
   async function request(path, options = {}) {
     const {
       method = "GET",
@@ -60,7 +57,7 @@ const API = (() => {
       if (qs) url += `?${qs}`;
     }
 
-    // Build headers
+    // Headers
     const finalHeaders = { Accept: "application/json", ...headers };
     if (body && !(body instanceof FormData)) {
       finalHeaders["Content-Type"] = "application/json";
@@ -69,11 +66,7 @@ const API = (() => {
       finalHeaders.Authorization = `Bearer ${tokens.access}`;
     }
 
-    // Build init
-    const init = {
-      method,
-      headers: finalHeaders,
-    };
+    const init = { method, headers: finalHeaders };
     if (body !== undefined) {
       init.body = body instanceof FormData ? body : JSON.stringify(body);
     }
@@ -87,10 +80,8 @@ const API = (() => {
       });
     }
 
-    // Handle 204 No Content
     if (response.status === 204) return null;
 
-    // Parse body
     const contentType = response.headers.get("content-type") || "";
     let payload;
     if (contentType.includes("application/json")) {
@@ -101,20 +92,16 @@ const API = (() => {
       payload = await response.text().catch(() => null);
     }
 
-    // Handle errors
     if (!response.ok) {
-      // Auto-clear tokens on 401
       if (response.status === 401) {
         tokens.clear();
         document.dispatchEvent(new CustomEvent("api:unauthorized"));
       }
-
       const message =
         payload?.message ||
         payload?.error ||
         payload?.detail ||
         `Request failed with status ${response.status}`;
-
       throw new ApiError(message, response.status, payload);
     }
 
@@ -122,31 +109,63 @@ const API = (() => {
   }
 
   /* Shorthand helpers */
-  const get = (path, query, opts) =>
-    request(path, { method: "GET", query, ...opts });
-  const post = (path, body, opts) =>
-    request(path, { method: "POST", body, ...opts });
-  const put = (path, body, opts) =>
-    request(path, { method: "PUT", body, ...opts });
-  const patch = (path, body, opts) =>
-    request(path, { method: "PATCH", body, ...opts });
-  const del = (path, opts) => request(path, { method: "DELETE", ...opts });
+  const get   = (path, query, opts) => request(path, { method: "GET", query, ...opts });
+  const post  = (path, body, opts)  => request(path, { method: "POST", body, ...opts });
+  const put   = (path, body, opts)  => request(path, { method: "PUT", body, ...opts });
+  const patch = (path, body, opts)  => request(path, { method: "PATCH", body, ...opts });
+  const del   = (path, opts)        => request(path, { method: "DELETE", ...opts });
 
-  /*AUTH*/
+  /* AUTH */
   const auth = {
-    /* POST /auth/login */
+    /* POST /auth/signup */
+    register: (payload) => post("/auth/signup", payload, { auth: false }),
+
+    /* POST /auth/verify-email — { email, code } */
+    verifyEmail: (email, code) =>
+      post("/auth/verify-email", { email, code }, { auth: false }),
+
+    /* POST /auth/resend-email — { email, purpose } */
+    resendEmail: (email, purpose) =>
+      post("/auth/resend-email", { email, purpose }, { auth: false }),
+
+    /* POST /auth/login — returns { requiresOTP: true } on first step */
     async login(email, password) {
       const data = await post(
         "/auth/login",
         { email, password },
-        { auth: false },
+        { auth: false }
       );
-      tokens.set({
-        accessToken: data?.accessToken || data?.token,
-        refreshToken: data?.refreshToken,
-      });
       return data;
     },
+
+    /* POST /auth/verify-login — { email, code } → returns { token, user } */
+    async verifyLogin(email, code) {
+      const data = await post(
+        "/auth/verify-login",
+        { email, code },
+        { auth: false }
+      );
+      if (data?.token) {
+        tokens.set({ accessToken: data.token, refreshToken: data.refreshToken });
+      }
+      return data;
+    },
+
+    /* POST /auth/account-type — { accountType } */
+    setAccountType: (accountType) =>
+      post("/auth/account-type", { accountType }),
+
+    /* POST /auth/forgot-password */
+    forgotPassword: (email) =>
+      post("/auth/forgot-password", { email }, { auth: false }),
+
+    /* POST /auth/forgot-password/verify — { email, code } → { resetToken } */
+    verifyForgotPassword: (email, code) =>
+      post("/auth/forgot-password/verify", { email, code }, { auth: false }),
+
+    /* POST /auth/reset-password — { resetToken, newPassword } */
+    resetPassword: (resetToken, newPassword) =>
+      post("/auth/reset-password", { resetToken, newPassword }, { auth: false }),
 
     /* POST /auth/logout */
     async logout() {
@@ -156,275 +175,212 @@ const API = (() => {
         tokens.clear();
       }
     },
-
-    /* POST /auth/refresh */
-    async refresh() {
-      if (!tokens.refresh) throw new ApiError("No refresh token", 401, null);
-      const data = await post(
-        "/auth/refresh",
-        { refreshToken: tokens.refresh },
-        { auth: false },
-      );
-      tokens.set({
-        accessToken: data?.accessToken || data?.token,
-        refreshToken: data?.refreshToken,
-      });
-      return data;
-    },
-
-    /* GET /auth/me */
-    me: () => get("/auth/me"),
-
-    /* POST /auth/register */
-    register: (payload) => post("/auth/signup", payload, { auth: false }),
-
-    /* POST /auth/forgot-password */
-    forgotPassword: (email) =>
-      post("/auth/forgot-password", { email }, { auth: false }),
-
-    /* POST /auth/reset-password */
-    resetPassword: (token, password) =>
-      post("/auth/reset-password", { token, password }, { auth: false }),
   };
 
-  /*ACTIVITIES / CONTRIBUTIONS*/
-  const activities = {
-    /* GET /activities */
-    list: (params = {}) => get("/activities", params),
+  /* ORGANIZATION (NGO Admin)*/
 
-    /* GET /activities/:id */
-    get: (id) => get(`/activities/${id}`),
+  /* Organization profile & setup */
+  const organization = {
+    /* POST /organization/profile-setup (multipart) */
+    setupProfile: (formData) => post("/organization/profile-setup", formData),
 
-    /* GET /activities/metrics — counts for the bento strip */
-    metrics: () => get("/activities/metrics"),
+    /* GET /organization/profile */
+    getProfile: () => get("/organization/profile"),
 
-    /* POST /activities */
-    create: (payload) => post("/activities", payload),
+    /* PATCH /organization/update-profile/:orgId (multipart) */
+    updateProfile: (orgId, formData) =>
+      patch(`/organization/update-profile/${orgId}`, formData),
 
-    /* PATCH /activities/:id */
-    update: (id, payload) => patch(`/activities/${id}`, payload),
+    /* Dashboard */
+    dashboard: {
+      /* GET /organization/dashboard/overview */
+      overview: (params = {}) => get("/organization/dashboard/overview", params),
+    },
 
-    /* DELETE /activities/:id */
-    remove: (id) => del(`/activities/${id}`),
+    /* Opportunities (NGO-created) */
+    opportunities: {
+      /* POST /organization/opportunity/create (multipart) */
+      create: (formData) => post("/organization/opportunity/create", formData),
 
-    /* Contributions (hours submissions) */
+      /* GET /organization/opportunities */
+      list: (params = {}) => get("/organization/opportunities", params),
+
+      /* GET /organization/opportunities/:id */
+      get: (id) => get(`/organization/opportunities/${id}`),
+
+      /* PATCH /organization/opportunities/:id/update */
+      update: (id, payload) =>
+        patch(`/organization/opportunities/${id}/update`, payload),
+
+      /* PATCH /organization/opportunities/:id/publish */
+      publish: (id) => patch(`/organization/opportunities/${id}/publish`, {}),
+
+      /* PATCH /organization/opportunities/:id/complete */
+      complete: (id) => patch(`/organization/opportunities/${id}/complete`, {}),
+
+      /* DELETE /organization/opportunities/:id/delete */
+      remove: (id) => del(`/organization/opportunities/${id}/delete`),
+
+      /* GET /organization/opportunities/stats */
+      stats: () => get("/organization/opportunities/stats"),
+    },
+
+    /* Applications received by the org */
+    applications: {
+      /* GET /opportunities/:opportunityId/applications */
+      listForOpportunity: (opportunityId, params = {}) =>
+        get(`/opportunities/${opportunityId}/applications`, params),
+
+      /* GET /organization/applications/stats */
+      stats: () => get("/organization/applications/stats"),
+
+      /* PATCH /organization/applications/:id/approve — { notes } */
+      approve: (id, notes = "") =>
+        patch(`/organization/applications/${id}/approve`, { notes }),
+
+      /* PATCH /organization/applications/:id/reject — { notes } */
+      reject: (id, notes = "") =>
+        patch(`/organization/applications/${id}/reject`, { notes }),
+    },
+
+    /* Contributions reviewed by the org */
     contributions: {
-      /* GET /activities/contributions */
-      list: (params = {}) => get("/activities/contributions", params),
+      /* GET /organization/contributions */
+      list: (params = {}) => get("/organization/contributions", params),
 
-      /* GET /activities/contributions/:id */
-      get: (id) => get(`/activities/contributions/${id}`),
+      /* GET /organization/contributions/stats */
+      stats: () => get("/organization/contributions/stats"),
 
-      /* POST /activities/contributions/:id/verify */
-      verify: (id, note) =>
-        post(`/activities/contributions/${id}/verify`, { note }),
+      /* PATCH /organization/contributions/:id/verify — { note } */
+      verify: (id, note = "") =>
+        patch(`/organization/contributions/${id}/verify`, { note }),
 
-      /* POST /activities/contributions/:id/reject */
-      reject: (id, reason, message) =>
-        post(`/activities/contributions/${id}/reject`, { reason, message }),
-
-      /* POST /activities/contributions/bulk-verify */
-      bulkVerify: (ids) =>
-        post("/activities/contributions/bulk-verify", { contributionIds: ids }),
-
-      /* GET /activities/contributions/:id/audit-log */
-      auditLog: (id) => get(`/activities/contributions/${id}/audit-log`),
-
-      /* GET /activities/contributions/:id/evidence */
-      evidence: (id) => get(`/activities/contributions/${id}/evidence`),
+      /* PATCH /organization/contributions/:id/reject — { reason } */
+      reject: (id, reason = "") =>
+        patch(`/organization/contributions/${id}/reject`, { reason }),
     },
   };
 
-  /*VOLUNTEERS*/
-  const volunteers = {
-    /* GET /volunteers */
-    list: (params = {}) => get("/volunteers", params),
+  /* PLATFORM ADMIN*/
+  const admin = {
+    /* GET /admin/dashboard */
+    dashboard: () => get("/admin/dashboard"),
 
-    /* GET /volunteers/:id */
-    get: (id) => get(`/volunteers/${id}`),
+    /* GET /admin/pending-organizations */
+    pendingOrganizations: (params = {}) => get("/admin/pending-organizations", params),
 
-    /* PATCH /volunteers/:id */
-    update: (id, payload) => patch(`/volunteers/${id}`, payload),
+    /* GET /admin/all-organizations */
+    allOrganizations: (params = {}) => get("/admin/all-organizations", params),
 
-    /* DELETE /volunteers/:id */
-    remove: (id) => del(`/volunteers/${id}`),
+    /* GET /admin/all-users */
+    allUsers: (params = {}) => get("/admin/all-users", params),
 
-    /* GET /volunteers/:id/activities — full activity history */
-    activityHistory: (id, params = {}) =>
-      get(`/volunteers/${id}/activities`, params),
+    /* PATCH /admin/approve-organization/:orgId */
+    approveOrganization: (orgId) =>
+      patch(`/admin/approve-organization/${orgId}`, {}),
 
-    /* GET /volunteers/:id/metrics — verified hours, missions, certificates */
-    metrics: (id) => get(`/volunteers/${id}/metrics`),
-
-    /* POST /volunteers/:id/message */
-    message: (id, { subject, body }) =>
-      post(`/volunteers/${id}/message`, { subject, body }),
-
-    /* POST /volunteers/:id/question */
-    askQuestion: (id, message) =>
-      post(`/volunteers/${id}/question`, { message }),
-
-    /* POST /volunteers/:id/approve */
-    approve: (id, opportunityId) =>
-      post(`/volunteers/${id}/approve`, { opportunityId }),
-
-    /* POST /volunteers/:id/reject */
-    reject: (id, reason, note) =>
-      post(`/volunteers/${id}/reject`, { reason, note }),
-
-    /* POST /volunteers/:id/avatar (multipart) */
-    uploadAvatar: (id, file) => {
-      const fd = new FormData();
-      fd.append("avatar", file);
-      return post(`/volunteers/${id}/avatar`, fd);
-    },
-
-    /* DELETE /volunteers/:id/avatar */
-    removeAvatar: (id) => del(`/volunteers/${id}/avatar`),
-
-    /* GET /volunteers/:id/export — returns a blob */
-    exportProfile: (id) => request(`/volunteers/${id}/export`, { raw: true }),
-
-    /* POST /volunteers/:id/archive */
-    archive: (id) => post(`/volunteers/${id}/archive`, {}),
-
-    /* POST /volunteers/:id/assign */
-    assignReviewer: (id, reviewerId) =>
-      post(`/volunteers/${id}/assign`, { reviewerId }),
-
-    /* POST /volunteers/:id/flag */
-    flag: (id, reason) => post(`/volunteers/${id}/flag`, { reason }),
+    /* PATCH /admin/reject-organization/:orgId — { reason } */
+    rejectOrganization: (orgId, reason) =>
+      patch(`/admin/reject-organization/${orgId}`, { reason }),
   };
 
-  /*APPLICATIONS*/
+  /* VOLUNTEER (for completeness — the volunteer mobile app)*/
+  const volunteer = {
+    /* Volunteer Profile */
+    profile: {
+      /* POST /volunteer/profile */
+      create: (payload) => post("/volunteer/profile", payload),
+
+      /* GET /volunteer/profile */
+      get: () => get("/volunteer/profile"),
+
+      /* PATCH /volunteer/profile (multipart) */
+      update: (formData) => patch("/volunteer/profile", formData),
+    },
+
+    /* Browse opportunities */
+    opportunities: {
+      /* GET /volunteer/opportunities/browse */
+      browse: (params = {}) => get("/volunteer/opportunities/browse", params),
+
+      /* GET /volunteer/opportunities/browse/:id */
+      get: (id) => get(`/volunteer/opportunities/browse/${id}`),
+    },
+
+    /* Applications */
+    applications: {
+      /* POST /volunteer/:opportunityId/application-submit */
+      submit: (opportunityId, payload) =>
+        post(`/volunteer/${opportunityId}/application-submit`, payload),
+
+      /* GET /volunteer/:applicationId/application-view */
+      view: (applicationId) =>
+        get(`/volunteer/${applicationId}/application-view`),
+    },
+
+    /* Contributions */
+    contributions: {
+      /* GET /volunteer/contributions */
+      list: (params = {}) => get("/volunteer/contributions", params),
+
+      /* POST /volunteer/contributions/:applicationId/submit (multipart) */
+      submit: (applicationId, formData) =>
+        post(`/volunteer/contributions/${applicationId}/submit`, formData),
+
+      /* PATCH /volunteer/contributions/:id/update (multipart) */
+      update: (id, formData) =>
+        patch(`/volunteer/contributions/${id}/update`, formData),
+    },
+  };
+
+  /* APPLICATIONS (shared — visible to applicant or owning org)*/
   const applications = {
-    /* GET /applications */
-    list: (params = {}) => get("/applications", params),
-
     /* GET /applications/:id */
     get: (id) => get(`/applications/${id}`),
-
-    /* GET /applications/stats — counts for status counter strip */
-    stats: () => get("/applications/stats"),
-
-    /* POST /applications/:id/approve */
-    approve: (id, note) => post(`/applications/${id}/approve`, { note }),
-
-    /* POST /applications/:id/reject */
-    reject: (id, reason, note) =>
-      post(`/applications/${id}/reject`, { reason, note }),
-
-    /* POST /applications/bulk-approve */
-    bulkApprove: (ids) =>
-      post("/applications/bulk-approve", { applicationIds: ids }),
-
-    /* POST /applications/bulk-reject */
-    bulkReject: (ids, reason) =>
-      post("/applications/bulk-reject", { applicationIds: ids, reason }),
   };
 
-  /*OPPORTUNITIES*/
+  /*  OPPORTUNITIES (generic router)*/
   const opportunities = {
+    /* GET /opportunities?status=&category=&organization= */
     list: (params = {}) => get("/opportunities", params),
+
+    /* GET /opportunities/:id */
     get: (id) => get(`/opportunities/${id}`),
-    create: (payload) => post("/opportunities", payload),
-    update: (id, payload) => patch(`/opportunities/${id}`, payload),
-    remove: (id) => del(`/opportunities/${id}`),
-    applicants: (id, params = {}) =>
-      get(`/opportunities/${id}/applicants`, params),
+
+    /* PATCH /opportunities/:id/status — { status } */
+    updateStatus: (id, status) =>
+      patch(`/opportunities/${id}/status`, { status }),
   };
 
-  /*DASHBOARD*/
-  const dashboard = {
-    /* GET /dashboard/summary — top-level metrics */
-    summary: () => get("/dashboard/summary"),
+  /* CERTIFICATES*/
+  const certificates = {
+    /* POST /certificates/template (multipart) */
+    createTemplate: (formData) => post("/certificates/template", formData),
 
-    /* GET /dashboard/recent — recent activity feed */
-    recent: (limit = 10) => get("/dashboard/recent", { limit }),
+    /* POST /certificates/issue/:contributionId */
+    issue: (contributionId) =>
+      post(`/certificates/issue/${contributionId}`, {}),
   };
 
-  /*IMPACT*/
-  const impact = {
-    /* GET /impact/summary */
-    summary: (params = {}) => get("/impact/summary", params),
-
-    /* GET /impact/verified-hours */
-    verifiedHours: (params = {}) => get("/impact/verified-hours", params),
-
-    /* GET /impact/certificates */
-    certificates: (params = {}) => get("/impact/certificates", params),
-  };
-
-  /*SETTINGS — user profile & preferences*/
-  const settings = {
-    /* GET /settings/profile */
-    getProfile: () => get("/settings/profile"),
-
-    /* PATCH /settings/profile */
-    updateProfile: (payload) => patch("/settings/profile", payload),
-
-    /* POST /settings/profile/avatar (multipart) */
-    uploadAvatar: (file) => {
-      const fd = new FormData();
-      fd.append("avatar", file);
-      return post("/settings/profile/avatar", fd);
-    },
-
-    /* DELETE /settings/profile/avatar */
-    removeAvatar: () => del("/settings/profile/avatar"),
-
-    /* GET /settings/notifications */
-    getNotifications: () => get("/settings/notifications"),
-
-    /* PATCH /settings/notifications */
-    updateNotifications: (prefs) => patch("/settings/notifications", prefs),
-
-    /* POST /settings/password */
-    changePassword: ({ currentPassword, newPassword }) =>
-      post("/settings/password", { currentPassword, newPassword }),
-
-    /* POST /settings/2fa/enable */
-    enable2FA: (code) => post("/settings/2fa/enable", { code }),
-
-    /* POST /settings/2fa/disable */
-    disable2FA: (code) => post("/settings/2fa/disable", { code }),
-
-    /* POST /settings/2fa/setup — returns { qrCode, secret } */
-    setup2FA: () => post("/settings/2fa/setup", {}),
-
-    /* DELETE /settings/account */
-    deleteAccount: (confirm) =>
-      del("/settings/account", { query: { confirm } }),
-  };
-
-  /*NOTIFICATIONS*/
+  /*  NOTIFICATIONS*/
   const notifications = {
-    /* GET /notifications */
+    /* GET /notifications?page=&limit=&unread= */
     list: (params = {}) => get("/notifications", params),
 
     /* GET /notifications/unread-count */
     unreadCount: () => get("/notifications/unread-count"),
 
-    /* POST /notifications/:id/read */
-    markRead: (id) => post(`/notifications/${id}/read`, {}),
+    /* PATCH /notifications/:id/read */
+    markRead: (id) => patch(`/notifications/${id}/read`, {}),
 
-    /* POST /notifications/read-all */
-    markAllRead: () => post("/notifications/read-all", {}),
+    /* PATCH /notifications/read-all */
+    markAllRead: () => patch("/notifications/read-all", {}),
 
     /* DELETE /notifications/:id */
     remove: (id) => del(`/notifications/${id}`),
   };
 
-  /*MESSAGES*/
-  const messages = {
-    list: (params = {}) => get("/messages", params),
-    get: (id) => get(`/messages/${id}`),
-    send: (recipientId, { subject, body }) =>
-      post("/messages", { recipientId, subject, body }),
-    markRead: (id) => post(`/messages/${id}/read`, {}),
-  };
-
-  /*EXPORT */
+  /* EXPORT */
   return {
     // config
     BASE_URL,
@@ -437,23 +393,52 @@ const API = (() => {
     patch,
     del,
 
-    // token utilities
+    // tokens
     tokens,
+
+    // error type
+    ApiError,
 
     // resources
     auth,
-    activities,
-    volunteers,
+    organization,
+    admin,
+    volunteer,
     applications,
     opportunities,
-    dashboard,
-    impact,
-    settings,
+    certificates,
     notifications,
-    messages,
 
-    // error type (so pages can catch/instanceof)
-    ApiError,
+    /*  LEGACY ALIASES — keep old call sites working */
+
+    // Old: API.activities. → new: API.organization.contributions./ admin
+    activities: {
+      contributions: {
+        listForOrganization: (params) =>
+          organization.contributions.list(params),
+        orgStats: () => organization.contributions.stats(),
+        verify: (id, note) => organization.contributions.verify(id, note),
+        reject: (id, reason) => organization.contributions.reject(id, reason),
+      },
+    },
+
+    // Old: API.volunteers. → new: API.volunteer. (with reduced surface)
+    volunteers: {
+      get: () => volunteer.profile.get(),
+      metrics: () => volunteer.profile.get(),
+    },
+
+    // Old: API.dashboard. → new: API.organization.dashboard.
+    dashboard: {
+      summary: () => organization.dashboard.overview(),
+    },
+
+    // Old: API.impact.* → no backend endpoint (return empty) — DEPRECATED
+    impact: {
+      summary: async () => ({}),
+      verifiedHours: async () => ({}),
+      certificates: async () => ({}),
+    },
   };
 })();
 

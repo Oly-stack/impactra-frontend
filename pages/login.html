@@ -33,95 +33,62 @@
           </p>
         </div>
 
-        <form id="loginForm">
-          <div class="mb-5">
-            <label
-              for="email"
-              class="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email address
-            </label>
+       <form id="loginForm">
+  <!-- STEP 1: Credentials -->
+  <div id="credentialsStep">
+    <div class="mb-5">
+      <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+      <div class="relative">
+        <img src="../images/email.png" alt="Email" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-3" />
+        <input type="email" id="email" name="email" placeholder="you@gmail.com" class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100" required />
+      </div>
+    </div>
 
-            <div class="relative">
-              <img
-                src="../images/email.png"
-                alt="Email"
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-3"
-              />
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="you@gmail.com"
-                class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                required
-              />
-            </div>
-          </div>
+    <div class="mb-4">
+      <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+      <div class="relative">
+        <img src="../images/password.png" alt="Password" class="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-4" />
+        <input type="password" id="password" name="password" placeholder="Enter your password" class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100" required />
+        <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          <img src="../images/eye.png" class="w-4 h-3" />
+        </button>
+      </div>
+    </div>
 
-          <div class="mb-4">
-            <label
-              for="password"
-              class="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Password
-            </label>
+    <div class="flex items-center justify-between mb-6">
+      <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+        <input type="checkbox" id="remember" class="w-4 h-4 accent-blue-600 cursor-pointer" />
+        <span>Remember me</span>
+      </label>
+      <a href="#" class="text-sm font-semibold text-blue-600 hover:text-blue-700">Forgot password?</a>
+    </div>
+  </div>
 
-            <div class="relative">
-              <img
-                src="../images/password.png"
-                alt="Email"
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-4"
-              />
+  <!-- STEP 2: OTP (Hidden by default) -->
+  <div id="otpStep" class="hidden">
+    <p class="text-sm text-gray-600 mb-4 text-center">
+      We sent a 6-digit code to <strong id="otpEmailDisplay" class="text-gray-900"></strong>
+    </p>
+    <div class="flex justify-center gap-2 mb-6" id="otpInputs">
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 text-center text-lg font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition shadow-sm" required />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 text-center text-lg font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition shadow-sm" required />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 text-center text-lg font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition shadow-sm" required />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 text-center text-lg font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition shadow-sm" required />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 text-center text-lg font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition shadow-sm" required />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 text-center text-lg font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition shadow-sm" required />
+    </div>
+    <div class="flex items-center justify-between mb-6">
+      <button type="button" id="backToLogin" class="text-sm text-gray-500 hover:text-gray-700">&larr; Back</button>
+      <button type="button" id="resendOtpBtn" class="text-sm font-semibold text-blue-600 hover:text-blue-700">Resend code</button>
+    </div>
+  </div>
 
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                class="w-full h-12 rounded-lg border border-gray-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                required
-              />
-
-              <button
-                type="button"
-                id="togglePassword"
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <img src="../images/eye.png" class="w-4 h-3" />
-              </button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between mb-6">
-            <label
-              class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                id="remember"
-                class="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
-
-              <span>Remember me</span>
-            </label>
-
-            <a
-              href="#"
-              class="text-sm font-semibold text-blue-600 hover:text-blue-700"
-            >
-              Forgot password?
-            </a>
-          </div>
-
-          <button
-            type="submit"
-            class="relative w-full h-12 bg-[#0051d5] hover:bg-blue-600 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
-          >
-            Log in
-            <img src="../images/arrow.png" alt="Email" class="w-4 h-4" />
-          </button>
-        </form>
+  <!-- Submit Button -->
+  <button type="submit" id="submitBtn" class="relative w-full h-12 bg-[#0051d5] hover:bg-blue-600 text-white font-medium rounded-lg transition flex items-center justify-center gap-2">
+    <span id="submitBtnText">Log in</span>
+    <img src="../images/arrow.png" alt="Arrow" class="w-4 h-4" id="submitBtnArrow" />
+  </button>
+</form>
         <div class="flex items-center gap-4 my-6">
           <div class="flex-1 h-px bg-gray-200"></div>
 

@@ -10,9 +10,11 @@
         .includes(text.toLowerCase())
     );
 
-  if (!window.API) {
-    console.warn("[impact.js] API client not found. Load API.js first.");
-  }
+  if (!window.API) { console.error("[impact.js] API client not found."); return; }
+  if (!API.tokens.isAuthenticated) { window.location.href = "pages/login.html"; return; }
+
+  let currentUser = null;
+  try { currentUser = JSON.parse(sessionStorage.getItem("impactra_user") || "null"); } catch (_) {}
 
   /*  TOAST  */
   function toast(message, variant = "default") {
@@ -20,8 +22,7 @@
     if (!host) {
       host = document.createElement("div");
       host.id = "toast-host";
-      host.className =
-        "pointer-events-none fixed bottom-6 left-1/2 z-[95] flex -translate-x-1/2 flex-col items-center gap-2";
+      host.className = "pointer-events-none fixed bottom-6 left-1/2 z-[95] flex -translate-x-1/2 flex-col items-center gap-2";
       document.body.appendChild(host);
     }
     const palette = {
@@ -32,7 +33,6 @@
     };
     const el = document.createElement("div");
     el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
-    el.setAttribute("role", "status");
     el.textContent = message;
     host.appendChild(el);
     setTimeout(() => {
@@ -43,59 +43,77 @@
     }, 2800);
   }
 
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value ?? "0";
+  }
+
   /*  SIDEBAR  */
   const sidebarToggle = $("#sidebar-toggle");
   if (sidebarToggle) {
-    const sync = () => {
-      document.body.style.overflow = sidebarToggle.checked ? "hidden" : "";
-    };
+    const sync = () => { document.body.style.overflow = sidebarToggle.checked ? "hidden" : ""; };
     sidebarToggle.addEventListener("change", sync);
-
     $("aside")?.addEventListener("click", (e) => {
       if (!e.target.closest("a")) return;
       if (window.matchMedia("(max-width: 1023px)").matches) {
-        sidebarToggle.checked = false;
-        sync();
+        sidebarToggle.checked = false; sync();
       }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && sidebarToggle.checked) {
-        sidebarToggle.checked = false;
-        sync();
-      }
-    });
-
-    window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => {
-      if (e.matches) { sidebarToggle.checked = false; sync(); }
     });
   }
 
-  /*  NOTIFICATIONS  */
+  /*  HEADER PROFILE  */
+  if (currentUser) {
+    const name = currentUser.name || currentUser.fullName || "Admin";
+    setText("headerUserName", name.split(" ")[0]);
+  }
+
+  /*  BELL  */
   const bellBtn = $$("header button").find((b) => b.querySelector("span.bg-\\[\\#BA1A1A\\]"));
   bellBtn?.addEventListener("click", async () => {
     bellBtn.querySelector("span.bg-\\[\\#BA1A1A\\]")?.remove();
-    try {
-      if (window.API) await API.notifications.markAllRead();
-    } catch (_) { }
+    try { await API.patch("/notifications/read-all", {}); } catch (_) {}
     toast("You're all caught up", "success");
   });
 
   /*  DATE RANGE PICKER  */
-  const dateBtn = byText("button", "Jan 1, 2026");
+  const PRESETS = {
+    "30d": { label: "Last 30 days" },
+    "90d": { label: "Last 90 days" },
+    "ytd": { label: "Year to date" },
+    "12m": { label: "Last 12 months" },
+  };
+
+  function formatShort(d) {
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function presetRange(key) {
+    const to = new Date();
+    const from = new Date();
+    switch (key) {
+      case "30d": from.setDate(to.getDate() - 30); break;
+      case "90d": from.setDate(to.getDate() - 90); break;
+      case "ytd": from.setMonth(0, 1);             break;
+      case "12m": from.setFullYear(to.getFullYear() - 1); break;
+    }
+    return { from, to };
+  }
+
+  const dateBtn = byText("button", "Loading…") || $$("button").find((b) => /–|Jan 1, 2026/.test(b.textContent) && /[0-9]{4}/.test(b.textContent));
+
+  // Initialize with "Year to date" default
+  const initial = presetRange("ytd");
+  setText("dateRangeLabel", `${formatShort(initial.from)} – ${formatShort(initial.to)}`);
+
   if (dateBtn) {
-    // Build a dropdown that appears below the button
     const menu = document.createElement("div");
-    menu.className =
-      "fixed z-[70] hidden w-64 overflow-hidden rounded-xl border border-[#C6C6CD]/60 bg-white shadow-xl";
+    menu.className = "fixed z-[70] hidden w-64 overflow-hidden rounded-xl border border-[#C6C6CD]/60 bg-white shadow-xl";
     menu.innerHTML = `
       <ul class="py-1 text-sm">
-        <li><button data-range="30d"  class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Last 30 days</button></li>
-        <li><button data-range="90d"  class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Last 90 days</button></li>
-        <li><button data-range="ytd"  class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Year to date</button></li>
-        <li><button data-range="12m"  class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Last 12 months</button></li>
-        <li class="my-1 h-px bg-[#F1F5F9]"></li>
-        <li><button data-range="custom" class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Custom range…</button></li>
+        <li><button data-range="30d" class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Last 30 days</button></li>
+        <li><button data-range="90d" class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Last 90 days</button></li>
+        <li><button data-range="ytd" class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Year to date</button></li>
+        <li><button data-range="12m" class="flex w-full px-4 py-2.5 text-left transition hover:bg-slate-50">Last 12 months</button></li>
       </ul>
     `;
     document.body.appendChild(menu);
@@ -113,153 +131,96 @@
       menu.classList.contains("hidden") ? open() : close();
     });
 
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target)) close();
-    });
+    document.addEventListener("click", (e) => { if (!menu.contains(e.target)) close(); });
     window.addEventListener("scroll", close, { passive: true });
     window.addEventListener("resize", close);
 
-    menu.addEventListener("click", async (e) => {
+    menu.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-range]");
       if (!btn) return;
       const range = btn.dataset.range;
       close();
-
-      if (range === "custom") {
-        promptCustomRange();
-        return;
-      }
-
-      const { from, to, label } = presetRange(range);
-      setDateLabel(label);
-      toast(`Showing ${label.toLowerCase()}`, "info");
-      await refreshForRange(from, to);
+      const { from, to } = presetRange(range);
+      setText("dateRangeLabel", `${formatShort(from)} – ${formatShort(to)}`);
+      toast(`Showing ${PRESETS[range].label.toLowerCase()}`, "info");
+      loadImpact(from, to);
     });
-
-    function promptCustomRange() {
-      const from = window.prompt("From (YYYY-MM-DD):");
-      if (!from) return;
-      const to = window.prompt("To (YYYY-MM-DD):");
-      if (!to) return;
-      const fd = new Date(from);
-      const td = new Date(to);
-      if (isNaN(fd) || isNaN(td) || td < fd) {
-        toast("Invalid date range", "error");
-        return;
-      }
-      const label = `${formatShort(fd)} – ${formatShort(td)}`;
-      setDateLabel(label);
-      toast(`Showing ${label}`, "info");
-      refreshForRange(fd.toISOString(), td.toISOString());
-    }
-
-    function setDateLabel(text) {
-      const span = dateBtn.querySelector("span.truncate") || dateBtn.querySelectorAll("span")[1];
-      if (span) span.textContent = text;
-    }
   }
 
-  function formatShort(d) {
-    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
-  }
-
-  function presetRange(key) {
-    const to = new Date();
-    const from = new Date();
-    switch (key) {
-      case "30d": from.setDate(to.getDate() - 30); break;
-      case "90d": from.setDate(to.getDate() - 90); break;
-      case "ytd": from.setMonth(0, 1);             break;
-      case "12m": from.setFullYear(to.getFullYear() - 1); break;
-    }
-    return {
-      from: from.toISOString(),
-      to: to.toISOString(),
-      label: `${formatShort(from)} – ${formatShort(to)}`,
-    };
-  }
-
-  async function refreshForRange(from, to) {
-    if (!window.API) return;
+  /*  LOAD IMPACT DATA  */
+  async function loadImpact(from, to) {
     try {
-      const [summary, programmes] = await Promise.allSettled([
-        API.impact.summary({ from, to }),
-        API.impact.programmes ? API.impact.programmes({ from, to }) : Promise.resolve(null),
+      const [overviewRes, statsRes] = await Promise.allSettled([
+        API.get("/organization/dashboard/overview", { startDate: from?.toISOString?.().slice(0, 10), endDate: to?.toISOString?.().slice(0, 10) }),
+        API.activities.contributions.orgStats(),
       ]);
 
-      if (summary.status === "fulfilled" && summary.value) {
-        applySummary(summary.value?.data || summary.value);
-      }
-      
-      if (programmes.status === "fulfilled" && programmes.value) {
-        // renderProgrammes(programmes.value?.data || programmes.value);
-      }
+      const overview = overviewRes.status === "fulfilled" ? (overviewRes.value?.data || overviewRes.value || {}) : {};
+      const stats = statsRes.status === "fulfilled" ? (statsRes.value?.data || statsRes.value || {}) : {};
+
+      // Top metric cards
+      setText("metricActiveVolunteers", (overview.totalVolunteers ?? overview.activeVolunteers ?? 0).toLocaleString());
+      setText("metricVerifiedHours", (stats.verifiedHours ?? overview.verifiedHours ?? 0).toLocaleString());
+      setText("metricCompletedActivities", (overview.completedActivities ?? overview.totalContributions ?? 0).toLocaleString());
+      setText("metricPeopleReached", (overview.beneficiariesReached ?? overview.peopleReached ?? 0).toLocaleString());
+
+      // Chart badge — use total verified hours
+      const totalHours = stats.verifiedHours ?? overview.verifiedHours ?? 0;
+      setText("chartBadge", `${Number(totalHours).toLocaleString()} hrs`);
+
+      // Total beneficiaries footer (approximate)
+      setText("totalBeneficiaries", (overview.beneficiariesReached ?? 0).toLocaleString());
+
     } catch (err) {
-      console.warn("[impact] refresh failed:", err);
+      console.warn("[impact] load failed:", err);
+      toast("Couldn't load impact data", "error");
     }
   }
 
-  /*  EXPORT REPORT  */
-  byText("button", "Export Report")?.addEventListener("click", (e) => {
+  /*  EXPORT REPORT (client-side CSV)  */
+  byText("button", "Export Report")?.addEventListener("click", async (e) => {
     const btn = e.currentTarget;
     const original = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = "Preparing…";
 
-    (async () => {
-      try {
-        if (window.API && API.impact.exportReport) {
-          const blob = await API.impact.exportReport();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `impactra-impact-${new Date().toISOString().slice(0, 10)}.csv`;
-          a.click();
-          URL.revokeObjectURL(url);
-        } else {
-          // Offline fallback — build a small CSV from the visible metrics
-          const csv = buildLocalCsv();
-          const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `impactra-impact-${new Date().toISOString().slice(0, 10)}.csv`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-        toast("Report downloaded", "success");
-      } catch (err) {
-        toast(err?.message || "Export failed", "error");
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = original;
-      }
-    })();
+    try {
+      const rows = [
+        ["Metric", "Value"],
+        ["Active Volunteers",     $("#metricActiveVolunteers")?.textContent || "0"],
+        ["Verified Hours",        $("#metricVerifiedHours")?.textContent || "0"],
+        ["Completed Activities",  $("#metricCompletedActivities")?.textContent || "0"],
+        ["People Reached",        $("#metricPeopleReached")?.textContent || "0"],
+        ["Date Range",            $("#dateRangeLabel")?.textContent || "—"],
+        ["Generated",             new Date().toISOString()],
+      ];
+      const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `impactra-impact-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("Report downloaded", "success");
+    } catch (err) {
+      toast(err.message || "Export failed", "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
   });
 
-  function buildLocalCsv() {
-    const rows = [["Metric", "Value"]];
-    $$("section").forEach((sec) => {
-      $$("p.font-semibold", sec).forEach((label) => {
-        const card = label.closest("div");
-        const value = card?.querySelector("span.font-bold")?.textContent.trim();
-        if (label.textContent && value) {
-          rows.push([label.textContent.trim(), value]);
-        }
-      });
-    });
-    return rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-  }
-
   /*  MONTHLY / YEARLY CHART TOGGLE  */
+  // NOTE: The backend has no time-series endpoint. The chart remains
+
   const monthlyRadio = document.getElementById("btn-monthly");
   const yearlyRadio  = document.getElementById("btn-yearly");
   const chartPath    = $("svg path[stroke='#0051D5']");
   const chartArea    = $("svg path[fill^='url']");
-  const chartNodes   = $$("svg circle");
-  const floatingBadge = $(".absolute.right-2.top-4");
+  const chartNodes   = () => $$("svg circle");
+  const floatingBadge = document.getElementById("chartBadge");
 
-  // Two data sets. Edit these to match the real series when you wire it up.
   const CHART_DATA = {
     monthly: {
       line: "M 20,180 L 90,165 L 160,158 L 230,148 L 300,150 L 370,132 L 440,108 L 510,100 L 580,96 L 660,74",
@@ -268,7 +229,6 @@
         [20,180],[90,165],[160,158],[230,148],[300,150],
         [370,132],[440,108],[510,100],[580,96],[660,74],
       ],
-      highlight: 742,
       highlightIndex: 9,
     },
     yearly: {
@@ -278,7 +238,6 @@
         [20,200],[90,175],[160,150],[230,130],[300,118],
         [370,100],[440,88],[510,72],[580,60],[660,42],
       ],
-      highlight: 8740,
       highlightIndex: 9,
     },
   };
@@ -290,9 +249,9 @@
     chartPath.setAttribute("d", data.line);
     if (chartArea) chartArea.setAttribute("d", data.area);
 
-    // Rebuild data nodes
     const svg = chartPath.closest("svg");
-    chartNodes.forEach((c) => c.remove());
+    chartNodes().forEach((c) => c.remove());
+
     data.points.forEach(([cx, cy], i) => {
       const isLast = i === data.highlightIndex;
       const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -304,10 +263,6 @@
       c.setAttribute("stroke-width", "2.5");
       svg.insertBefore(c, svg.querySelector("defs"));
     });
-
-    if (floatingBadge) {
-      floatingBadge.textContent = `${data.highlight} hrs`;
-    }
   }
 
   monthlyRadio?.addEventListener("change", () => {
@@ -323,99 +278,34 @@
     }
   });
 
-  /*  INFO TOOLTIPS  */
-  $$('svg[width="16"]').forEach((icon) => {
-    const trigger = icon.closest("span") || icon;
-    
-    if (!trigger.closest("h2, p")) return;
-
-    let title = "";
-    const heading = trigger.closest("h2, p")?.textContent.trim() || "";
-
-    trigger.style.cursor = "help";
-    trigger.setAttribute("tabindex", "0");
-
-    const show = (e) => {
-      const rect = trigger.getBoundingClientRect();
-      let tip = document.getElementById("impact-tip");
-      if (!tip) {
-        tip = document.createElement("div");
-        tip.id = "impact-tip";
-        tip.className =
-          "pointer-events-none fixed z-[100] max-w-xs rounded-lg bg-[#0F172A] px-3 py-2 text-xs leading-4 text-white shadow-lg opacity-0 transition-opacity duration-150";
-        document.body.appendChild(tip);
-      }
-      tip.textContent = title || `${heading} — hover for details`;
-      const top  = Math.max(8, rect.top - 44);
-      const left = Math.min(window.innerWidth - 300, Math.max(8, rect.left - 20));
-      tip.style.top = `${top}px`;
-      tip.style.left = `${left}px`;
-      requestAnimationFrame(() => tip.style.opacity = "1");
-    };
-
-    const hide = () => {
-      const tip = document.getElementById("impact-tip");
-      if (tip) {
-        tip.style.opacity = "0";
-        setTimeout(() => tip.remove(), 150);
-      }
-    };
-
-    trigger.addEventListener("mouseenter", show);
-    trigger.addEventListener("mouseleave", hide);
-    trigger.addEventListener("focus", show);
-    trigger.addEventListener("blur", hide);
-  });
-
   /*  VIEW BREAKDOWN  */
   byText("a", "View Breakdown")?.addEventListener("click", (e) => {
     e.preventDefault();
-    // window.location.href = "impact-breakdown.html";
-    toast("Opening breakdown…", "info");
+    toast("Breakdown view coming soon", "info");
   });
 
-  /*  GLOBAL 401 HANDLER  */
+  /*  LOG OUT  */
+  $$("aside button").forEach((el) => {
+    if (!/log out/i.test(el.textContent)) return;
+    el.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!confirm("You'll be signed out of IMPACTRA. Continue?")) return;
+      try { await API.auth.logout(); } catch (_) {}
+      API.tokens.clear();
+      sessionStorage.clear();
+      window.location.href = "pages/login.html";
+    });
+  });
+
+  /*  GLOBAL 401  */
   document.addEventListener("api:unauthorized", () => {
     toast("Session expired — please sign in again", "error");
-    setTimeout(() => (window.location.href = "login.html"), 900);
+    API.tokens.clear();
+    setTimeout(() => (window.location.href = "pages/login.html"), 900);
   });
 
-  /*  HYDRATE FROM API  */
-  function applySummary(s) {
-    if (!s) return;
-
-    // Update each metric card by matching the label
-    const updates = [
-      { label: "Active Volunteers",    value: s.activeVolunteers },
-      { label: "Verified hrs",         value: s.verifiedHours },
-      { label: "Completed Activities", value: s.completedActivities },
-      { label: "People Reached",       value: s.peopleReached },
-    ];
-
-    updates.forEach(({ label, value }) => {
-      if (value == null) return;
-      const labelEl = byText("p", label);
-      const card = labelEl?.closest("div")?.parentElement;
-      const valueEl = card ? $$("span.font-bold", card)[0] : null;
-      if (valueEl) {
-        valueEl.textContent = typeof value === "number"
-          ? value.toLocaleString()
-          : String(value);
-      }
-    });
-  }
-
-  async function hydrateMetrics() {
-    if (!window.API) return;
-    try {
-      const res = await API.impact.summary();
-      applySummary(res?.data || res || {});
-    } catch (err) {
-      console.warn("[impact] hydrate metrics failed:", err);
-    }
-  }
-
-  /*  KICK-OFF  */
-  hydrateMetrics();
+  /*  KICK OFF  */
   renderChart("monthly");
+  loadImpact(initial.from, initial.to);
+
 })();
