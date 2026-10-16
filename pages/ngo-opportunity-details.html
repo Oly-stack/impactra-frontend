@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <title>Opportunity management · IMPACTRA</title>
+  <link rel="icon" href="../images/logo2.png" />
+  <link rel="stylesheet" href="ngo-opportunity-details.css" />
+  <script src="../API.js" defer></script>
+  <script src="ngo-opportunity-details.js" defer></script>
+</head>
+<body>
+<svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+ <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+ <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2"/></symbol>
+ <symbol id="i-badge" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><circle cx="12" cy="11" r="3"/><path d="M8 3h8M7 18c2-4 8-4 10 0"/></symbol>
+ <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M2 20v-2a7 7 0 0 1 14 0v2H2ZM17 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 4 5v1"/></symbol>
+ <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M6 16l5-5 4 3 6-8"/></symbol>
+ <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="m8 13-1 9 5-3 5 3-1-9"/></symbol>
+ <symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 4h16v13H8l-4 3V4Z"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 6 3.5 9 8 11 4.5-2 8-5 8-11V5Z"/><path d="M12 7v6M12 17h.01"/></symbol>
+ <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M9 2h6l1 3 3 1 2 5-2 2 0 3-4 4-3-1-3 1-4-4 1-3-2-2 2-5 3-1z"/></symbol>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+ <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+ <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+ <symbol id="i-share" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M12 15V3m-4 4 4-4 4 4"/></symbol>
+ <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M15 5l4 4M4 20l4-.8L20 7a3 3 0 0 0-4-4L4 16z"/></symbol>
+ <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+ <symbol id="i-map" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 3"/></symbol>
+ <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V5h8l10 10-6 6L3 12Z"/><circle cx="8" cy="9" r="1"/></symbol>
+ <symbol id="i-align" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h12M3 20h15"/></symbol>
+ <symbol id="i-graduate" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9ZM6 12v5c3 3 9 3 12 0v-5M22 9v7"/></symbol>
+ <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M4 9v6M7 6v12M17 6v12M20 9v6M7 12h10M2 10v4M22 10v4"/></symbol>
+ <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6 3h5l1 5-3 2a18 18 0 0 0 5 5l2-3 5 1v5c0 2-2 3-4 3A17 17 0 0 1 3 7c0-2 1-4 3-4Z"/></symbol>
+ <symbol id="i-log" viewBox="0 0 24 24"><path d="M10 4H4v16h6M14 7l5 5-5 5M8 12h11"/></symbol>
+ <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+ <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4 10 14M20 13v7H4V4h7"/></symbol>
+</svg>
+<a href="#main" class="skip-link">Skip to main content</a>
+<div class="app">
+<aside id="sidebar" class="sidebar" aria-label="Operations navigation">
+  <a class="brand" href="../Dashboard.html"><img src="../images/logo2.png" alt="" /><strong>IMPACTRA</strong></a>
+  <div class="sidebar-section"><span class="nav-heading">Operations</span>
+    <nav class="navigation">
+      <a href="../Dashboard.html"><svg><use href="#i-grid"/></svg>Dashboard</a>
+      <a class="current" aria-current="page" href="opportunities-list.html"><svg><use href="#i-calendar"/></svg>Opportunities</a>
+      <a href="../application.html"><svg><use href="#i-badge"/></svg>Applications</a>
+      <a href="../volunteer-profile.html"><svg><use href="#i-people"/></svg>Volunteers</a>
+      <a href="../contribution.html"><svg><use href="#i-chart"/></svg>Activities</a>
+      <a href="../impact.html"><svg><use href="#i-chart"/></svg>Impact</a>
+      <a href="Certificate.html"><svg><use href="#i-award"/></svg>Certificates</a>
+      <button type="button" data-unavailable="Messages"><svg><use href="#i-msg"/></svg>Messages</button>
+      <a href="../report.html"><svg><use href="#i-shield"/></svg>Report</a>
+      <a href="../settings.html"><svg><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+  </div>
+  <div class="sidebar-bottom"><button id="logoutButton" type="button"><svg><use href="#i-log"/></svg>Log out</button></div>
+</aside>
+<div class="mobile-backdrop" id="mobileBackdrop" hidden></div>
+<div class="workspace">
+ <header class="topbar">
+   <div class="topbar-title"><button type="button" class="icon-button menu-toggle" id="menuToggle" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg><use href="#i-menu"/></svg></button><span class="top-divider">/</span> Management Console</div>
+   <div class="top-actions">
+     <form id="topSearch" class="global-search" role="search"><svg><use href="#i-search"/></svg><label class="sr-only" for="searchInput">Search opportunities</label><input id="searchInput" type="search" placeholder="Search volunteers, shifts..." /><kbd>⌘K</kbd></form>
+     <button type="button" class="icon-button notification-button" id="notificationsBtn" aria-label="Notifications"><svg><use href="#i-bell"/></svg><i aria-hidden="true" id="notificationDot"></i></button>
+     <span class="account-divider"></span><a class="account" href="../settings.html"><span class="account-pic" id="accountAvatar">NG</span><span class="account-text"><strong id="accountName">My account</strong><small id="accountRole">NGO</small></span></a>
+   </div>
+ </header>
+ <main id="main" class="main" tabindex="-1">
+   <section class="page-actions" aria-label="Opportunity controls">
+     <div class="crumb"><a href="opportunities-list.html">Opportunities</a><svg><use href="#i-chevron"/></svg><span id="statusBadge" class="status-pill">Loading</span><span id="demoBadge" class="demo-badge" hidden>DEMO PREVIEW</span></div>
+     <div class="action-buttons"><button type="button" class="soft-button" id="shareButton"><svg><use href="#i-share"/></svg> Share</button><button type="button" class="primary-button" id="editButton"><svg><use href="#i-pencil"/></svg> Edit Opportunity</button><div class="more-wrap"><button type="button" class="more-button" id="moreButton" aria-label="More opportunity actions" aria-expanded="false" aria-controls="moreMenu"><svg><use href="#i-dots"/></svg></button><div class="more-menu" id="moreMenu" hidden><button type="button" id="copyIdButton">Copy opportunity ID</button><button type="button" id="completeButton">Mark as completed</button></div></div></div>
+   </section>
+   <p id="dataMessage" class="data-message" role="status" aria-live="polite" hidden></p>
+   <section class="hero" aria-labelledby="oppTitle"><div class="hero-inner"><div class="hero-copy"><h1 id="oppTitle">Loading opportunity…</h1><div class="meta">
+      <span><svg><use href="#i-tag"/></svg><span id="oppCategory">—</span></span><span class="meta-separator">·</span>
+      <span><svg><use href="#i-map"/></svg><span id="oppLocation">—</span></span><span class="meta-separator">·</span>
+      <span><svg><use href="#i-calendar"/></svg><span id="oppDate">—</span></span><span class="meta-separator">·</span>
+      <span><svg><use href="#i-clock"/></svg><span id="oppTime">—</span></span>
+    </div></div>
+    <div class="hero-roster"><div id="avatarStack" class="avatar-stack" aria-hidden="true"></div><span><strong id="assignedLabel">— Assigned</strong><small id="rosterLabel">Roster status unavailable</small></span></div></div>
+    <div class="tab-bar" role="tablist" aria-label="Opportunity details"><button type="button" id="tab-overview" data-tab="overview" role="tab" aria-selected="true" aria-controls="panel-overview" tabindex="0">Overview</button><button type="button" id="tab-applications" data-tab="applications" role="tab" aria-selected="false" aria-controls="panel-applications" tabindex="-1">Applications <span id="appCount" class="count-pill">—</span></button><button type="button" id="tab-volunteers" data-tab="volunteers" role="tab" aria-selected="false" aria-controls="panel-volunteers" tabindex="-1">Volunteers <span id="volCount" class="count-pill">—</span></button><button type="button" id="tab-activities" data-tab="activities" role="tab" aria-selected="false" aria-controls="panel-activities" tabindex="-1">Activities <span id="activityCount" class="count-pill">—</span></button></div>
+   </section>
+   <div id="panel-overview" class="tab-panel" role="tabpanel" aria-labelledby="tab-overview">
+    <div class="content-grid">
+      <div class="left-stack">
+       <section class="panel about-panel"><div class="panel-header"><h2><svg><use href="#i-align"/></svg>About This Opportunity</h2><span id="referenceBadge" class="reference">REF: —</span></div><p class="about-copy" id="description">Loading…</p><div id="gallery" class="gallery" hidden></div><div class="tags" id="tags"></div></section>
+       <section class="panel requirements-panel"><div class="panel-header"><h2><svg><use href="#i-badge"/></svg>Volunteer Requirements</h2></div><div class="requirements-grid"><article class="requirement"><span class="square-icon"><svg><use href="#i-people"/></svg></span><h3>Minimum Age</h3><strong id="minAge">—</strong><p id="ageNote">Not specified</p></article><article class="requirement"><span class="square-icon"><svg><use href="#i-graduate"/></svg></span><h3>Experience</h3><strong id="experience">—</strong><p id="experienceNote">Not specified</p></article><article class="requirement"><span class="square-icon"><svg><use href="#i-dumbbell"/></svg></span><h3>Physical Demands</h3><strong id="physical">—</strong><p id="physicalNote">Not specified</p></article></div></section>
+      </div>
+      <aside class="panel schedule-panel"><div class="panel-header schedule-title"><h2>Schedule Details</h2><span class="slots-badge" id="slotsBadge">— Slots Open</span></div>
+       <div class="staffing-box"><div class="staffing-top"><span>Staffing Ratio</span><strong id="staffingRatio">— / — Needed</strong></div><div class="staffing-track" id="staffingTrack" role="progressbar" aria-label="Staffing progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div><div class="staffing-bottom"><span id="filledPercent">— Filled</span><button id="reviewQueueBtn" type="button">Review applications <span aria-hidden="true">→</span></button></div></div>
+       <div class="contact-row"><span id="coordinatorAvatar" class="contact-icon person">MC</span><div><small>Lead Coordinator</small><strong id="coordinator">Not specified</strong></div><button type="button" id="messageCoordinator" class="contact-action" aria-label="Contact coordinator"><svg><use href="#i-msg"/></svg></button></div>
+       <div class="contact-row"><span class="contact-icon"><svg><use href="#i-phone"/></svg></span><div><small>Emergency Dispatch</small><a id="emergencyPhone" href="#">Not provided</a><span id="emergencyNote">Dedicated field line on shift day</span></div></div>
+       <div class="contact-row location-contact"><span class="contact-icon"><svg><use href="#i-map"/></svg></span><div><small>Location</small><strong id="locationName">Not specified</strong><span id="locationAddress">—</span></div></div>
+       <div id="mapFrame" class="map-frame"><span>Location map available once an address is added</span></div>
+       <a id="directionsLink" class="directions" href="#" target="_blank" rel="noopener noreferrer"><svg><use href="#i-map"/></svg>Open in Maps / Get Directions</a>
+      </aside>
+    </div>
+   </div>
+   <section id="panel-applications" class="tab-panel panel secondary-panel" role="tabpanel" aria-labelledby="tab-applications" hidden><div class="section-heading"><div><h2>Applications</h2><p>Review volunteers who have applied for this opportunity.</p></div></div><div id="applicationList" class="list-area"></div></section>
+   <section id="panel-volunteers" class="tab-panel panel secondary-panel" role="tabpanel" aria-labelledby="tab-volunteers" hidden><div class="section-heading"><div><h2>Assigned Volunteers</h2><p>People whose applications have been approved.</p></div></div><div id="volunteerList" class="list-area"></div></section>
+   <section id="panel-activities" class="tab-panel panel secondary-panel" role="tabpanel" aria-labelledby="tab-activities" hidden><div class="section-heading"><div><h2>Activities & Tasks</h2><p>Tasks configured for this opportunity.</p></div></div><div id="activitiesList" class="list-area"></div></section>
+ </main>
+</div></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="editDialog" class="edit-dialog" aria-labelledby="editDialogTitle"><form method="dialog" id="editForm"><div class="dialog-heading"><h2 id="editDialogTitle">Edit opportunity</h2><button type="button" class="icon-button" id="closeDialog" aria-label="Close edit dialog"><svg><use href="#i-x"/></svg></button></div><p class="dialog-note">Updates are sent to the organization API. They are not saved unless the server confirms success.</p><label>Opportunity title<input id="editTitle" maxlength="150" required /></label><label>Category<input id="editCategory" maxlength="100" required /></label><label>Description<textarea id="editDescription" rows="5" required></textarea></label><label>Volunteer capacity<input id="editCapacity" type="number" min="1" max="99999" required /></label><p id="editError" role="alert" class="dialog-error" hidden></p><div class="dialog-actions"><button type="button" class="soft-button" id="cancelEdit">Cancel</button><button id="saveEdit" type="submit" class="primary-button">Save changes</button></div></form></dialog>
+</body>
+</html>
