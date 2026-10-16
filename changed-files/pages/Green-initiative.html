@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organization Review | IMPACTRA</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: "#1d4ed8",
+              surface: "#f5f5fb",
+              active: "#dfe5fb",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="green.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="../images/logo.png" type="image/x-icon" />
+
+    <style>
+      /* Fallbacks in case style.css is not deployed */
+      .label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #64748b;
+      }
+      .shadow-card {
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+      }
+      /* Sidebar overlay (mobile) */
+      .sidebar-overlay {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+      .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+    </style>
+
+    <script src="../API.js" defer></script>
+    <script src="../admin.js" defer></script>
+  </head>
+
+  <body class="font-sans bg-[#f8f8fc] text-slate-900 min-h-screen flex">
+    <!-- Mobile sidebar overlay -->
+    <div
+      id="sidebarOverlay"
+      class="sidebar-overlay fixed inset-0 bg-black/40 z-30 lg:hidden"
+    ></div>
+
+    <!--  SIDEBAR  -->
+    <aside
+      id="sidebar"
+      class="sidebar fixed lg:sticky top-0 left-0 z-40 w-[284px] shrink-0 h-screen bg-white border-r border-slate-200 flex flex-col -translate-x-full lg:translate-x-0"
+    >
+      <div class="h-[70px] flex items-center justify-between gap-3 px-6 border-b border-slate-200">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full border border-blue-600 grid place-items-center text-blue-700">
+            <img src="../images/logo2.png" alt="IMPACTRA" />
+          </div>
+          <span class="font-bold text-lg tracking-tight">IMPACTRA</span>
+        </div>
+        <button
+          id="closeSidebar"
+          type="button"
+          aria-label="Close menu"
+          class="lg:hidden text-slate-600 hover:text-slate-900"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 p-2.5 pt-5 space-y-1.5 overflow-y-auto">
+        <a
+          href="../welcome-back.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50"
+        >
+          <span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+        <a
+          href="Organisation.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg bg-active text-brand text-lg font-medium"
+        >
+          <span class="material-symbols-outlined">apartment</span> Applications
+        </a>
+        <a
+          href="report.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50"
+        >
+          <span class="material-symbols-outlined">gpp_maybe</span> Reports
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50"
+        >
+          <span class="material-symbols-outlined">support_agent</span> Support
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50"
+        >
+          <span class="material-symbols-outlined">manage_accounts</span> User Management
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50"
+        >
+          <span class="material-symbols-outlined">settings</span> Settings
+        </a>
+      </nav>
+
+      <div class="border-t border-slate-200 p-4 flex items-center gap-3 text-red-600">
+        <span class="material-symbols-outlined text-slate-500">more_vert</span>
+        <button id="logoutBtn" type="button" class="flex items-center gap-2 font-medium">
+          <span class="material-symbols-outlined">logout</span> Log out
+        </button>
+      </div>
+    </aside>
+
+    <!--  MAIN  -->
+    <div class="flex-1 min-w-0 flex flex-col">
+      <!-- TOP BAR -->
+      <header
+        class="h-[70px] bg-white border-b border-slate-200 flex items-center gap-3 px-3 lg:px-10 sticky top-0 z-20"
+      >
+        <button
+          id="openSidebar"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          class="lg:hidden shrink-0 w-10 h-10 grid place-items-center rounded-lg text-slate-700 hover:bg-slate-100"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+
+        <div class="flex items-center gap-3 bg-[#eef0fb] rounded-lg px-4 py-2.5 flex-1 max-w-[427px]">
+          <span class="material-symbols-outlined text-slate-700">search</span>
+          <input
+            type="text"
+            placeholder="Search administrative logs, orgs, entities..."
+            class="bg-transparent outline-none w-full text-slate-700 placeholder:text-slate-500"
+          />
+        </div>
+
+        <div class="ml-auto flex items-center gap-4">
+          <button class="relative text-slate-600" aria-label="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full"></span>
+          </button>
+          <span class="h-8 w-px bg-slate-200 hidden sm:block"></span>
+          <div class="flex items-center gap-3">
+            <div
+              data-user-initials
+              class="w-9 h-9 rounded-full bg-slate-700 text-white grid place-items-center text-sm font-semibold"
+            >
+              EV
+            </div>
+            <div class="hidden sm:block leading-tight">
+              <p data-user-name class="text-sm font-semibold">Eleanor V.</p>
+              <p class="text-xs text-slate-500">Platform Admin</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="p-6 lg:px-9 lg:py-6">
+        <!-- Title -->
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div>
+            <h1 data-org-name class="text-2xl sm:text-4xl font-semibold tracking-tight">
+              Loading…
+            </h1>
+            <p class="mt-3 text-sm text-slate-600 flex items-center gap-3 pl-2">
+              <span data-org-ref>—</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+              <span>Submitted on <span data-org-submitted>—</span></span>
+            </p>
+          </div>
+          <span
+            id="statusPill"
+            class="inline-flex items-center gap-2 bg-amber-50 text-amber-600 text-sm font-semibold px-3 py-1.5 rounded-full"
+          >
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span data-org-status>Loading…</span>
+          </span>
+        </div>
+
+        <!-- Tabs -->
+        <div id="tabs" class="mt-6 flex items-center gap-8 text-slate-600">
+          <button
+            data-tab="overview"
+            class="tab text-brand font-semibold border-b-2 border-brand pb-3"
+          >
+            Overview
+          </button>
+          <button data-tab="documents" class="tab pb-3 flex items-center gap-2">
+            Documents
+            <span
+              data-doc-count
+              class="bg-active text-slate-700 text-xs font-semibold rounded-full px-2 py-0.5"
+            >0</span>
+          </button>
+          <button data-tab="audit" class="tab pb-3">Audit History</button>
+        </div>
+
+        <!-- GRID -->
+        <div class="mt-6 grid grid-cols-1 xl:grid-cols-[1fr_396px] gap-7 items-start">
+          <!-- LEFT COLUMN -->
+          <div class="space-y-7">
+            <!-- Organization info -->
+            <section class="bg-white rounded-xl shadow-card p-6">
+              <div class="flex items-center gap-1 justify-between">
+                <h2 class="flex items-center gap-3 min-w-0 text-base sm:text-2xl font-semibold">
+                  <img src="../images/build.png" alt="" class="w-5 h-5" />
+                  Organization Information
+                </h2>
+                <span
+                  class="bg-active/70 shrink-0 text-brand text-[10px] font-semibold sm:tracking-wide px-2 py-1.5 rounded-xl"
+                >
+                  VERIFIED REGISTRY SEARCH
+                </span>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-x-6 gap-y-6 mt-6">
+                <div>
+                  <p class="label">Organization Name</p>
+                  <p data-org-name class="font-semibold mt-2">—</p>
+                </div>
+                <div>
+                  <p class="label">Website</p>
+                  <a
+                    data-org-website
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-brand font-medium mt-2 inline-flex items-center gap-1"
+                  >
+                    —
+                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                  </a>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <p class="label">Mission Statement</p>
+                  <p data-org-mission class="mt-2 bg-surface rounded-lg p-4 leading-relaxed text-slate-700">
+                    —
+                  </p>
+                </div>
+
+                <div>
+                  <p class="label">Contact Person</p>
+                  <div class="flex items-center gap-3 mt-2">
+                    <span
+                      data-org-contact-initials
+                      class="w-9 h-9 rounded-full bg-active text-slate-800 text-sm font-semibold grid place-items-center"
+                    >—</span>
+                    <div class="leading-tight">
+                      <p data-org-contact-name class="font-semibold">—</p>
+                      <p data-org-contact-role class="text-sm text-slate-600">—</p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p class="label">Email Address</p>
+                  <a
+                    data-org-email-link
+                    href="#"
+                    class="text-brand mt-2 inline-flex items-center gap-2"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">mail</span>
+                    <span data-org-email>—</span>
+                  </a>
+                </div>
+
+                <div>
+                  <p class="label">Phone Number</p>
+                  <p class="mt-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">call</span>
+                    <span data-org-phone>—</span>
+                  </p>
+                </div>
+                <div>
+                  <p class="label">Date Submitted</p>
+                  <p data-org-submitted-full class="mt-2">—</p>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <p class="label">Physical Address</p>
+                  <p class="mt-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">location_on</span>
+                    <span data-org-address>—</span>
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Verification -->
+            <section class="bg-white rounded-xl shadow-card p-6">
+              <h2 class="text-xl font-semibold">Verification Signals &amp; Checks</h2>
+              <div class="grid md:grid-cols-3 gap-4 mt-6">
+                <div class="bg-surface rounded-lg p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium tracking-wide text-slate-600">CAC VERIFICATION</p>
+                    <span class="material-symbols-outlined text-green-600 text-[20px] fill">verified</span>
+                  </div>
+                  <p data-org-cac class="font-semibold mt-2">—</p>
+                  <p class="text-sm text-green-700 mt-1">Matched in Registry</p>
+                </div>
+
+                <div class="bg-surface rounded-lg p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium tracking-wide text-slate-600">TAX IDENTIFICATION</p>
+                    <span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+                  </div>
+                  <p data-org-tax class="font-semibold mt-2">—</p>
+                  <p class="text-sm text-green-700 mt-1">Valid clearance</p>
+                </div>
+
+                <div class="bg-surface rounded-lg p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium tracking-wide text-slate-600">DOMAIN MATCH</p>
+                    <span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+                  </div>
+                  <p class="font-semibold mt-2">DNS Authenticated</p>
+                  <p class="text-sm text-green-700 mt-1">MX &amp; SPF passed</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Action bar -->
+            <div class="bg-white rounded-xl shadow-card p-4 flex flex-wrap items-center justify-end gap-3">
+              <button
+                id="requestInfoBtn"
+                type="button"
+                class="flex items-center gap-2 px-4 py-2.5 font-medium text-slate-900 rounded-lg hover:bg-slate-50"
+              >
+                <span class="material-symbols-outlined text-[20px]">help</span>
+                Request More Information
+              </button>
+              <button
+                id="rejectBtn"
+                type="button"
+                class="flex items-center gap-2 px-5 py-2.5 font-semibold text-red-700 bg-red-100 rounded-lg hover:bg-red-200"
+              >
+                <span class="material-symbols-outlined text-[20px]">cancel</span>
+                Reject
+              </button>
+              <button
+                id="approveBtn"
+                type="button"
+                class="flex items-center gap-2 px-5 py-2.5 font-semibold text-white bg-brand rounded-lg hover:bg-blue-800"
+              >
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                Approve
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="space-y-7">
+            <!-- Logo card -->
+            <section class="bg-white rounded-xl shadow-card p-6">
+              <p class="label">Organization Logo</p>
+              <div class="relative mt-5 bg-[#f1f1f1] rounded-lg py-8 flex flex-col items-center">
+                <div class="w-[88px] h-[88px] bg-white rounded-2xl shadow-sm grid place-items-center overflow-hidden">
+                  <img
+                    id="orgLogoImg"
+                    src=""
+                    alt=""
+                    class="hidden w-full h-full object-contain"
+                  />
+                  <span
+                    id="orgLogoFallback"
+                    class="material-symbols-outlined text-green-600 text-5xl"
+                  >psychiatry</span>
+                </div>
+                <p data-org-logo-name class="mt-4 text-lg font-semibold uppercase">—</p>
+                <p class="text-xs font-medium tracking-[0.2em] text-green-700 mt-1">INITIATIVE</p>
+                <span data-org-logo-filename class="self-end pr-3 mt-3 text-[11px] text-slate-400 font-mono">
+                  —
+                </span>
+              </div>
+              <div class="flex items-center justify-between mt-5 text-sm">
+                <span class="text-slate-700">Asset format: Vector SVG</span>
+                <a id="downloadLogo" href="#" class="text-brand font-medium">Download</a>
+              </div>
+            </section>
+
+            <!-- Documents card -->
+            <section class="bg-white rounded-xl shadow-card p-6">
+              <div class="flex items-center justify-between">
+                <h2 class="flex items-center gap-2 font-semibold">
+                  <span class="material-symbols-outlined text-brand">folder</span>
+                  Registration Documents
+                </h2>
+                <a href="#" class="text-brand text-sm font-medium">View all</a>
+              </div>
+
+              <ul id="documentsList" class="mt-5 space-y-3">
+                <li class="text-sm text-slate-500 py-3">Loading documents…</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!--  APPROVE MODAL  -->
+    <div
+      id="approveModal"
+      class="modal-overlay hidden fixed inset-0 z-50 items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="approveTitle"
+    >
+      <div class="modal-card relative w-full max-w-[550px] bg-white rounded-2xl p-9">
+        <button
+          id="closeApprove"
+          type="button"
+          aria-label="Close"
+          class="absolute top-8 right-8 text-slate-600 hover:text-slate-900"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <div class="text-center">
+          <h2 id="approveTitle" class="text-2xl font-semibold tracking-tight">
+            Approve <span data-org-name>this organization</span>?
+          </h2>
+          <p class="mt-2 text-sm text-slate-800">
+            Application ID: <span data-org-ref>—</span>
+          </p>
+        </div>
+
+        <p class="mt-7 text-slate-700 leading-relaxed">
+          Approving this application will trigger the following automated system actions:
+        </p>
+
+        <ul class="mt-4 space-y-3 pl-6 text-slate-700 leading-relaxed">
+          <li>
+            Activate the NGO portal and email credentials to
+            <span data-org-email class="text-slate-900">—</span>.
+          </li>
+          <li>Grant immediate access to volunteer deployment rosters and campaign tools.</li>
+        </ul>
+
+        <div class="mt-7 border border-slate-300 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <p class="label">Operational Permissions</p>
+            <span class="bg-active text-brand text-xs font-medium px-3 py-1 rounded-full">
+              Tier 1 Access Granted
+            </span>
+          </div>
+          <ul class="mt-4 space-y-3 text-slate-900">
+            <li class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-brand text-[20px]">check</span>
+              Accredited Partner Directory Listing
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-brand text-[20px]">check</span>
+              Volunteer Deployment Rosters Enabled
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-8 flex justify-end gap-3">
+          <button
+            id="cancelApprove"
+            type="button"
+            class="px-6 py-2.5 font-semibold border border-slate-300 rounded-lg hover:bg-slate-50"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmApprove"
+            type="button"
+            class="flex items-center gap-2 px-5 py-2.5 font-semibold text-white bg-brand rounded-lg hover:bg-blue-800 disabled:opacity-60"
+          >
+            <span class="material-symbols-outlined text-[20px]">verified</span>
+            Approve Application
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!--  REJECT MODAL  -->
+    <div
+      id="rejectModal"
+      class="modal-overlay hidden fixed inset-0 z-50 items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-card relative w-full max-w-[550px] bg-white rounded-2xl p-9">
+        <button
+          id="closeReject"
+          type="button"
+          aria-label="Close"
+          class="absolute top-8 right-8 text-slate-600 hover:text-slate-900"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <div class="text-center">
+          <h2 class="text-2xl font-semibold tracking-tight">
+            Reject <span data-org-name>this organization</span>?
+          </h2>
+          <p class="mt-2 text-sm text-slate-800">
+            Application ID: <span data-org-ref>—</span>
+          </p>
+        </div>
+
+        <p class="mt-7 text-slate-700 leading-relaxed">
+          The organization will be notified by email with the reason below. This action cannot be undone.
+        </p>
+
+        <label class="mt-4 block">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Reason</span>
+          <textarea
+            id="rejectReason"
+            rows="4"
+            placeholder="e.g. CAC certificate is unreadable. Please re-upload a clear copy."
+            class="mt-2 w-full rounded-lg border border-slate-300 bg-white p-3 text-sm focus:border-brand focus:outline-none"
+          ></textarea>
+        </label>
+
+        <div class="mt-8 flex justify-end gap-3">
+          <button
+            id="cancelReject"
+            type="button"
+            class="px-6 py-2.5 font-semibold border border-slate-300 rounded-lg hover:bg-slate-50"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmReject"
+            type="button"
+            class="flex items-center gap-2 px-5 py-2.5 font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-60"
+          >
+            <span class="material-symbols-outlined text-[20px]">cancel</span>
+            Reject Application
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

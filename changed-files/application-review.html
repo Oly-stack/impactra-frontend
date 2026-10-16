@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organization Review | IMPACTRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /*  Sidebar  */
+    aside {
+      width: 240px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .brand-header {
+      padding: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: #2563eb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      font-size: 18px;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-section { padding: 16px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none;
+      margin-bottom: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item.active { background-color: #eff6ff; color: #2563eb; font-weight: 700; }
+    .nav-item:hover:not(.active) { background-color: #f8fafc; color: #0f172a; }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .user-footer {
+      padding: 16px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-info p:first-child { font-size: 12px; font-weight: 700; color: #0f172a; }
+    .user-info p:last-child { font-size: 10px; color: #94a3b8; }
+
+    /*  Main  */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      color: #0f172a;
+      border-radius: 8px;
+    }
+    .menu-toggle:hover { background: #f1f5f9; }
+
+    .search-box {
+      position: relative;
+      width: 360px;
+      max-width: 100%;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 12px 8px 34px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .bell-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #64748b;
+      position: relative;
+    }
+
+    .bell-icon::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background: #e11d48;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    /*  Content  */
+    .content-container {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: #2563eb; }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .org-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .org-title-group h1 { font-size: 22px; font-weight: 900; color: #0f172a; }
+
+    .pill-id {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .pill-pending {
+      background: #fef3c7;
+      color: #d97706;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-pending::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+    }
+
+    .pill-pending.verified { background: #ecfdf5; color: #047857; }
+    .pill-pending.rejected { background: #fff1f2; color: #be123c; }
+    .pill-pending.info     { background: #dbeafe; color: #1d4ed8; }
+
+    .timestamp-text { font-size: 11px; color: #94a3b8; font-weight: 500; }
+
+    /*  Tabs  */
+    .tabs-bar {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+
+    .tab-item {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 0 8px 0;
+      position: relative;
+      font-family: inherit;
+    }
+
+    .tab-item.active { color: #2563eb; }
+
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -9px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #2563eb;
+    }
+
+    /*  Grid  */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .card + .card { margin-top: 16px; }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-group { margin-bottom: 16px; }
+    .info-group:last-child { margin-bottom: 0; }
+
+    .info-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    /*  Signal cards  */
+    .signals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .signal-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .signal-title { font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+    .signal-val   { font-size: 12px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+    .signal-sub   { font-size: 10px; color: #10b981; font-weight: 600; margin-top: 2px; }
+
+    /*  Action bar  */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary,
+    .btn-danger,
+    .btn-approve {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn-secondary { background: #f1f5f9; color: #475569; border: none; }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    .btn-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
+    .btn-danger:hover { background: #fee2e2; }
+
+    .btn-approve { background: #2563eb; color: #ffffff; border: none; padding: 10px 20px; }
+    .btn-approve:hover { background: #1d4ed8; }
+
+    .btn-secondary[disabled],
+    .btn-danger[disabled],
+    .btn-approve[disabled] {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /*  Right column  */
+    .logo-preview-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .logo-preview-box img { max-height: 60px; max-width: 60%; object-fit: contain; }
+
+    .logo-icon-bg {
+      width: 48px;
+      height: 48px;
+      background: #dbeafe;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .doc-info { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+    .doc-title { font-size: 11px; font-weight: 700; color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .doc-sub   { font-size: 9px; color: #94a3b8; }
+    .doc-actions { display: flex; gap: 6px; }
+    .doc-actions a { color: #64748b; text-decoration: none; font-size: 14px; }
+    .doc-actions a:hover { color: #2563eb; }
+
+    /*  Modal  */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: #0f172a; }
+
+    .modal-header { text-align: center; margin-bottom: 16px; }
+    .modal-title  { font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
+    .modal-sub    { font-size: 11px; color: #64748b; font-weight: 600; }
+
+    .modal-body-text { font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 16px; }
+    .modal-body-text ul { margin-top: 8px; padding-left: 18px; }
+    .modal-body-text li { margin-bottom: 4px; }
+
+    .permission-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+
+    .perm-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .perm-label { font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+    .perm-badge { background: #dbeafe; color: #2563eb; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 999px; }
+    .perm-list  { font-size: 11px; font-weight: 700; color: #0f172a; display: flex; flex-direction: column; gap: 6px; }
+    .perm-item  { display: flex; align-items: center; gap: 6px; }
+    .perm-item span { color: #2563eb; }
+
+    .modal-actions { display: flex; gap: 12px; }
+
+    .btn-modal-cancel {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-modal-cancel:hover { background: #f8fafc; }
+
+    .btn-modal-approve,
+    .btn-modal-reject {
+      flex: 1.5;
+      border: none;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+    .btn-modal-approve { background: #2563eb; }
+    .btn-modal-approve:hover { background: #1d4ed8; }
+    .btn-modal-reject { background: #e11d48; }
+    .btn-modal-reject:hover { background: #be123c; }
+    .btn-modal-approve[disabled],
+    .btn-modal-reject[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+    .modal-textarea {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+      min-height: 90px;
+      margin-top: 6px;
+    }
+    .modal-textarea:focus { border-color: #2563eb; }
+
+    /*  Mobile sidebar overlay  */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      z-index: 25;
+      display: none;
+    }
+    .sidebar-overlay.open { display: block; }
+
+    /*  Toast  */
+    .toast-host {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      animation: toast-in 0.25s ease;
+    }
+    .toast.default { background: #0f172a; }
+    .toast.success { background: #065f46; }
+    .toast.error   { background: #991b1b; }
+    .toast.info    { background: #1d4ed8; }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /*  Responsive  */
+    @media (max-width: 1024px) {
+      .review-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      aside {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 40;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+      }
+      aside.open { transform: translateX(0); }
+
+      .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+      .search-box { flex: 1; }
+      .content-container { padding: 16px; }
+      .signals-grid { grid-template-columns: 1fr; }
+      .title-row { align-items: flex-start; }
+    }
+  </style>
+  <script src="API.js" defer></script>
+  <script src="admin.js" defer></script>
+</head>
+<body>
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <!--  Sidebar  -->
+  <aside id="sidebar">
+    <div>
+      <a href="../welcome-back.html" class="brand-header">
+        <div class="brand-logo">I</div>
+        <span class="brand-title">IMPACTRA</span>
+      </a>
+
+      <div class="nav-section">
+        <a href="../welcome-back.html" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="Organisation.html" class="nav-item active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10"/><path d="M8 8h2M8 12h2M8 16h2M17 14h1M17 18h1M2 21h20"/></svg>
+          <span>Applications</span>
+        </a>
+        <a href="report.html" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 8v4M12 15.5v.01"/></svg>
+          <span>Reports</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20a4 4 0 0 1-4 2h-2"/></svg>
+          <span>Support</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></svg>
+          <span>User Management</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+          <span>Settings</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="user-footer">
+      <img data-user-avatar src="../img/Profile.png" alt="Admin" class="user-avatar"
+           onerror="this.onerror=null;this.src='https://i.pravatar.cc/64?u=admin';" />
+      <div class="user-info">
+        <p data-user-name>Admin User</p>
+        <p>Platform Director</p>
+      </div>
+    </div>
+  </aside>
+
+  <!--  Main  -->
+  <div class="main-wrapper">
+
+    <!-- Header -->
+    <header>
+      <button id="openSidebar" class="menu-toggle" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search administrative logs, orgs, entities..." />
+      </div>
+
+      <div class="header-right">
+        <button class="bell-icon" aria-label="Notifications">🔔</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <img src="../img/Profile.png" alt="Avatar"
+               onerror="this.onerror=null;this.src='https://i.pravatar.cc/40?u=admin';"
+               style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" />
+          <span data-user-name style="font-size: 12px; font-weight: 700;">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content-container">
+
+      <a href="Organisation.html" class="back-link">← Back to Organization Applications</a>
+
+      <div class="title-row">
+        <div class="org-title-group">
+          <h1 data-org-name>Loading…</h1>
+          <span class="pill-id" data-org-ref>—</span>
+          <span id="statusPill" class="pill-pending">Pending Review</span>
+        </div>
+        <span class="timestamp-text">Submitted on <span data-org-submitted>—</span></span>
+      </div>
+
+      <div class="tabs-bar" id="tabs">
+        <button class="tab-item active" data-tab="overview">Overview</button>
+        <button class="tab-item" data-tab="documents">Documents (<span data-doc-count>0</span>)</button>
+        <button class="tab-item" data-tab="audit">Audit History</button>
+      </div>
+
+      <!-- Grid -->
+      <div class="review-grid">
+
+        <!-- Left column -->
+        <div>
+          <div class="card">
+            <div class="card-title">
+              <span>Organization Information</span>
+              <span style="color: #2563eb; font-size: 11px;">Overview Verification Clearance</span>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">Organization Name</div>
+              <div class="info-value" data-org-name>—</div>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">Mission Statement</div>
+              <div class="info-value" data-org-mission>—</div>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">Contact Person</div>
+              <div class="info-value" data-org-contact-name>—</div>
+              <div style="font-size: 10px; color: #94a3b8;" data-org-contact-role>—</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="info-group">
+                <div class="info-label">Phone Number</div>
+                <div class="info-value" data-org-phone>—</div>
+              </div>
+              <div class="info-group">
+                <div class="info-label">Email Address</div>
+                <div class="info-value" data-org-email>—</div>
+              </div>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">Physical Address</div>
+              <div class="info-value" data-org-address>—</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Verification Signals</div>
+            <div class="signals-grid">
+              <div class="signal-card">
+                <div class="signal-title">CAC Verification</div>
+                <div class="signal-val" data-org-cac>—</div>
+                <div class="signal-sub">Matched in Registry</div>
+              </div>
+              <div class="signal-card">
+                <div class="signal-title">Tax Identification</div>
+                <div class="signal-val" data-org-tax>—</div>
+                <div class="signal-sub">FIRS Clearance Active</div>
+              </div>
+              <div class="signal-card">
+                <div class="signal-title">Domain Match</div>
+                <div class="signal-val">DNS Authenticated</div>
+                <div class="signal-sub">MX Record Verified</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div>
+          <div class="card">
+            <div class="card-title">ORGANIZATION LOGO</div>
+            <div class="logo-preview-box">
+              <img id="orgLogoImg" src="" alt="" style="display: none;" />
+              <div id="orgLogoFallback" class="logo-icon-bg">🌱</div>
+              <div data-org-logo-name style="font-size: 12px; font-weight: 800; color: #0f172a;">—</div>
+            </div>
+
+            <div class="card-title" style="margin-top: 20px;">
+              <span>Registration Documents</span>
+            </div>
+
+            <div id="documentsList">
+              <p style="font-size: 11px; color: #94a3b8; padding: 8px 0;">Loading documents…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-bar">
+        <button id="requestInfoBtn" class="btn-secondary">Request More Information</button>
+        <button id="rejectBtn" class="btn-danger">Reject Application</button>
+        <button id="approveBtn" class="btn-approve">Approve Organization</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!--  Approve modal  -->
+  <div class="modal-overlay" id="approvalModal">
+    <div class="modal-card">
+      <button class="modal-close" data-close="approvalModal" aria-label="Close">✕</button>
+
+      <div class="modal-header">
+        <h2 class="modal-title">Approve <span data-org-name>this organization</span>?</h2>
+        <p class="modal-sub">Application ID: <span data-org-ref>—</span></p>
+      </div>
+
+      <div class="modal-body-text">
+        <p>Approving this application will trigger the following automated system actions:</p>
+        <ul>
+          <li>Activate the NGO portal and send login credentials to <strong data-org-email>—</strong>.</li>
+          <li>Grant immediate access to volunteer deployment rosters and campaign management tools.</li>
+        </ul>
+      </div>
+
+      <div class="permission-box">
+        <div class="perm-top">
+          <span class="perm-label">OPERATIONAL PERMISSIONS</span>
+          <span class="perm-badge">Tier 1 Access Granted</span>
+        </div>
+        <div class="perm-list">
+          <div class="perm-item"><span>✓</span> Accredited Partner Directory Listing</div>
+          <div class="perm-item"><span>✓</span> Volunteer Deployment Rosters Enabled</div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" data-close="approvalModal">Cancel</button>
+        <button class="btn-modal-approve" id="confirmApprove">
+          <span>✓</span> Approve Application
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!--  Reject modal  -->
+  <div class="modal-overlay" id="rejectModal">
+    <div class="modal-card">
+      <button class="modal-close" data-close="rejectModal" aria-label="Close">✕</button>
+
+      <div class="modal-header">
+        <h2 class="modal-title">Reject <span data-org-name>this organization</span>?</h2>
+        <p class="modal-sub">Application ID: <span data-org-ref>—</span></p>
+      </div>
+
+      <div class="modal-body-text">
+        <p>The organization will be notified by email with the reason below. This action cannot be undone.</p>
+      </div>
+
+      <label style="display: block; margin-bottom: 20px;">
+        <span style="font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">
+          Reason
+        </span>
+        <textarea id="rejectReason" class="modal-textarea"
+          placeholder="e.g. CAC certificate is unreadable. Please re-upload a clear copy."></textarea>
+      </label>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" data-close="rejectModal">Cancel</button>
+        <button class="btn-modal-reject" id="confirmReject">
+          <span>✕</span> Reject Application
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
