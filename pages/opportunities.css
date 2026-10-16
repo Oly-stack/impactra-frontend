@@ -1,0 +1,17 @@
+[hidden] { display: none !important; }
+body { overflow-wrap: anywhere; }
+button:disabled { opacity: .65; cursor: not-allowed; }
+button:focus-visible, a:focus-visible { outline: 3px solid #6366f1; outline-offset: 3px; }
+[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.flow-status { padding: 12px 16px; border-radius: 8px; background: #eef2ff; color: #3730a3; line-height: 1.5; }
+.flow-status[data-variant="error"] { background: #fef2f2; color: #991b1b; }
+.flow-status[data-variant="success"] { background: #ecfdf5; color: #065f46; }
+.flow-status button { margin: 8px 0 0 12px; padding: 8px 12px; font-size: 14px; }
+.page-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+.page-actions a { color: #4338ca; font-weight: bold; }
+#opportunities { grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); }
+.card h2 { overflow-wrap: anywhere; }
+#toast-host { position: fixed; z-index: 90; bottom: 20px; left: 50%; transform: translateX(-50%); width: min(90vw, 480px); pointer-events: none; }
+.flow-toast { padding: 14px 18px; margin-top: 8px; border-radius: 10px; background: #0f172a; color: white; box-shadow: 0 4px 16px #0002; line-height: 1.5; }
+.flow-toast[data-variant="error"] { background: #991b1b; }
+.flow-toast[data-variant="success"] { background: #065f46; }
