@@ -55,7 +55,7 @@
       <nav class="flex-1 px-3 pt-5 overflow-y-auto">
         <p class="label px-2 mb-2">Operations</p>
         <div class="space-y-1">
-          <a href="#" class="nav-link"
+          <a href="../Dashboard.html" class="nav-link"
             ><span class="material-symbols-outlined">dashboard</span>
             Dashboard</a
           >
@@ -63,21 +63,21 @@
             ><span class="material-symbols-outlined">event_available</span>
             Opportunities</a
           >
-          <a href="#" class="nav-link"
+          <a href="../application.html" class="nav-link"
             ><span class="material-symbols-outlined">assignment_ind</span>
             Applications</a
           >
-          <a href="#" class="nav-link"
+          <a href="../volunteer-profile.html" class="nav-link"
             ><span class="material-symbols-outlined">groups</span> Volunteers</a
           >
-          <a href="#" class="nav-link"
+          <a href="../contribution.html" class="nav-link"
             ><span class="material-symbols-outlined">event_note</span>
             Activities</a
           >
-          <a href="#" class="nav-link"
+          <a href="../impact.html" class="nav-link"
             ><span class="material-symbols-outlined">monitoring</span> Impact</a
           >
-          <a href="#" class="nav-link"
+          <a href="Certificate.html" class="nav-link"
             ><span class="material-symbols-outlined">workspace_premium</span>
             Certificates</a
           >
@@ -85,10 +85,10 @@
             ><span class="material-symbols-outlined">chat_bubble</span>
             Messages</a
           >
-          <a href="#" class="nav-link"
+          <a href="../report.html" class="nav-link"
             ><span class="material-symbols-outlined">gpp_maybe</span> Report</a
           >
-          <a href="#" class="nav-link"
+          <a href="../settings.html" class="nav-link"
             ><span class="material-symbols-outlined">settings</span> Settings</a
           >
         </div>
@@ -649,7 +649,7 @@
     <script>
       const $ = (id) => document.getElementById(id);
 
-      /* ---------- Sidebar drawer ---------- */
+      /*  Sidebar drawer  */
       const sidebar = $("sidebar");
       const overlay = $("sidebarOverlay");
 
@@ -679,7 +679,7 @@
         if (window.innerWidth >= 1024) closeSidebar();
       });
 
-      /* ---------- Time selects (every 30 min) ---------- */
+      /*  Time selects (every 30 min)  */
       const start = $("startTime"),
         end = $("endTime");
 
@@ -715,7 +715,7 @@
       end.addEventListener("change", syncTimes);
       syncTimes();
 
-      /* ---------- Date -> context card ---------- */
+      /*  Date -> context card  */
       const dateInput = $("date");
       const syncDate = () => {
         if (!dateInput.value) return;
@@ -730,7 +730,7 @@
       dateInput.addEventListener("change", syncDate);
       syncDate();
 
-      /* ---------- Event type toggle ---------- */
+      /*  Event type toggle  */
       const segBtns = document.querySelectorAll("#eventType .seg-btn");
       segBtns.forEach((b) =>
         b.addEventListener("click", () => {
@@ -739,7 +739,7 @@
         }),
       );
 
-      /* ---------- Age chips ---------- */
+      /*  Age chips  */
       const ageNotes = [
         "Minors under 18 require signed guardian consent acknowledgment before mission check-in.",
         "Only volunteers aged 18 and above can apply for this opportunity.",
@@ -762,7 +762,7 @@
         }),
       );
 
-      /* ---------- Experience cards ---------- */
+      /*  Experience cards  */
       const cards = document.querySelectorAll("#expCards .exp-card");
       cards.forEach((card) =>
         card.addEventListener("click", () => {
@@ -770,6 +770,139 @@
           card.classList.add("exp-active");
         }),
       );
+
+     
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const DRAFT_KEY = "impactraOpportunityDraft";
+
+  /*  Draft helpers (must match opportunity-workflow.js)  */
+  const loadDraft = () => {
+    try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "{}"); }
+    catch { return {}; }
+  };
+  const saveDraft = (patch) => {
+    const next = { ...loadDraft(), ...patch };
+    try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(next)); } catch {}
+    return next;
+  };
+
+  /*  Toast (small, self-contained)  */
+  function toast(message, variant = "info") {
+    let host = document.getElementById("toast-host");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "toast-host";
+      host.style.cssText =
+        "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);" +
+        "z-index:9999;display:flex;flex-direction:column;align-items:center;gap:8px;" +
+        "pointer-events:none;";
+      document.body.appendChild(host);
+    }
+    const palette = {
+      info:    "background:#1d4ed8;color:#fff",
+      success: "background:#065f46;color:#fff",
+      error:   "background:#991b1b;color:#fff",
+    };
+    const el = document.createElement("div");
+    el.style.cssText =
+      `padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;` +
+      `box-shadow:0 6px 16px rgba(0,0,0,.15);${palette[variant] || palette.info}`;
+    el.textContent = message;
+    host.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = "opacity .25s ease, transform .25s ease";
+      el.style.opacity = "0";
+      el.style.transform = "translateY(8px)";
+      setTimeout(() => el.remove(), 260);
+    }, 2400);
+  }
+
+  /*  Enum mapping (must match API payload)  */
+  // Backend enum for age: 16_plus | 18_plus | all_ages
+  const AGE_VALUES = ["16_plus", "18_plus", "all_ages"];
+  // Backend enum for experience: none_needed | intermediate | prior_experience
+  const EXP_VALUES = ["none_needed", "intermediate"]; // only 2 cards on this page
+
+  /*  Collect form → draft shape  */
+  function collectDetails() {
+    const date      = $("date")?.value || "";
+    const startTime = $("startTime")?.value || "";
+    const endTime   = $("endTime")?.value || "";
+
+    const isRecurring = document
+      .querySelector("#eventType .seg-btn.seg-active")
+      ?.textContent.includes("Recurring");
+    const shiftType = isRecurring ? "recurring" : "one_time";
+
+    const ageChips = Array.from(document.querySelectorAll("#ageChips .age-chip"));
+    const ageIdx = ageChips.findIndex((c) => c.classList.contains("age-active"));
+    const minimumAge = AGE_VALUES[ageIdx] || "16_plus";
+
+    const expCards = Array.from(document.querySelectorAll("#expCards .exp-card"));
+    const expIdx = expCards.findIndex((c) => c.classList.contains("exp-active"));
+    const experienceLevel = EXP_VALUES[expIdx] || "none_needed";
+
+    return {
+      shifts: [{ date, startTime, endTime, type: shiftType }],
+      requirements: { minimumAge, experienceLevel },
+    };
+  }
+
+  /*  Validation  */
+  function validateDetails(d) {
+    if (!d.shifts[0].date) {
+      toast("Please pick a date", "error");
+      $("date")?.focus();
+      return false;
+    }
+    const toMin = (v) => {
+      const [h, m] = v.split(":").map(Number);
+      return h * 60 + m;
+    };
+    if (toMin(d.shifts[0].endTime) <= toMin(d.shifts[0].startTime)) {
+      toast("End time must be after start time", "error");
+      return false;
+    }
+    return true;
+  }
+
+  /*  Find the two buttons by text  */
+  const buttons = Array.from(document.querySelectorAll("button"));
+
+  const saveDraftBtn = buttons.find((b) =>
+    /^\s*save draft\s*$/i.test(b.textContent)
+  );
+  const publishBtn = buttons.find((b) =>
+    /review\s*&\s*publish|review and publish/i.test(b.textContent)
+  );
+
+  /*  Wire: Save Draft  */
+  saveDraftBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const details = collectDetails();
+    saveDraft(details);
+    toast("Draft saved", "success");
+  });
+
+  /*  Wire: Review & Publish  */
+  publishBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const details = collectDetails();
+    if (!validateDetails(details)) return;
+
+    saveDraft(details);
+
+    // Land on step 3. It reads the same DRAFT_KEY we just wrote to.
+    window.location.href = "create-opportunities-step-3.html";
+  });
+
+  // Expose for step-1 draft restoration if needed
+  window.__impactraStep2 = { collectDetails, saveDraft, DRAFT_KEY };
+})();
+
     </script>
   </body>
 </html>
