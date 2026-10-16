@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMPACTRA - Application Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar Navigation */
+    aside {
+      width: 240px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .brand-header {
+      padding: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: #2563eb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      font-size: 18px;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-section {
+      padding: 16px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none;
+      margin-bottom: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item.active {
+      background-color: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+    }
+
+    .nav-item:hover:not(.active) {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .user-footer {
+      padding: 16px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-info p:first-child {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .user-info p:last-child {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    /* Main Content Wrapper */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Top Bar Header */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .search-box {
+      position: relative;
+      width: 360px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 12px 8px 34px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .bell-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #64748b;
+    }
+
+    /* Main Container Content */
+    .content-container {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: #2563eb;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .org-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .org-title-group h1 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .pill-id {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .pill-pending {
+      background: #fef3c7;
+      color: #d97706;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .timestamp-text {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* Tabs Bar */
+    .tabs-bar {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+
+    .tab-item {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-decoration: none;
+      padding-bottom: 8px;
+      position: relative;
+    }
+
+    .tab-item.active {
+      color: #2563eb;
+    }
+
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -9px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #2563eb;
+    }
+
+    /* Grid Layout */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-group {
+      margin-bottom: 16px;
+    }
+
+    .info-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+
+    /* Verification Cards */
+    .signals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .signal-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .signal-title {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .signal-val {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    .signal-sub {
+      font-size: 10px;
+      color: #10b981;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Bottom Action Bar */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-approve {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Logo Box Right Column */
+    .logo-preview-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .logo-icon-bg {
+      width: 48px;
+      height: 48px;
+      background: #dbeafe;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .doc-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .doc-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .doc-sub {
+      font-size: 9px;
+      color: #94a3b8;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .modal-sub {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .modal-body-text {
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .modal-body-text ul {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+
+    .modal-body-text li {
+      margin-bottom: 4px;
+    }
+
+    .permission-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+
+    .perm-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .perm-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .perm-badge {
+      background: #dbeafe;
+      color: #2563eb;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .perm-list {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .perm-item span {
+      color: #2563eb;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-modal-cancel {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .btn-modal-approve {
+      flex: 1.5;
+      background: #2563eb;
+      border: none;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside>
+    <div>
+      <a href="Dashboard.html" class="brand-header">
+        <div class="brand-logo">I</div>
+        <span class="brand-title">IMPACTRA</span>
+      </a>
+
+      <div class="nav-section">
+        <a href="Dashboard.html" class="nav-item">
+          <span>📊</span>
+          <span>Overview</span>
+        </a>
+        <a href="application.html" class="nav-item active">
+          <span>📄</span>
+          <span>Applications</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span>🛡️</span>
+          <span>Reports & Moderation</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span>💬</span>
+          <span>Support & Complaints</span>
+        </a>
+        <a href="volunteer-profile.html" class="nav-item">
+          <span>👥</span>
+          <span>User Management</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span>⚡</span>
+          <span>Platform Activity</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span>⚙️</span>
+          <span>Settings</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="user-footer">
+      <img src="img/Profile.png" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'" alt="Admin" class="user-avatar" />
+      <div class="user-info">
+        <p>Admin User</p>
+        <p>Platform Director</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <div class="main-wrapper">
+
+    <!-- Header Navigation -->
+    <header>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search administrative log, org, entities..." />
+      </div>
+
+      <div class="header-right">
+        <button class="bell-icon">🔔</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <img src="img/Profile.png" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'" alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%;" />
+          <span style="font-size: 12px; font-weight: 700;">Director HQ</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content-container">
+
+      <a href="application.html" class="back-link">← Back to Organization Applications</a>
+
+      <div class="title-row">
+        <div class="org-title-group">
+          <h1>Green Earth Initiative</h1>
+          <span class="pill-id">#ORG-2024-018</span>
+          <span class="pill-pending">● Pending Review</span>
+        </div>
+        <span class="timestamp-text">Submitted on 12 Aug 2026</span>
+      </div>
+
+      <div class="tabs-bar">
+        <a href="#" class="tab-item active">Overview</a>
+        <a href="#" class="tab-item">Documents (3)</a>
+        <a href="#" class="tab-item">Audit History</a>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div class="review-grid">
+
+        <!-- Left Information Column -->
+        <div>
+          <div class="card">
+            <div class="card-title">
+              <span>Organization Information</span>
+              <a href="#" style="color: #2563eb; text-decoration: none; font-size: 11px;">Overview Verification Clearance</a>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">ORGANIZATION NAME</div>
+              <div class="info-value">Green Earth Initiative</div>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">MISSION STATEMENT</div>
+              <div class="info-value">To promote environmental sustainability through community action, tree planting, and waste management outreach campaigns across West Africa to protect coastal ecosystems.</div>
+            </div>
+
+            <div class="info-group">
+              <div class="info-label">CONTACT PERSON</div>
+              <div class="info-value">Aisha Bello</div>
+              <div style="font-size: 10px; color: #94a3b8;">Executive Director</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="info-group">
+                <div class="info-label">PHONE NUMBER</div>
+                <div class="info-value">+234 801 234 5678</div>
+              </div>
+              <div class="info-group">
+                <div class="info-label">PHYSICAL ADDRESS</div>
+                <div class="info-value">12 Eco Street, Ikeja, Lagos</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verification Signals -->
+          <div class="card" style="margin-top: 16px;">
+            <div class="card-title">Verification Signals</div>
+
+            <div class="signals-grid">
+              <div class="signal-card">
+                <div class="signal-title">CAC VERIFICATION</div>
+                <div class="signal-val">RC-1849202</div>
+                <div class="signal-sub">Matched in Registry</div>
+              </div>
+
+              <div class="signal-card">
+                <div class="signal-title">TAX IDENTIFICATION</div>
+                <div class="signal-val">2384792-0001</div>
+                <div class="signal-sub">FIRS Clearance Active</div>
+              </div>
+
+              <div class="signal-card">
+                <div class="signal-title">DOMAIN MATCH</div>
+                <div class="signal-val">DNS Authenticated</div>
+                <div class="signal-sub">MX Record Verified</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Supporting Documents Column -->
+        <div>
+          <div class="card">
+            <div class="card-title">ORGANIZATION LOGO</div>
+            <div class="logo-preview-box">
+              <div class="logo-icon-bg">🌱</div>
+              <div style="font-size: 12px; font-weight: 800; color: #0f172a;">GREEN EARTH</div>
+            </div>
+
+            <div class="card-title" style="margin-top: 20px;">
+              <span>Registration Documents</span>
+              <a href="#" style="color: #2563eb; text-decoration: none; font-size: 11px;">View all (3)</a>
+            </div>
+
+            <div class="doc-item">
+              <div class="doc-info">
+                <span>📄</span>
+                <div>
+                  <div class="doc-title">CAC Certificate.pdf</div>
+                  <div class="doc-sub">PDF • 1.2 MB</div>
+                </div>
+              </div>
+              <span>📥</span>
+            </div>
+
+            <div class="doc-item">
+              <div class="doc-info">
+                <span>📄</span>
+                <div>
+                  <div class="doc-title">Tax Clearance.pdf</div>
+                  <div class="doc-sub">PDF • 850 KB</div>
+                </div>
+              </div>
+              <span>📥</span>
+            </div>
+
+            <div class="doc-item">
+              <div class="doc-info">
+                <span>📄</span>
+                <div>
+                  <div class="doc-title">NGO Profile.pdf</div>
+                  <div class="doc-sub">PDF • 2.4 MB</div>
+                </div>
+              </div>
+              <span>📥</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="action-bar">
+        <button class="btn-secondary">Request More Information</button>
+        <button class="btn-danger">Reject Application</button>
+        <button class="btn-approve" onclick="openModal()">Approve Organization</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- APPROVAL POPUP MODAL -->
+  <div class="modal-overlay" id="approvalModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+
+      <div class="modal-header">
+        <h2 class="modal-title">Approve Green Earth Initiative?</h2>
+        <p class="modal-sub">Application ID: #ORG-2024-018</p>
+      </div>
+
+      <div class="modal-body-text">
+        <p>Approving this application will trigger the following automated system actions:</p>
+        <ul>
+          <li>Activate the NGO portal and send login credentials to <strong>aisha@greenearth.org</strong>.</li>
+          <li>Grant immediate access to volunteer deployment rosters and campaign management tools.</li>
+        </ul>
+      </div>
+
+      <div class="permission-box">
+        <div class="perm-top">
+          <span class="perm-label">OPERATIONAL PERMISSIONS</span>
+          <span class="perm-badge">Tier 1 Access Granted</span>
+        </div>
+        <div class="perm-list">
+          <div class="perm-item">
+            <span>✓</span> Accredited Partner Directory Listing
+          </div>
+          <div class="perm-item">
+            <span>✓</span> Volunteer Deployment Rosters Enabled
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-modal-approve" onclick="confirmApproval()">
+          <span>✓</span> Approve Application
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById('approvalModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('approvalModal').style.display = 'none';
+    }
+
+    function confirmApproval() {
+      alert('Green Earth Initiative has been officially approved!');
+      window.location.href = 'Dashboard.html';
+    }
+  </script>
+
+</body>
+</html>
