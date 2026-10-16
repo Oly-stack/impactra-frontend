@@ -2,7 +2,7 @@
 (() => {
   "use strict";
 
-  const $  = (sel) => document.querySelector(sel);
+  const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
   /* 0. AUTH GUARD: Redirect if not logged in */
@@ -26,7 +26,8 @@
   if (currentUser) {
     const nameEl = $(".avatar-info p:first-child");
     const roleEl = $(".avatar-info p:last-child");
-    if (nameEl && currentUser.name) nameEl.textContent = currentUser.name.split(" ")[0];
+    if (nameEl && currentUser.name)
+      nameEl.textContent = currentUser.name.split(" ")[0];
     if (roleEl) roleEl.textContent = "NGO";
   }
 
@@ -36,14 +37,15 @@
     if (!host) {
       host = document.createElement("div");
       host.id = "toast-host";
-      host.className = "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
+      host.className =
+        "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
       document.body.appendChild(host);
     }
     const palette = {
       default: "bg-[#0F172A] text-white",
       success: "bg-[#065F46] text-white",
-      error:   "bg-[#991B1B] text-white",
-      info:    "bg-[#1D4ED8] text-white",
+      error: "bg-[#991B1B] text-white",
+      info: "bg-[#1D4ED8] text-white",
     };
     const el = document.createElement("div");
     el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
@@ -64,21 +66,44 @@
       const data = res?.data || res || {};
 
       // Applications
-      setText("#metricApplications", data.totalApplications ?? data.applications ?? 0);
-      setText("#metricApplicationsFooter", `• ${data.pendingApplications ?? 0} pending review`);
+      setText(
+        "#metricApplications",
+        data.totalApplications ?? data.applications ?? 0,
+      );
+      setText(
+        "#metricApplicationsFooter",
+        `• ${data.pendingApplications ?? 0} pending review`,
+      );
 
       // Activities (Contributions)
-      setText("#metricActivities", data.totalContributions ?? data.activities ?? 0);
-      setText("#metricActivitiesFooter", `⏱ ${data.pendingHours ?? 0} hours pending confirmation`);
+      setText(
+        "#metricActivities",
+        data.totalContributions ?? data.activities ?? 0,
+      );
+      setText(
+        "#metricActivitiesFooter",
+        `⏱ ${data.pendingHours ?? 0} hours pending confirmation`,
+      );
 
       // Opportunities
-      setText("#metricOpportunities", data.totalOpportunities ?? data.opportunities ?? 0);
-      setText("#metricOpportunitiesFooter", `${data.activeOpportunities ?? 0} currently active`);
+      setText(
+        "#metricOpportunities",
+        data.totalOpportunities ?? data.opportunities ?? 0,
+      );
+      setText(
+        "#metricOpportunitiesFooter",
+        `${data.activeOpportunities ?? 0} currently active`,
+      );
 
       // Volunteers
-      setText("#metricVolunteers", data.totalVolunteers ?? data.volunteers ?? 0);
-      setText("#metricVolunteersFooter", `+${data.newVolunteersThisMonth ?? 0} onboarded this month`);
-
+      setText(
+        "#metricVolunteers",
+        data.totalVolunteers ?? data.volunteers ?? 0,
+      );
+      setText(
+        "#metricVolunteersFooter",
+        `+${data.newVolunteersThisMonth ?? 0} onboarded this month`,
+      );
     } catch (err) {
       console.warn("[dashboard] overview failed:", err);
       toast("Couldn't load dashboard metrics", "error");
@@ -91,8 +116,12 @@
     if (!tbody) return;
 
     try {
-      const res = await API.get("/organization/opportunities", { status: "active" });
-      const list = Array.isArray(res) ? res : (res?.data || res?.opportunities || []);
+      const res = await API.get("/organization/opportunities", {
+        status: "active",
+      });
+      const list = Array.isArray(res)
+        ? res
+        : res?.data || res?.opportunities || [];
 
       if (!list.length) {
         tbody.innerHTML = `
@@ -104,22 +133,32 @@
         return;
       }
 
-      tbody.innerHTML = list.slice(0, 5).map((opp) => {
-        const filled = opp.approvedVolunteers ?? opp.filledSlots ?? 0;
-        const capacity = opp.volunteerCapacity ?? opp.capacity ?? 1;
-        const percent = Math.round((filled / capacity) * 100);
+      tbody.innerHTML = list
+        .slice(0, 5)
+        .map((opp) => {
+          const filled = opp.approvedVolunteers ?? opp.filledSlots ?? 0;
+          const capacity = opp.volunteerCapacity ?? opp.capacity ?? 1;
+          const percent = Math.round((filled / capacity) * 100);
 
-        const startDate = opp.shifts?.[0]?.date
-          ? new Date(opp.shifts[0].date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })
-          : "TBD";
+          const startDate = opp.shifts?.[0]?.date
+            ? new Date(opp.shifts[0].date).toLocaleDateString(undefined, {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })
+            : "TBD";
 
-        const isUrgent = percent >= 90 && percent < 100;
-        const barClass = isUrgent ? "progress-fill-red" : "progress-fill-blue";
-        const badgeClass = isUrgent ? "status-badge-urgent" : "status-badge-active";
-        const dotClass = isUrgent ? "dot-red" : "dot-green";
-        const label = isUrgent ? "Urgent" : "Active";
+          const isUrgent = percent >= 90 && percent < 100;
+          const barClass = isUrgent
+            ? "progress-fill-red"
+            : "progress-fill-blue";
+          const badgeClass = isUrgent
+            ? "status-badge-urgent"
+            : "status-badge-active";
+          const dotClass = isUrgent ? "dot-red" : "dot-green";
+          const label = isUrgent ? "Urgent" : "Active";
 
-        return `
+          return `
           <tr>
             <td>
               <div class="cell-title">${opp.title || "Untitled"}</div>
@@ -147,8 +186,8 @@
               <a href="opportunity-details.html?id=${opp._id}" class="manage-link">Manage →</a>
             </td>
           </tr>`;
-      }).join("");
-
+        })
+        .join("");
     } catch (err) {
       console.warn("[dashboard] opportunities failed:", err);
       tbody.innerHTML = `
@@ -173,7 +212,10 @@
       setText("#targetVerified", verified.toLocaleString());
       setText("#targetGoal", goal.toLocaleString());
       setText("#targetPercent", `${percent}%`);
-      setText("#statDirectImpact", (data.beneficiariesReached ?? 0).toLocaleString());
+      setText(
+        "#statDirectImpact",
+        (data.beneficiariesReached ?? 0).toLocaleString(),
+      );
       setText("#statRetention", `${data.retentionRate ?? 0}%`);
 
       // Update the conic-gradient chart
@@ -181,7 +223,6 @@
       if (chart) {
         chart.style.background = `conic-gradient(#2563eb 0% ${percent}%, #e2e8f0 ${percent}% 100%)`;
       }
-
     } catch (err) {
       console.warn("[dashboard] target failed:", err);
     }
@@ -201,7 +242,9 @@
       const count = res?.count ?? res?.data?.count ?? 0;
       const badge = bellBtn?.querySelector(".bell-badge");
       if (badge) badge.style.display = count > 0 ? "block" : "none";
-    } catch (_) { /* non-blocking */ }
+    } catch (_) {
+      /* non-blocking */
+    }
   }
 
   bellBtn?.addEventListener("click", async () => {
@@ -221,7 +264,9 @@
     if (!confirm("You'll be signed out of IMPACTRA. Continue?")) return;
     try {
       await API.auth.logout();
-    } catch (_) { /* ignore */ }
+    } catch (_) {
+      /* ignore */
+    }
     API.tokens.clear();
     sessionStorage.clear();
     window.location.href = "pages/login.html";
@@ -238,5 +283,4 @@
   loadActiveOpportunities();
   loadQuarterlyTarget();
   loadUnreadCount();
-
 })();
