@@ -72,6 +72,9 @@
     }[c]));
   }
 
+  /* Safely unwrap an entity id regardless of `_id` / `id` naming */
+  const idOf = (obj) => obj?._id || obj?.id || "";
+
   /* SIDEBAR */
   const sidebarToggle = $("#sidebar-toggle");
   if (sidebarToggle) {
@@ -134,9 +137,13 @@
     document.body.style.overflow = "hidden";
     requestAnimationFrame(() => card.classList.remove("opacity-0", "scale-95"));
     activeModal = card;
+
     $("[data-modal-close]", card)?.addEventListener("click", closeModal);
-    card.querySelectorAll("[data-modal-cancel]").forEach((b) => b.addEventListener("click", closeModal));
+    card.querySelectorAll("[data-modal-cancel]").forEach((b) =>
+      b.addEventListener("click", closeModal)
+    );
     setTimeout(() => $("button, [href], input, select, textarea", card)?.focus(), 60);
+    return card; //  return the card so callers can scope their queries
   }
 
   function closeModal() {
@@ -161,7 +168,7 @@
 
   /* LOGOUT */
   byText("aside button", "Log out")?.addEventListener("click", () => {
-    openModal({
+    const card = openModal({
       title: "Log out?",
       body: `<p>You'll be signed out of IMPACTRA on this device.</p>`,
       footer: `
@@ -169,7 +176,7 @@
         <button data-modal-confirm class="h-10 rounded-lg bg-[#E11D48] px-4 text-sm font-semibold text-white transition hover:bg-rose-700">Log out</button>
       `,
     });
-    $("[data-modal-confirm]")?.addEventListener("click", async (ev) => {
+    $("[data-modal-confirm]", card)?.addEventListener("click", (ev) => {
       withBusy(ev.currentTarget, "Logging out…", async () => {
         try { await API.auth.logout(); } catch (_) {}
         API.tokens.clear();
@@ -179,36 +186,56 @@
     });
   });
 
-  /* LOAD OPPORTUNITIES + APPLICATIONS */
+  /* LOAD OPPORTUNITIES + APPLICATIONS*/
   async function loadAll() {
     try {
       // 1. Get the NGO's opportunities
-      const oppRes = await API.opportunities.myOrganizationList();
+      
+      const oppRes = await API.organization.opportunities.list();
       allOpportunities = oppRes?.data || oppRes?.opportunities || oppRes || [];
 
-      if (!allOpportunities.length) {
+      if (!Array.isArray(allOpportunities) || !allOpportunities.length) {
         renderEmpty("No opportunities yet. Create one to start receiving applications.");
+        updateCountersFromData();
         return;
       }
 
       // 2. Fetch applications for each opportunity (parallel)
+      
       const results = await Promise.allSettled(
-        allOpportunities.map((opp) =>
-          API.applications.listForOpportunity(opp._id).then((res) => ({
-            opportunity: opp,
-            apps: res?.data || res?.applications || res || [],
-          }))
-        )
+        allOpportunities.map((opp) => {
+          const oppId = idOf(opp);
+          if (!oppId) {
+            return Promise.reject(new Error("Opportunity missing id"));
+          }
+          return API.organization.applications
+            .listForOpportunity(oppId)
+            .then((res) => ({
+              opportunity: opp,
+              apps: res?.data || res?.applications || res || [],
+            }));
+        })
       );
 
       // 3. Flatten into a single array
       allApplications = [];
+      applicationIndex.clear();
+
       results.forEach((r) => {
-        if (r.status !== "fulfilled") return;
+        if (r.status !== "fulfilled") {
+          console.warn("[app.js] One opportunity failed to load:", r.reason);
+          return;
+        }
         const { opportunity, apps } = r.value;
+        if (!Array.isArray(apps)) return;
+
         apps.forEach((app) => {
+          const appKey = idOf(app);
+          if (!appKey) return;
+
           const enriched = {
             ...app,
+            _id: appKey,
             _opportunity: opportunity,
             _status: (app.status || "pending").toLowerCase(),
             _submittedAt: app.submittedAt || app.createdAt || new Date().toISOString(),
@@ -217,7 +244,7 @@
             _skills: app.skills || app.volunteer?.skills || [],
             _motivation: app.motivation || app.aboutYou || "",
           };
-          applicationIndex.set(app._id, enriched);
+          applicationIndex.set(appKey, enriched);
           allApplications.push(enriched);
         });
       });
@@ -239,8 +266,11 @@
       approved: allApplications.filter((a) => a._status === "approved").length,
       rejected: allApplications.filter((a) => a._status === "rejected").length,
     };
-    // Try to use real stats endpoint first, fall back to computed
-    API.applications.stats()
+
+    // Prefer the real stats endpoint; fall back to computed counts on failure.
+    
+    API.organization.applications
+      .stats()
       .then((res) => {
         const s = res?.data || res || {};
         applyCounts({
@@ -263,8 +293,11 @@
   function setCounterNumber(labelText, value) {
     const labelEl = byText("p", labelText);
     if (!labelEl) return;
+    // Walk up to the stat card wrapper, then find the first pure-numeric <p>.
     const card = labelEl.closest("div")?.parentElement;
-    const numEl = card ? $$("p", card).find((p) => /^\d+$/.test(p.textContent.trim())) : null;
+    const numEl = card
+      ? $$("p", card).find((p) => /^\d+$/.test(p.textContent.trim()))
+      : null;
     if (numEl) numEl.textContent = String(value);
   }
 
@@ -273,7 +306,7 @@
     if (!sel) return;
     sel.innerHTML = `<option value="all">All opportunities</option>` +
       allOpportunities.map((o) =>
-        `<option value="${escapeHtml(o.title)}">${escapeHtml(o.title)}</option>`
+        `<option value="${escapeHtml(o.title || "Untitled")}">${escapeHtml(o.title || "Untitled")}</option>`
       ).join("");
   }
 
@@ -297,7 +330,8 @@
     let visible = allApplications.filter((a) => {
       const statusOk = activeFilter === "all" || a._status === activeFilter;
       const qOk = !q || JSON.stringify(a).toLowerCase().includes(q);
-      const oppOk = opp === "all" || a._opportunity.title === opp;
+      const oppOk =
+        opp === "all" || (a._opportunity?.title || "Untitled") === opp;
       return statusOk && qOk && oppOk;
     });
 
@@ -345,6 +379,7 @@
       : "";
 
     const relative = relativeFromNow(new Date(app._submittedAt));
+    const oppTitle = escapeHtml(app._opportunity?.title || "Untitled");
 
     const actions = app._status === "pending"
       ? `
@@ -370,7 +405,7 @@
 
           <div class="inline-flex w-fit max-w-full items-center gap-1.5 truncate rounded-md bg-[#EFF6FF] px-2.5 py-1 text-[#0051b5]">
             <span class="shrink-0">📋</span>
-            <span class="truncate text-xs font-medium">Applied for: <b>${escapeHtml(app._opportunity.title)}</b></span>
+            <span class="truncate text-xs font-medium">Applied for: <b>${oppTitle}</b></span>
           </div>
 
           <p class="text-xs italic leading-5 text-slate-500 line-clamp-2">
@@ -395,30 +430,31 @@
   }
 
   function wireCard(card) {
-  const appId = card.dataset.appId;
-  const app = applicationIndex.get(appId);
-  if (!app) return;
+    const appId = card.dataset.appId;
+    const app = applicationIndex.get(appId);
+    if (!app) return;
 
-  card.querySelectorAll("button").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const action = btn.dataset.action;
+    card.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const action = btn.dataset.action;
 
-      if (action === "review") {
-        openReviewModal(app);
-      } else if (action === "view-profile") {
-        window.location.href = `volunteer-profile.html?applicationId=${encodeURIComponent(app._id)}`;
-      } else if (action === "view-app") {
-        toast(`Application status: ${app._status}`, "info");
-      }
+        if (action === "review") {
+          openReviewModal(app);
+        } else if (action === "view-profile") {
+          window.location.href = `volunteer-profile.html?applicationId=${encodeURIComponent(app._id)}`;
+        } else if (action === "view-app") {
+          toast(`Application status: ${app._status}`, "info");
+        }
+      });
     });
-  });
-}
+  }
+
   /* REVIEW MODAL */
   function openReviewModal(app) {
     const name = app._name;
 
-    openModal({
-      title: `Review — ${name}`,
+    const card = openModal({
+      title: `Review — ${escapeHtml(name)}`,
       size: "max-w-xl",
       body: `
         <p class="text-[13px] leading-6">${escapeHtml(app._motivation || "No motivation provided.")}</p>
@@ -434,10 +470,12 @@
       `,
     });
 
-    $("[data-action='approve']")?.addEventListener("click", (ev) => {
+    // FIXED: scope the queries to the modal card returned by openModal()
+    $("[data-action='approve']", card)?.addEventListener("click", (ev) => {
       withBusy(ev.currentTarget, "Approving…", async () => {
         try {
-          await API.applications.approve(app._id, "Great profile. Welcome aboard!");
+          // FIXED: API.organization.applications.approve
+          await API.organization.applications.approve(app._id, "Great profile. Welcome aboard!");
           updateAppStatus(app._id, "approved");
           closeModal();
           setTimeout(() => toast(`${name} approved`, "success"), 200);
@@ -447,10 +485,11 @@
       });
     });
 
-    $("[data-action='reject']")?.addEventListener("click", (ev) => {
+    $("[data-action='reject']", card)?.addEventListener("click", (ev) => {
       withBusy(ev.currentTarget, "Rejecting…", async () => {
         try {
-          await API.applications.reject(app._id, "Not a fit for this opportunity.");
+          // FIXED: API.organization.applications.reject
+          await API.organization.applications.reject(app._id, "Not a fit for this opportunity.");
           updateAppStatus(app._id, "rejected");
           closeModal();
           setTimeout(() => toast(`${name} rejected`, "info"), 200);
@@ -471,7 +510,7 @@
 
   /* FILTERS */
   byText("button", "Filter")?.addEventListener("click", () => {
-    openModal({
+    const card = openModal({
       title: "Filter Applications",
       body: `
         <label class="block">
@@ -487,7 +526,7 @@
           <span class="text-[11px] font-semibold uppercase tracking-[0.55px] text-[#64748B]">Opportunity</span>
           <select data-f-opp class="mt-1.5 h-10 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 text-sm">
             <option value="all">All opportunities</option>
-            ${allOpportunities.map((o) => `<option value="${escapeHtml(o.title)}">${escapeHtml(o.title)}</option>`).join("")}
+            ${allOpportunities.map((o) => `<option value="${escapeHtml(o.title || "Untitled")}">${escapeHtml(o.title || "Untitled")}</option>`).join("")}
           </select>
         </label>
       `,
@@ -496,9 +535,13 @@
         <button data-modal-confirm class="h-10 rounded-lg bg-[#0051b5] px-4 text-sm font-semibold text-white">Apply filters</button>
       `,
     });
-    if ($("[data-f-status]")) $("[data-f-status]").value = activeFilter;
-    $("[data-modal-confirm]")?.addEventListener("click", () => {
-      activeFilter = $("[data-f-status]")?.value || "all";
+
+    // FIXED: scope to modal card
+    const statusSel = $("[data-f-status]", card);
+    if (statusSel) statusSel.value = activeFilter;
+
+    $("[data-modal-confirm]", card)?.addEventListener("click", () => {
+      activeFilter = statusSel?.value || "all";
       renderApplications();
       closeModal();
       toast("Filters applied", "success");

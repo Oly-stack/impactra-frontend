@@ -1,339 +1,859 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Impactra – Create Opportunity</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
-        colors: {
-          page: "#f6f6fc",
-          ink: "#151a30",
-          muted: "#5b6078",
-          line: "#e7e8f2",
-          field: "#eceefa",
-          band: "#eef0fb",
-          brand: { DEFAULT: "#0b4fd6", dark: "#0942b3", soft: "#e9edfb" },
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impactra – Create Opportunity</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: { brand: "#0b4fd6", surface: "#f3f4fb", active: "#dfe5fb" },
+          },
         },
-      },
-    },
-  };
-</script>
-<style>
-  svg.ic { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-</style>
-</head>
+      };
+    </script>
 
-<body class="flex min-h-screen bg-page font-sans text-[14px] text-ink">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<!-- Icon sprite -->
-<svg width="0" height="0" class="absolute">
-  <defs>
-    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
-    <symbol id="i-calcheck" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M9 15l2 2 4-4"/></symbol>
-    <symbol id="i-id" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 17c.8-2 2.3-3 4-3s3.2 1 4 3"/></symbol>
-    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></symbol>
-    <symbol id="i-activity" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 15h3M13 15h3"/></symbol>
-    <symbol id="i-impact" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 17v-5M12 17V8M16 17v-3"/></symbol>
-    <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
-    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 8v4M12 15.5v.01"/></symbol>
-    <symbol id="i-shield-plus" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 9v6M9 12h6"/></symbol>
-    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
-    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
-    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
-    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
-    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
-    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10"/><path d="M8 8h2M8 12h2M8 16h2M17 14h1M17 18h1M2 21h20"/></symbol>
-    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/></symbol>
-    <symbol id="i-cap" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M22 9v6"/></symbol>
-    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
-    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-15 0 10-6 15-14 15"/><path d="M5 19c2-5 5-8 9-10"/></symbol>
-    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="12" cy="7" r="2.6" fill="currentColor"/><circle cx="5.5" cy="9.5" r="2.2" fill="currentColor"/><circle cx="18.5" cy="9.5" r="2.2" fill="currentColor"/><path d="M7.5 20v-3a4.5 4.5 0 0 1 9 0v3z" fill="currentColor"/><path d="M1.5 18v-2a3.5 3.5 0 0 1 5-3M22.5 18v-2a3.5 3.5 0 0 0-5-3" fill="currentColor"/></symbol>
-    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-    <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20a4 4 0 0 1-4 2h-2"/></symbol>
-  </defs>
-</svg>
-
-<!-- ============ SIDEBAR ============ -->
-<aside class="sticky top-0 hidden h-screen w-[163px] shrink-0 flex-col border-r border-line bg-white md:flex">
-  <div class="flex h-[44px] items-center gap-1.5 px-3.5 text-[13px] font-medium tracking-wide">
-    <img data-srcs="../images/logo2.png|images/logo2.png|/images/logo2.png|../../images/logo2.png" alt="Impactra logo" class="h-[22px] w-[22px] object-contain" />
-    IMPACTRA
-  </div>
-
-  <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-1.5 pb-4 pt-3 text-[11px]">
-    <div class="mb-1.5 px-2 text-[8.5px] font-semibold uppercase tracking-[.08em] text-muted">Operations</div>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-grid"/></svg>Dashboard</a>
-    <a href="opportunity.html" class="flex items-center gap-2 rounded-md bg-[#e9ecfb] px-2 py-[9px] text-[11.5px] font-semibold text-brand"><svg class="ic !h-3.5 !w-3.5"><use href="#i-calcheck"/></svg>Opportunities</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-id"/></svg>Applications</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-users"/></svg>Volunteers</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-activity"/></svg>Activities</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-impact"/></svg>Impact</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-award"/></svg>Certificates</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-mail"/></svg>Messages</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-shield"/></svg>Report</a>
-    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-gear"/></svg>Settings</a>
-  </nav>
-
-  <div class="flex items-center gap-3 border-t border-line px-3 py-3.5 text-[11px]">
-    <span class="font-bold text-muted">⋮</span>
-    <a href="#" class="flex items-center gap-2 font-medium text-[#d6362f]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-logout"/></svg>Log out</a>
-  </div>
-</aside>
-
-<!-- ============ MAIN ============ -->
-<div class="min-w-0 flex-1">
-
-  <!-- Top bar -->
-  <header class="flex h-[44px] items-center justify-between bg-white px-5 shadow-[0_1px_0_#e7e8f2]">
-    <nav class="flex items-center gap-1.5 text-[10.5px] text-muted">
-      <a href="opportunity.html" class="hover:text-brand">Opportunities</a>
-      <span>/</span>
-      <span class="font-semibold text-ink">Create Opportunity</span>
-    </nav>
-    <div class="flex items-center gap-4">
-      <label class="flex h-[26px] w-[215px] items-center gap-2 rounded-md bg-band px-2.5 text-[10px] text-muted">
-        <svg class="ic !h-3 !w-3 shrink-0"><use href="#i-search"/></svg>
-        <input type="text" placeholder="Search opportunities, volunteers..." class="min-w-0 flex-1 truncate bg-transparent text-ink outline-none placeholder:text-muted" />
-        <kbd class="shrink-0 rounded bg-[#dfe4f7] px-1.5 py-px text-[8px] font-semibold text-[#3a3f58]">Ctrl K</kbd>
-      </label>
-      <span class="relative text-[#2b3048]">
-        <svg class="ic !h-4 !w-4"><use href="#i-bell"/></svg>
-        <span class="absolute -top-px right-0 h-[6px] w-[6px] rounded-full bg-[#e5372f]"></span>
-      </span>
-      <div class="flex items-center gap-2">
-        <img data-srcs="../img/Profile.png|img/Profile.png|/img/Profile.png|../../img/Profile.png" alt="Toyin" class="h-[20px] w-[20px] rounded-full object-cover" />
-        <div class="leading-tight">
-          <div class="text-[10.5px] font-semibold">Toyin</div>
-          <div class="text-[8.5px] text-muted">NGO</div>
+  <body class="font-sans bg-[#f8f8fc] text-slate-900 min-h-screen flex">
+    <!-- SIDEBAR (drawer on mobile, sticky on desktop) -->
+    <aside
+      id="sidebar"
+      class="sidebar fixed lg:sticky top-0 left-0 z-40 w-[256px] shrink-0 h-screen bg-white border-r border-slate-200 flex flex-col -translate-x-full lg:translate-x-0"
+    >
+      <div class="h-16 flex items-center justify-between px-5">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-full border border-blue-600 grid place-items-center text-blue-700"
+          >
+            <span class="material-symbols-outlined text-[18px]">groups</span>
+          </div>
+          <span class="font-bold tracking-tight">IMPACTRA</span>
         </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="px-5 pb-10 pt-16 lg:px-[19px]">
-    <div class="mx-auto w-full max-w-[1000px]">
-
-      <!-- Heading -->
-      <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 class="text-[22px] font-bold tracking-tight">Create New Opportunity</h1>
-          <p class="mt-1 text-[10.5px] text-muted">Add details and volunteer needs for your upcoming event</p>
-        </div>
-        <button class="flex h-[38px] items-center gap-1.5 rounded-lg bg-brand px-6 text-[11.5px] font-semibold tracking-wide text-white hover:bg-brand-dark">
-          NEXT <svg class="ic !h-3.5 !w-3.5"><use href="#i-arrow-right"/></svg>
+        <button
+          id="closeSidebar"
+          type="button"
+          aria-label="Close menu"
+          class="lg:hidden text-slate-600 hover:text-slate-900"
+        >
+          <span class="material-symbols-outlined">close</span>
         </button>
       </div>
 
-      <!-- Stepper -->
-      <div class="mb-4 flex items-center rounded-xl bg-white px-7 py-3 shadow-sm">
-        <div class="flex items-center gap-2.5">
-          <span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-brand text-[10px] font-bold text-white">1</span>
-          <div class="leading-tight">
-            <div class="text-[10.5px] font-semibold text-brand">Basic Information</div>
-            <div class="text-[8px] font-semibold uppercase tracking-wider text-[#3a3f58]">Details</div>
-          </div>
-        </div>
-        <div class="mx-3 flex h-px flex-1 items-center bg-[#d9def2]"><span class="h-[2px] w-1 bg-brand"></span></div>
-        <div class="flex items-center gap-2.5 opacity-70">
-          <span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-[#dbe5ff] text-[10px] font-bold text-[#3a3f58]">2</span>
-          <div class="leading-tight">
-            <div class="text-[10.5px] font-semibold text-[#3a3f58]">Details &amp; Schedule</div>
-            <div class="text-[8px] font-semibold uppercase tracking-wider text-muted">Shifts &amp; Skills</div>
-          </div>
-        </div>
-        <div class="mx-3 h-px flex-1 bg-[#d9def2]"></div>
-        <div class="flex items-center gap-2.5 opacity-60">
-          <span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-[#dbe5ff] text-[10px] font-bold text-[#3a3f58]">3</span>
-          <div class="leading-tight">
-            <div class="text-[10.5px] font-semibold text-[#3a3f58]">Review &amp; Publish</div>
-            <div class="text-[8px] font-semibold uppercase tracking-wider text-muted">Publish Events</div>
-          </div>
-        </div>
+      <nav
+        class="flex-1 overflow-y-auto px-3 space-y-1 text-base text-slate-600"
+      >
+        <a
+          href="/Dashboard.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 17 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0.708984 8.20898L2.37565 6.54232M2.37565 6.54232L8.20898 0.708984L14.0423 6.54232M2.37565 6.54232V14.8757C2.37565 15.3359 2.74875 15.709 3.20898 15.709H5.70898M14.0423 6.54232L15.709 8.20898M14.0423 6.54232V14.8757C14.0423 15.3359 13.6692 15.709 13.209 15.709H10.709M5.70898 15.709C6.16922 15.709 6.54232 15.3359 6.54232 14.8757V11.5423C6.54232 11.0821 6.91541 10.709 7.37565 10.709H9.04232C9.50255 10.709 9.87565 11.0821 9.87565 11.5423V14.8757C9.87565 15.3359 10.2487 15.709 10.709 15.709M5.70898 15.709H10.709"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Dashboard
+        </a>
+        <a
+          href="http://127.0.0.1:5500/pages/create-opportunities-step-1.html"
+          class="flex items-center gap-3 px-3 py-2.5 bg-[#e8effe] text-blue-700 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.5 9.99979L9.16667 11.6665L12.5 8.33312M17.1817 4.98646C14.5468 5.12639 11.9639 4.2153 10 2.45312C8.03606 4.2153 5.45325 5.12639 2.81834 4.98646C2.60628 5.80739 2.49931 6.65192 2.5 7.49979C2.5 12.159 5.68667 16.0748 10 17.1848C14.3133 16.0748 17.5 12.1598 17.5 7.49979C17.5 6.63146 17.3892 5.78979 17.1817 4.98646L7.5 9.99979"
+              stroke=" #0051D5"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Opportunities
+        </a>
+        <a
+          href=""
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="14"
+            height="17"
+            viewBox="0 0 14 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.04232 8.20898H9.04232M4.04232 11.5423H9.04232M10.709 15.709H2.37565C1.45518 15.709 0.708984 14.9628 0.708984 14.0423V2.37565C0.708984 1.45518 1.45518 0.708984 2.37565 0.708984H7.03065C7.25165 0.709032 7.46357 0.79686 7.61982 0.953151L12.1315 5.46482C12.2878 5.62106 12.3756 5.83299 12.3757 6.05398V14.0423C12.3757 14.9628 11.6295 15.709 10.709 15.709L4.04232 8.20898"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Applications
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <img src="/images/volunteer2.png" class="w-5 h-5" />
+          Volunteers
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 17 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.87565 4.04232V0.708984M11.5423 4.04232V0.708984M4.04232 7.37565H12.3757M2.37565 15.709H14.0423C14.9628 15.709 15.709 14.9628 15.709 14.0423V4.04232C15.709 3.12184 14.9628 2.37565 14.0423 2.37565H2.37565C1.45518 2.37565 0.708984 3.12184 0.708984 4.04232V14.0423C0.708984 14.9628 1.45518 15.709 2.37565 15.709L4.87565 4.04232"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Activities
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.8333 5.83398H17.5M17.5 5.83398V12.5007M17.5 5.83398L10.8333 12.5007L7.5 9.16732L2.5 14.1673"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Impact
+        </a>
+        <a
+          href="Certificate.html"
+          class="flex items-center gap-3 px-3 py-2.5 font-semibold"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 17 17"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5.72986 8.22986L7.39652 9.89652L10.7299 6.56319M4.75902 2.14402C5.35678 2.09631 5.92426 1.86127 6.38069 1.47236C7.4461 0.563902 9.01361 0.563902 10.079 1.47236C10.5355 1.86127 11.1029 2.09631 11.7007 2.14402C13.0963 2.25506 14.2047 3.36337 14.3157 4.75902C14.3634 5.35678 14.5984 5.92426 14.9874 6.38069C15.8958 7.4461 15.8958 9.01361 14.9874 10.079C14.5984 10.5355 14.3634 11.1029 14.3157 11.7007C14.2047 13.0963 13.0963 14.2047 11.7007 14.3157C11.1029 14.3634 10.5355 14.5984 10.079 14.9874C9.01361 15.8958 7.4461 15.8958 6.38069 14.9874C5.92426 14.5984 5.35678 14.3634 4.75902 14.3157C3.36337 14.2047 2.25506 13.0963 2.14402 11.7007C2.09631 11.1029 1.86127 10.5355 1.47236 10.079C0.563902 9.01361 0.563902 7.4461 1.47236 6.38069C1.86127 5.92426 2.09631 5.35678 2.14402 4.75902C2.25506 3.36337 3.36337 2.25506 4.75902 2.14402L5.72986 8.22986"
+              stroke="#94A3B8 "
+              stroke-width="1.58333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Certificates
+        </a>
+        <a
+          href="../settings.html"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.60417 3.5975C8.95917 2.13417 11.0408 2.13417 11.3958 3.5975C11.5039 4.04338 11.8184 4.41085 12.2422 4.58645C12.6661 4.76206 13.1483 4.72467 13.54 4.48583C14.8258 3.7025 16.2983 5.17417 15.515 6.46083C15.2765 6.85238 15.2392 7.33423 15.4146 7.75782C15.59 8.1814 15.957 8.49583 16.4025 8.60417C17.8658 8.95917 17.8658 11.0408 16.4025 11.3958C15.9566 11.5039 15.5891 11.8184 15.4135 12.2422C15.2379 12.6661 15.2753 13.1483 15.5142 13.54C16.2975 14.8258 14.8258 16.2983 13.5392 15.515C13.1476 15.2765 12.6658 15.2392 12.2422 15.4146C11.8186 15.59 11.5042 15.957 11.3958 16.4025C11.0408 17.8658 8.95917 17.8658 8.60417 16.4025C8.49613 15.9566 8.18164 15.5891 7.75779 15.4135C7.33394 15.2379 6.85172 15.2753 6.46 15.5142C5.17417 16.2975 3.70167 14.8258 4.485 13.5392C4.72349 13.1476 4.76079 12.6658 4.58539 12.2422C4.41 11.8186 4.04298 11.5042 3.5975 11.3958C2.13417 11.0408 2.13417 8.95917 3.5975 8.60417C4.04338 8.49613 4.41085 8.18164 4.58645 7.75779C4.76206 7.33394 4.72467 6.85172 4.48583 6.46C3.7025 5.17417 5.17417 3.70167 6.46083 4.485C7.29083 4.99167 8.37417 4.54333 8.60417 3.5975V3.5975"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M7.5 10C7.5 11.3798 8.62021 12.5 10 12.5C11.3798 12.5 12.5 11.3798 12.5 10C12.5 8.62021 11.3798 7.5 10 7.5C8.62021 7.5 7.5 8.62021 7.5 10V10"
+              stroke="#94A3B8"
+              stroke-width="1.41667"
+            />
+          </svg>
+          Settings
+        </a>
+      </nav>
+
+      <div
+        class="border-t border-slate-200 p-4 flex items-center gap-4 text-red-600"
+      >
+        <span class="material-symbols-outlined text-slate-500">more_vert</span>
+        <a href="#" class="flex items-center gap-2 font-medium">
+          <span class="material-symbols-outlined">logout</span> Log out
+        </a>
       </div>
+    </aside>
 
-      <!-- Two columns -->
-      <div class="grid items-start gap-3.5 lg:grid-cols-[minmax(0,1fr)_240px]">
+    <!-- Backdrop behind mobile drawer -->
+    <!-- Backdrop behind mobile drawer -->
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden"
+    ></div>
+    <!-- MAIN -->
+    <div class="flex-1 min-w-0 flex flex-col">
+      <!-- TOP BAR -->
+      <header
+        class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 lg:px-8 sticky top-0 z-20"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <button
+            id="openSidebar"
+            type="button"
+            aria-label="Open menu"
+            class="lg:hidden shrink-0 w-10 h-10 grid place-items-center rounded-lg text-slate-700 hover:bg-slate-100"
+          >
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <nav
+            class="flex items-center gap-2 text-sm sm:text-base truncate"
+            aria-label="Breadcrumb"
+          >
+            <a href="#" class="text-slate-600 hover:text-slate-900"
+              >Opportunities</a
+            >
+            <span class="text-slate-500">/</span>
+            <span class="font-medium truncate">Create Opportunity</span>
+          </nav>
+        </div>
 
-        <!-- ===== FORM ===== -->
-        <form id="form" class="rounded-xl bg-white px-5 pb-6 pt-5 shadow-sm" onsubmit="return false">
-
-          <!-- Name -->
-          <div class="flex items-center justify-between">
-            <label for="name" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Opportunity Name <span class="text-[#d6362f]">*</span></label>
-            <span id="nameCount" class="text-[9px] text-muted">26 / 80 characters</span>
+        <div class="flex items-center gap-4 shrink-0">
+          <div
+            class="hidden md:flex items-center gap-2 bg-[#eef0fb] rounded-lg px-3 py-2.5 w-[300px] lg:w-[340px]"
+          >
+            <span class="material-symbols-outlined text-slate-700 text-[20px]"
+              >search</span
+            >
+            <input
+              type="text"
+              placeholder="Search opportunities, volunteers..."
+              class="bg-transparent outline-none flex-1 min-w-0 text-sm text-slate-700 placeholder:text-slate-500"
+            />
+            <span
+              class="text-[11px] text-slate-500 bg-active rounded px-1.5 py-0.5"
+              >⌘K</span
+            >
           </div>
-          <div class="mt-1.5 flex items-center gap-2.5 border-b border-line pb-2 pl-2">
-            <svg class="ic !h-3.5 !w-3.5 text-[#3a3f58]"><use href="#i-text"/></svg>
-            <input id="name" maxlength="80" type="text" value="Food Relief Distribution" class="min-w-0 flex-1 bg-transparent text-[11px] font-medium outline-none" />
+
+          <button class="relative text-slate-600" aria-label="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+            <span
+              class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full"
+            ></span>
+          </button>
+
+          <div class="flex items-center gap-2.5">
+            <img
+              src="https://i.pravatar.cc/80?img=47"
+              alt="Toyin"
+              class="w-9 h-9 rounded-full object-cover"
+            />
+            <div class="hidden sm:block leading-tight">
+              <p class="text-sm font-semibold">Toyin</p>
+              <p class="text-[11px] text-slate-500 tracking-wide">NGO</p>
+            </div>
           </div>
-          <p class="mt-2 text-[9.5px] text-muted">A concise, inspiring title attracts higher commitment from prospective volunteers.</p>
+        </div>
+      </header>
 
-          <!-- Category -->
-          <div class="mt-4 text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Category <span class="text-[#d6362f]">*</span></div>
-          <div id="cats" class="mt-1.5 grid grid-cols-5 gap-1.5">
-            <button type="button" data-cat="Community Support" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-brand px-1 text-[8.5px] font-medium leading-tight text-white"><svg class="ic !h-3.5 !w-3.5"><use href="#i-people"/></svg><span>Community<br/>Support</span></button>
-            <button type="button" data-cat="Education" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-cap"/></svg><span>Education</span></button>
-            <button type="button" data-cat="Healthcare" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-shield-plus"/></svg><span>Healthcare</span></button>
-            <button type="button" data-cat="Skills Training" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-target"/></svg><span>Skills Training</span></button>
-            <button type="button" data-cat="Environment" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-leaf"/></svg><span>Environment</span></button>
+      <main class="p-4 sm:p-6 lg:px-8 lg:py-8 max-w-[1440px] w-full">
+        <!-- Title row -->
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">
+              Create New Opportunity
+            </h1>
+            <p class="mt-1 text-slate-600">
+              Add details and volunteer needs for your upcoming event
+            </p>
+          </div>
+          <button
+            type="button"
+            class="flex items-center gap-2 px-8 py-2.5 font-semibold tracking-wide text-white bg-brand rounded-lg hover:bg-blue-800"
+          >
+            NEXT
+            <span class="material-symbols-outlined text-[20px]"
+              >arrow_forward</span
+            >
+          </button>
+        </div>
+
+        <!-- Stepper -->
+        <!-- Stepper -->
+        <section class="mt-6">
+          <!-- MOBILE VIEW -->
+          <div
+            class="sm:hidden bg-white rounded-2xl border border-slate-200 p-5 shadow-sm"
+          >
+            <!-- Step heading -->
+            <div class="flex items-start gap-3">
+              <div
+                class="w-12 h-12 shrink-0 rounded-full bg-brand text-white flex items-center justify-center font-bold text-lg"
+              >
+                1
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center flex-wrap gap-2">
+                  <h2 class="text-xl font-bold text-slate-900">
+                    Basic Information
+                  </h2>
+
+                  <span
+                    class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1"
+                  >
+                    In Progress
+                  </span>
+                </div>
+
+                <p class="text-sm text-slate-500 mt-1">
+                  Opportunity details, category and location
+                </p>
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="mt-6">
+              <div class="flex items-center justify-between text-sm mb-2">
+                <span class="font-medium text-slate-700">Step 1 of 3</span>
+                <span class="text-slate-500">Basic Details</span>
+              </div>
+
+              <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full w-1/3 bg-brand rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Remaining steps -->
+            <div class="mt-6 space-y-4">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 shrink-0 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-semibold"
+                >
+                  2
+                </div>
+
+                <div>
+                  <p class="font-semibold text-slate-700">
+                    Details &amp; Schedule
+                  </p>
+
+                  <p class="text-sm text-slate-500">
+                    Volunteer shifts and required skills
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 shrink-0 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-semibold"
+                >
+                  3
+                </div>
+
+                <div>
+                  <p class="font-semibold text-slate-700">
+                    Review &amp; Publish
+                  </p>
+
+                  <p class="text-sm text-slate-500">
+                    Check your details before publishing
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Description -->
-          <div class="mt-4 flex items-center justify-between">
-            <label for="desc" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Short Description <span class="text-[#d6362f]">*</span></label>
-            <span id="descCount" class="text-[9px] text-muted">38 / 300 words</span>
+          <!-- DESKTOP VIEW -->
+          <div
+            class="hidden sm:block bg-white rounded-xl shadow-card px-4 sm:px-6 py-5"
+          >
+            <ol class="flex items-center gap-3 sm:gap-4">
+              <!-- Step 1 -->
+              <li class="flex items-center gap-3 shrink-0">
+                <span
+                  class="w-9 h-9 rounded-full bg-brand text-white font-semibold grid place-items-center"
+                >
+                  1
+                </span>
+
+                <div class="leading-tight">
+                  <p class="text-sm font-medium text-brand">
+                    Basic Information
+                  </p>
+
+                  <p
+                    class="text-[11px] font-medium tracking-wider text-slate-700"
+                  >
+                    DETAILS
+                  </p>
+                </div>
+              </li>
+
+              <!-- Connector -->
+              <span class="flex-1 h-0.5 bg-active relative">
+                <span
+                  class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-brand"
+                ></span>
+              </span>
+
+              <!-- Step 2 -->
+              <li class="flex items-center gap-3 shrink-0">
+                <span
+                  class="w-9 h-9 rounded-full bg-active text-slate-600 font-medium grid place-items-center"
+                >
+                  2
+                </span>
+
+                <div class="leading-tight">
+                  <p class="text-sm font-medium text-slate-600">
+                    Details &amp; Schedule
+                  </p>
+
+                  <p
+                    class="text-[11px] font-medium tracking-wider text-slate-500"
+                  >
+                    SHIFTS &amp; SKILLS
+                  </p>
+                </div>
+              </li>
+
+              <!-- Connector -->
+              <span class="flex-1 h-0.5 bg-active"></span>
+
+              <!-- Step 3 -->
+              <li class="flex items-center gap-3 shrink-0">
+                <span
+                  class="w-9 h-9 rounded-full bg-active text-slate-600 font-medium grid place-items-center"
+                >
+                  3
+                </span>
+
+                <div class="leading-tight">
+                  <p class="text-sm font-medium text-slate-500">
+                    Review &amp; Publish
+                  </p>
+
+                  <p
+                    class="text-[11px] font-medium tracking-wider text-slate-400"
+                  >
+                    PUBLISH EVENTS
+                  </p>
+                </div>
+              </li>
+            </ol>
           </div>
-          <textarea id="desc" rows="3" class="mt-1.5 w-full resize-none border-b border-line bg-transparent px-2.5 pb-3 pt-1 text-[11px] leading-[1.75] text-[#1c2036] outline-none">Help us pack and distribute essential food items, grains, and nutrition packs to over 250 vulnerable families in Surulere. Volunteers work in collaborative shifts to organise inventory, verify recipient vouchers, and distribute care packages.</textarea>
+        </section>
 
-          <!-- Location type -->
-          <h3 class="mt-5 flex items-center gap-1.5 text-[11.5px] font-semibold"><svg class="ic !h-3.5 !w-3.5 text-brand"><use href="#i-pin"/></svg>Location type</h3>
+        <!-- GRID -->
+        <div
+          class="mt-6 grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6 items-start"
+        >
+          <!-- FORM CARD -->
+          <section class="bg-white rounded-xl shadow-card p-5 sm:p-8">
+            <!-- Opportunity name -->
+            <div class="flex items-center justify-between gap-3">
+              <label for="oppName" class="font-medium"
+                >Opportunity Name <span class="text-red-600">*</span></label
+              >
+              <span id="nameCount" class="text-sm text-slate-600"
+                >0 / 80 characters</span
+              >
+            </div>
+            <div class="field mt-3">
+              <span class="material-symbols-outlined text-slate-500"
+                >edit_note</span
+              >
+              <input
+                id="oppName"
+                type="text"
+                maxlength="80"
+                value="Food Relief Distribution"
+                class="flex-1 min-w-0 bg-transparent outline-none"
+              />
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              A concise, inspiring title attracts higher commitment from
+              prospective volunteers.
+            </p>
 
-          <div class="mt-3">
-            <label class="flex cursor-pointer items-start gap-2.5 rounded-lg bg-band px-3 py-2.5">
-              <input type="radio" name="loc" value="in-person" checked class="mt-0.5 h-3 w-3 accent-brand" />
+            <!-- Category -->
+            <p class="font-medium mt-6">
+              Category <span class="text-red-600">*</span>
+            </p>
+            <div id="categories" class="mt-3 flex flex-wrap gap-3">
+              <button
+                type="button"
+                data-cat="Community Support"
+                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
+              >
+                <span class="material-symbols-outlined">diversity_3</span>
+                <span class="text-sm">Community<br />Support</span>
+              </button>
+              <button
+                type="button"
+                data-cat="Education"
+                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
+              >
+                <span class="material-symbols-outlined">school</span>
+                <span class="text-sm">Education</span>
+              </button>
+              <button
+                type="button"
+                data-cat="Healthcare"
+                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
+              >
+                <span class="material-symbols-outlined">health_and_safety</span>
+                <span class="text-sm">Healthcare</span>
+              </button>
+              <button
+                type="button"
+                data-cat="Skills Training"
+                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
+              >
+                <span class="material-symbols-outlined">psychology</span>
+                <span class="text-sm">Skills Training</span>
+              </button>
+              <button
+                type="button"
+                data-cat="Environment"
+                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
+              >
+                <span class="material-symbols-outlined">eco</span>
+                <span class="text-sm">Environment</span>
+              </button>
+            </div>
+
+            <!-- Short description -->
+            <div class="flex items-center justify-between gap-3 mt-6">
+              <label for="oppDesc" class="font-medium"
+                >Short Description <span class="text-red-600">*</span></label
+              >
+              <span id="descCount" class="text-sm text-slate-600"
+                >0 / 300 words</span
+              >
+            </div>
+            <textarea
+              id="oppDesc"
+              placeholder="Help us pack and distribute essential food items, grains, and nutrition packs to over 250 vulnerable families in Surulere. Volunteers work in collaborative shifts to organise inventory, verify recipient vouchers, and distribute care packages."
+              rows="4"
+              class="field mt-3 bg-[#eef0fb] w-full text-[15px] p-2 rounded-xl leading-relaxed outline-none resize-none block"
+            ></textarea>
+
+            <!-- Location type -->
+            <h3 class="flex items-center gap-2 text-lg font-semibold mt-8">
+              <span class="material-symbols-outlined text-brand"
+                >location_on</span
+              >
+              Location type
+            </h3>
+
+            <label
+              class="mt-4 flex items-start gap-3 bg-surface rounded-lg p-4 cursor-pointer"
+            >
+              <input
+                type="radio"
+                name="locType"
+                checked
+                class="mt-1 w-4 h-4 accent-blue-700"
+              />
               <span class="leading-snug">
-                <span class="block text-[10.5px] font-semibold">In-person Venue</span>
-                <span class="block text-[9.5px] text-muted">Requires physical attendance at<br/>designated site</span>
+                <span class="block font-medium">In-person Venue</span>
+                <span class="block text-sm text-slate-600 mt-0.5"
+                  >Requires physical attendance at<br class="hidden sm:block" />
+                  designated site</span
+                >
               </span>
             </label>
-          </div>
 
-          <!-- Venue + Hub -->
-          <div class="mt-4 grid gap-4 sm:grid-cols-[1.3fr_1fr]">
-            <div>
-              <label for="addr" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Venue / Address <span class="text-[#d6362f]">*</span></label>
-              <div class="mt-1.5 flex items-center gap-2.5 border-b border-line pb-2 pl-2">
-                <svg class="ic !h-3.5 !w-3.5 text-[#3a3f58]"><use href="#i-building"/></svg>
-                <input id="addr" type="text" value="Surulere Community Hall, 14 Bishop Street, Lagos" class="min-w-0 flex-1 bg-transparent text-[10.5px] font-medium outline-none" />
-              </div>
-            </div>
-            <div>
-              <label for="hub" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Hub / Region <span class="text-[#d6362f]">*</span></label>
-              <div class="relative mt-1.5 border-b border-line pb-2">
-                <select id="hub" class="w-full appearance-none bg-transparent pl-2.5 pr-5 text-[10.5px] font-medium outline-none">
-                  <option>Surulere, Lagos</option>
-                  <option>Yaba, Lagos</option>
-                  <option>Ikeja, Lagos</option>
-                  <option>Victoria Island, Lagos</option>
-                  <option>Lekki, Lagos</option>
-                </select>
-                <svg class="ic pointer-events-none absolute right-1 top-0.5 !h-3.5 !w-3.5 text-[#3a3f58]"><use href="#i-chevron-down"/></svg>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <!-- ===== PREVIEW COLUMN ===== -->
-        <aside class="space-y-3.5">
-          <section class="rounded-xl bg-white p-3.5 shadow-sm">
-            <h2 class="mb-3 flex items-center gap-1.5 text-[11px] font-semibold"><svg class="ic !h-3.5 !w-3.5 text-brand"><use href="#i-eye"/></svg>Schedule Card Preview</h2>
-
-            <div class="overflow-hidden rounded-lg bg-white">
-              <div class="relative h-[92px] overflow-hidden rounded-md bg-gradient-to-br from-[#c9b79a] to-[#7a8c6b]">
-                <img data-srcs="../img/lp.jpeg|img/lp.jpeg|/img/lp.jpeg|../img/Lp.jpeg|img/Lp.jpeg|/img/Lp.jpeg" alt="Volunteers packing food" class="h-full w-full object-cover" />
-                <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
-                <span id="pvCat" class="absolute bottom-1 left-2.5 rounded-full bg-white px-2 py-0.5 text-[8px] font-semibold text-brand shadow-sm">Community Support</span>
-              </div>
-
-              <div class="px-1 pb-1 pt-2.5">
-                <div id="pvName" class="text-[11px] font-bold">Food Relief Distribution</div>
-                <p id="pvDesc" class="mt-1 line-clamp-2 text-[9px] leading-snug text-muted">Help us pack and distribute essential food items, grains, and nutrition packs</p>
-
-                <div class="mt-2.5 space-y-1.5 text-[9px] text-[#1c2036]">
-                  <div class="flex items-center gap-1.5"><svg class="ic !h-3 !w-3 shrink-0 text-brand"><use href="#i-pin"/></svg><span id="pvAddr" class="truncate">Surulere Community Hall, 14 Bishop Street, Lagos</span></div>
-                  <div class="flex items-center gap-1.5"><svg class="ic !h-3 !w-3 shrink-0 text-brand"><use href="#i-building"/></svg><span id="pvHub" class="font-medium">Surulere, Lagos</span></div>
+            <!-- Venue + Hub -->
+            <div class="mt-6 grid sm:grid-cols-[1.4fr_1fr] gap-x-6 gap-y-5">
+              <div>
+                <label for="venue" class="font-medium"
+                  >Venue / Address <span class="text-red-600">*</span></label
+                >
+                <div class="field bg-[#eef0fb] rounded-xl p-2 mt-3">
+                  <span class="material-symbols-outlined text-slate-500"
+                    >apartment</span
+                  >
+                  <input
+                    id="venue"
+                    type="text"
+                    placeholder="Surulere Community Hall, 14 Bishop Street, Lagos"
+                    class="flex-1 min-w-0 bg-transparent outline-none"
+                  />
                 </div>
-
-                <div class="mt-3 flex items-center justify-between text-[9px]">
-                  <span class="text-muted">Headcount Target</span>
-                  <b class="font-bold text-brand">10 Volunteers</b>
+              </div>
+              <div>
+                <label for="hub" class="font-medium"
+                  >Hub / Region <span class="text-red-600">*</span></label
+                >
+                <div class="field mt-3 relative">
+                  <select
+                    id="hub"
+                    class="flex-1 min-w-0 bg-transparent outline-none appearance-none pr-6"
+                  >
+                    <option>Surulere, Lagos</option>
+                    <option>Ikeja, Lagos</option>
+                    <option>Yaba, Lagos</option>
+                    <option>Lekki, Lagos</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined text-slate-500 absolute right-3 pointer-events-none"
+                    >expand_more</span
+                  >
                 </div>
-                <div class="mt-1 h-1 overflow-hidden rounded bg-field"><span class="block h-full w-[20%] rounded bg-brand"></span></div>
               </div>
             </div>
-
-            <p class="mt-3 px-2 text-center text-[8.5px] leading-snug text-muted">Real-time approximation of how this listing displays across volunteer mobile apps.</p>
           </section>
 
-          <section class="flex items-center justify-between rounded-xl bg-[#e9edfb] px-3.5 py-3">
-            <div>
-              <div class="text-[10px] font-semibold">Need specialized assistance?</div>
-              <div class="mt-0.5 text-[8.5px] text-[#3a3f58]">Contact IMPACTRA Dispatch Desk</div>
-            </div>
-            <span class="grid h-6 w-6 place-items-center rounded-md bg-white text-ink shadow-sm"><svg class="ic !h-3.5 !w-3.5"><use href="#i-headset"/></svg></span>
-          </section>
-        </aside>
-      </div>
+          <!-- RIGHT COLUMN -->
+          <div class="space-y-6 xl:sticky xl:top-24">
+            <!-- Preview -->
+            <section class="bg-white rounded-xl shadow-card p-5">
+              <h2 class="flex items-center gap-2 font-semibold text-lg">
+                <span class="material-symbols-outlined text-brand"
+                  >visibility</span
+                >
+                Schedule Card Preview
+              </h2>
+
+              <div class="mt-4 rounded-xl overflow-hidden shadow-card">
+                <div class="relative h-[145px]">
+                  <img
+                    src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=70"
+                    alt="Volunteers packing food"
+                    class="w-full h-full object-cover"
+                  />
+                  <span
+                    id="pvCategory"
+                    class="absolute left-3 bottom-3 bg-white text-brand text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm"
+                  >
+                    Community Support
+                  </span>
+                </div>
+
+                <div class="p-4">
+                  <h3 id="pvTitle" class="font-semibold text-lg">
+                    Food Relief Distribution
+                  </h3>
+                  <p
+                    id="pvDesc"
+                    class="mt-2 text-sm text-slate-600 line-clamp-2"
+                  >
+                    Help us pack and distribute essential food items, grains,
+                    and nutrition packs
+                  </p>
+
+                  <p class="mt-4 flex items-center gap-2 text-sm">
+                    <span
+                      class="material-symbols-outlined text-brand text-[18px]"
+                      >location_on</span
+                    >
+                    <span id="pvVenue" class="truncate"
+                      >Surulere Community Hall, 14 Bishop Street, Lagos</span
+                    >
+                  </p>
+                  <p class="mt-2 flex items-center gap-2 text-sm font-medium">
+                    <span
+                      class="material-symbols-outlined text-brand text-[18px]"
+                      >apartment</span
+                    >
+                    <span id="pvHub">Surulere, Lagos</span>
+                  </p>
+
+                  <div class="mt-4 flex items-center justify-between text-sm">
+                    <span class="text-slate-700">Headcount Target</span>
+                    <span class="font-semibold text-brand">10 Volunteers</span>
+                  </div>
+                  <div class="mt-2 h-2 rounded-full bg-active overflow-hidden">
+                    <div class="h-full w-[20%] bg-brand rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              <p
+                class="mt-5 text-center text-xs text-slate-600 leading-relaxed"
+              >
+                Real-time approximation of how this listing<br />displays across
+                volunteer mobile apps.
+              </p>
+            </section>
+
+            <!-- Help card -->
+            <section
+              class="bg-[#e9ecfb] rounded-xl p-5 flex items-center justify-between gap-3"
+            >
+              <div class="leading-snug">
+                <p class="font-semibold">Need specialized assistance?</p>
+                <p class="text-sm text-slate-700">
+                  Contact IMPACTRA Dispatch Desk
+                </p>
+              </div>
+              <span
+                class="w-10 h-10 bg-white rounded-lg grid place-items-center shadow-sm shrink-0"
+              >
+                <span class="material-symbols-outlined text-slate-800"
+                  >support_agent</span
+                >
+              </span>
+            </section>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
-</div>
 
-<script>
-  // ---- Image loader: tries each path in data-srcs until one works ----
-  document.querySelectorAll("img[data-srcs]").forEach(img => {
-    const list = img.dataset.srcs.split("|");
-    let i = 0;
-    const next = () => {
-      if (i < list.length) img.src = list[i++];
-      else img.style.visibility = "hidden";
-    };
-    img.addEventListener("error", next);
-    next();
-  });
+    <script>
+      /* ---------- Sidebar drawer ---------- */
+      /* ---------- Sidebar drawer ---------- */
 
-  // ---- Form + live preview ----
-  const $ = id => document.getElementById(id);
-  const nameEl = $("name"), descEl = $("desc"), addrEl = $("addr"), hubEl = $("hub");
-  let category = "Community Support";
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+      const openBtn = document.getElementById("openSidebar");
+      const closeBtn = document.getElementById("closeSidebar");
 
-  function wordCount(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+      const openSidebar = () => {
+        sidebar.classList.remove("-translate-x-full");
+        overlay.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      };
 
-  function update() {
-    $("nameCount").textContent = `${nameEl.value.length} / 80 characters`;
-    $("descCount").textContent = `${wordCount(descEl.value)} / 300 words`;
+      const closeSidebar = () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+        document.body.style.overflow = "";
+      };
 
-    $("pvName").textContent = nameEl.value.trim() || "Untitled opportunity";
-    $("pvDesc").textContent = descEl.value.trim() || "Your short description will appear here.";
-    $("pvAddr").textContent = addrEl.value.trim() || "Venue not set";
-    $("pvHub").textContent = hubEl.value;
-    $("pvCat").textContent = category;
-  }
+      openBtn.addEventListener("click", openSidebar);
+      closeBtn.addEventListener("click", closeSidebar);
+      overlay.addEventListener("click", closeSidebar);
 
-  [nameEl, descEl, addrEl].forEach(el => el.addEventListener("input", update));
-  hubEl.addEventListener("change", update);
+      // Close the sidebar when a navigation link is clicked
+      sidebar.querySelectorAll("nav a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth < 1024) {
+            closeSidebar();
+          }
+        });
+      });
 
-  // Limit description to 300 words
-  descEl.addEventListener("input", () => {
-    const words = descEl.value.trim().split(/\s+/);
-    if (words.length > 300) descEl.value = words.slice(0, 300).join(" ");
-    update();
-  });
+      // Close with Escape
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeSidebar();
+        }
+      });
 
-  // Category tiles
-  const tiles = document.querySelectorAll("#cats .cat");
-  tiles.forEach(tile => tile.addEventListener("click", () => {
-    category = tile.dataset.cat;
-    tiles.forEach(t => {
-      const on = t === tile;
-      t.classList.toggle("bg-brand", on);
-      t.classList.toggle("text-white", on);
-      t.classList.toggle("bg-band", !on);
-      t.classList.toggle("text-[#2b3048]", !on);
-    });
-    update();
-  }));
+      // Keep the sidebar visible on desktop
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.add("hidden");
+          document.body.style.overflow = "";
+        } else {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+          document.body.style.overflow = "";
+        }
+      });
+      /* ---------- Live form -> preview ---------- */
+      const $ = (id) => document.getElementById(id);
 
-  update();
-</script>
-</body>
+      const name = $("oppName"),
+        desc = $("oppDesc"),
+        venue = $("venue"),
+        hub = $("hub");
+
+      const syncName = () => {
+        $("nameCount").textContent = `${name.value.length} / 80 characters`;
+        $("pvTitle").textContent = name.value || "Untitled opportunity";
+      };
+      const syncDesc = () => {
+        const words = desc.value.trim()
+          ? desc.value.trim().split(/\s+/).length
+          : 0;
+        $("descCount").textContent = `${words} / 300 words`;
+        $("pvDesc").textContent = desc.value;
+      };
+      const syncVenue = () => {
+        $("pvVenue").textContent = venue.value;
+      };
+      const syncHub = () => {
+        $("pvHub").textContent = hub.value;
+      };
+
+      name.addEventListener("input", syncName);
+      desc.addEventListener("input", syncDesc);
+      venue.addEventListener("input", syncVenue);
+      hub.addEventListener("change", syncHub);
+      syncName();
+      syncDesc();
+      syncVenue();
+      syncHub();
+
+      /* ---------- Category chips ---------- */
+      document.querySelectorAll("#categories .chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          document
+            .querySelectorAll("#categories .chip")
+            .forEach((c) => c.classList.remove("chip-active"));
+          chip.classList.add("chip-active");
+          $("pvCategory").textContent = chip.dataset.cat;
+        });
+      });
+      document.querySelectorAll(".chip").forEach((button) => {
+        button.addEventListener("click", () => {
+          // Remove the active style from all buttons
+          document.querySelectorAll(".chip").forEach((btn) => {
+            btn.classList.remove("bg-blue-600", "text-white");
+            btn.classList.add("text-slate-700");
+          });
+
+          // Apply the active style to the clicked button
+          button.classList.remove("text-slate-700");
+          button.classList.add("bg-blue-600", "text-white");
+        });
+      });
+    </script>
+  </body>
 </html>

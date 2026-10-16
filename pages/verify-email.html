@@ -64,8 +64,21 @@
 (() => {
   "use strict";
 
+  /*  GUARDS  */
   if (!window.API) {
-    console.warn("[verify-email] API client not found. Did you load API.js first?");
+    console.error("[verify-email] API client not found. Load ../API.js first.");
+    return;
+  }
+
+  // If already signed in, skip the OTP screen entirely.
+  if (API.tokens.isAuthenticated) {
+    let existing = null;
+    try { existing = JSON.parse(sessionStorage.getItem("impactra_user") || "null"); } catch (_) {}
+    const dest = existing?.role === "platform_admin"
+      ? "../welcome-back.html"
+      : "../Dashboard.html";
+    window.location.replace(dest);
+    return;
   }
 
   /*  TOAST  */
@@ -97,10 +110,10 @@
     }, 2800);
   }
 
-  /*  EMAIL DISPLAY  */
-  const urlParams   = new URLSearchParams(window.location.search);
-  const emailParam  = urlParams.get("email");
-  const emailSpan   = document.getElementById("userEmail");
+  /*  CONTEXT: email only (signup is always NGO now)  */
+  const urlParams  = new URLSearchParams(window.location.search);
+  const emailParam = urlParams.get("email");
+  const emailSpan  = document.getElementById("userEmail");
 
   let displayEmail = emailParam;
 
@@ -112,13 +125,28 @@
         if (pending?.email) displayEmail = pending.email;
       }
     } catch (err) {
-      console.error("[verify-email] couldn't parse pendingUser:", err);
+      console.warn("[verify-email] couldn't parse pendingUser:", err);
     }
   }
 
-  emailSpan.textContent = displayEmail || "your email address";
+  if (emailSpan) emailSpan.textContent = displayEmail || "your email address";
 
-  /*  OTP INPUT AUTO-TAB  */
+  /*  CLEANUP  */
+  function clearSignupState() {
+    try {
+      sessionStorage.removeItem("pendingUser");
+      sessionStorage.removeItem("impactra_signup_email");
+    } catch (_) { /* ignore */ }
+  }
+
+  /*  ROUTING HELPER  */
+  function destinationFor(role) {
+    return role === "platform_admin"
+      ? "../welcome-back.html"
+      : "../Dashboard.html";
+  }
+
+  /*  OTP INPUTS  */
   const inputs = Array.from(document.querySelectorAll(".otp-box"));
 
   inputs.forEach((input, index) => {
@@ -132,12 +160,11 @@
     input.addEventListener("keydown", (e) => {
       if (e.key === "Backspace" && !input.value && index > 0) {
         inputs[index - 1].focus();
+      } else if (e.key === "ArrowLeft" && index > 0) {
+        inputs[index - 1].focus();
+      } else if (e.key === "ArrowRight" && index < inputs.length - 1) {
+        inputs[index + 1].focus();
       }
-    });
-
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft" && index > 0)  inputs[index - 1].focus();
-      if (e.key === "ArrowRight" && index < inputs.length - 1) inputs[index + 1].focus();
     });
 
     input.addEventListener("paste", (e) => {
@@ -154,15 +181,12 @@
     });
   });
 
-  /*  HELPERS  */
   function getCode() {
     return inputs.map((i) => i.value.trim()).join("");
   }
-
   function setOtpLoading(loading) {
     inputs.forEach((i) => (i.disabled = loading));
   }
-
   function clearOtp() {
     inputs.forEach((i) => (i.value = ""));
     inputs[0]?.focus();
@@ -176,16 +200,14 @@
     e.preventDefault();
 
     if (!displayEmail) {
-      toast("We don't know which email to verify. Start over.", "error");
+      toast("We don't know which email to verify. Please start over.", "error");
       return;
     }
 
     const code = getCode();
-
     if (code.length !== 6) {
       toast("Please enter all 6 digits", "error");
-      const firstEmpty = inputs.find((i) => !i.value);
-      firstEmpty?.focus();
+      inputs.find((i) => !i.value)?.focus();
       return;
     }
 
@@ -195,40 +217,50 @@
     setOtpLoading(true);
 
     try {
-      if (window.API) {
-        // Correct endpoint: /auth/verify-email with { email, code }
-        await API.post("/auth/verify-email", { email: displayEmail, code });
-      } else {
-        await new Promise((r) => setTimeout(r, 500)); // dev fallback
+      const res = await API.post("/auth/verify-email", {
+        email: displayEmail,
+        code,
+      });
+
+      /*  Path A: backend returned a token → auto-login  */
+      const token = res?.token || res?.accessToken;
+      if (token) {
+        API.tokens.set({
+          accessToken: token,
+          refreshToken: res.refreshToken,
+        });
+
+        const user = res.user || res.data?.user || null;
+        if (user) {
+          try { sessionStorage.setItem("impactra_user", JSON.stringify(user)); } catch (_) {}
+        }
+
+        clearSignupState();
+        toast("Welcome to IMPACTRA — redirecting…", "success");
+
+        // Route by the role the backend returned. Signups are NGO-only
+        const dest = destinationFor(user?.role);
+        setTimeout(() => (window.location.href = dest), 900);
+        return;
       }
 
-      // Mark the email as verified in sessionStorage
-      try {
-        const raw = sessionStorage.getItem("pendingUser");
-        if (raw) {
-          const user = JSON.parse(raw);
-          sessionStorage.setItem("pendingUser", JSON.stringify({
-            ...user,
-            verifiedAt: new Date().toISOString(),
-          }));
-        }
-      } catch (_) { /* ignore */ }
-
+      /*  Path B: no token → send them to login  */
+      clearSignupState();
       toast("Email verified! Please log in to continue.", "success");
-
-      // Redirect to login, NOT step1-profile (no token yet)
       setTimeout(() => {
-        window.location.href = `login.html?email=${encodeURIComponent(displayEmail)}&verified=true`;
+        window.location.href =
+          `login.html?email=${encodeURIComponent(displayEmail)}&verified=true`;
       }, 1200);
 
     } catch (err) {
+      console.error("[verify-email] verification failed:", err);
+
       submitBtn.disabled = false;
       submitBtn.innerHTML = original;
       setOtpLoading(false);
       clearOtp();
 
       const msg = err?.message || "Invalid or expired code";
-
       const lower = msg.toLowerCase();
       if (lower.includes("code") || lower.includes("invalid") || lower.includes("expired")) {
         inputs.forEach((i) => {
@@ -245,7 +277,7 @@
 
   /*  RESEND CODE  */
   const resendBtn = document.getElementById("resendBtn");
-  let   resendCooldown = 0;
+  let resendCooldown = 0;
 
   resendBtn?.addEventListener("click", async () => {
     if (resendCooldown > 0) return;
@@ -260,23 +292,16 @@
     resendBtn.textContent = "Sending…";
 
     try {
-      if (window.API) {
-        // Correct endpoint: /auth/resend-email with { email, purpose }
-        await API.post("/auth/resend-email", {
-          email: displayEmail,
-          purpose: "email_verification",
-        });
-      } else {
-        await new Promise((r) => setTimeout(r, 500));
-      }
+      await API.post("/auth/resend-email", {
+        email: displayEmail,
+        purpose: "email_verification",
+      });
 
       resendBtn.classList.remove("text-blue-600");
       resendBtn.classList.add("text-emerald-600");
       resendBtn.textContent = "Code sent!";
-
       toast("A new code is on its way", "success");
 
-      // 60-second cooldown (backend enforces this)
       resendCooldown = 60;
       const tick = () => {
         if (resendCooldown <= 0) {
@@ -305,7 +330,7 @@
     setTimeout(() => (window.location.href = "login.html"), 900);
   });
 
-  // Focus first OTP box on load
+  /*  FOCUS FIRST OTP BOX  */
   inputs[0]?.focus();
 })();
 </script>

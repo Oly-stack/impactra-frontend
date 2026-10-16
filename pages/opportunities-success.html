@@ -1,342 +1,574 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Opportunity Published | Impactra</title>
+    <title>Impactra — Opportunity Published</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-      color: #1f2937;
-    }
+    <!-- Tailwind configuration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              brand: "#0b4fd6",
+              surface: "#f3f4fb",
+              active: "#dfe5fb",
+            },
+            boxShadow: {
+              card: "0 2px 8px rgba(15, 23, 42, 0.04)",
+            },
+          },
+        },
+      };
+    </script>
 
-    header {
-      background: white;
-      padding: 20px 8%;
-      border-bottom: 1px solid #e5e7eb;
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #4f46e5;
-    }
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-    main {
-      min-height: 80vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 20px;
-    }
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="published.css" />
+  </head>
 
-    .success-card {
-      background: white;
-      max-width: 600px;
-      width: 100%;
-      padding: 50px 35px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-    }
+  <body class="min-h-screen bg-[#f8f8fc] font-sans text-slate-900">
+    <div class="flex min-h-screen">
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 flex h-screen w-[256px] -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0"
+      >
+        <!-- Logo -->
+        <div class="flex h-16 items-center justify-between px-5">
+          <a href="../Dashboard.html" class="flex items-center gap-3">
+            <div
+              class="grid h-8 w-8 place-items-center rounded-full border border-blue-600 text-blue-700"
+            >
+              <span class="material-symbols-outlined text-[20px]">
+                groups
+              </span>
+            </div>
 
-    .success-icon {
-      width: 90px;
-      height: 90px;
-      background: #dcfce7;
-      color: #16a34a;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 48px;
-      margin: 0 auto 25px;
-    }
+            <span class="font-bold tracking-tight">IMPACTRA</span>
+          </a>
 
-    h1 {
-      font-size: 30px;
-      margin-bottom: 15px;
-      color: #111827;
-    }
+          <button
+            id="closeSidebar"
+            type="button"
+            aria-label="Close menu"
+            class="text-slate-600 lg:hidden"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
 
-    p {
-      font-size: 16px;
-      color: #64748b;
-      line-height: 1.7;
-    }
+        <!-- Navigation -->
+        <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-5 text-sm">
+          <p
+            class="mb-4 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500"
+          >
+            Operations
+          </p>
 
-    .opportunity-info {
-      background: #f8fafc;
-      padding: 20px;
-      border-radius: 10px;
-      margin: 30px 0;
-      text-align: left;
-    }
+          <a href="../Dashboard.html" class="sidebar-link">
+            <span class="material-symbols-outlined">grid_view</span>
+            Dashboard
+          </a>
 
-    .opportunity-info h3 {
-      margin-top: 0;
-      color: #111827;
-    }
+          <a
+            href="opportunities-list.html"
+            class="sidebar-link sidebar-link-active"
+          >
+            <span class="material-symbols-outlined">campaign</span>
+            Opportunities
+          </a>
 
-    .opportunity-info p {
-      margin: 8px 0;
-      font-size: 14px;
-    }
+          <a href="../application.html" class="sidebar-link">
+            <span class="material-symbols-outlined">assignment</span>
+            Applications
+          </a>
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 30px;
-    }
+          <a href="#" class="sidebar-link">
+            <span class="material-symbols-outlined">groups</span>
+            Volunteers
+          </a>
 
-    .btn {
-      padding: 14px 22px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+          <a href="#" class="sidebar-link">
+            <span class="material-symbols-outlined">event</span>
+            Activities
+          </a>
 
-    .primary {
-      background: #4f46e5;
-      color: white;
-    }
+          <a href="#" class="sidebar-link">
+            <span class="material-symbols-outlined">monitoring</span>
+            Impact
+          </a>
 
-    .primary:hover {
-      background: #4338ca;
-    }
+          <a href="Certificate.html" class="sidebar-link">
+            <span class="material-symbols-outlined">workspace_premium</span>
+            Certificates
+          </a>
 
-    .secondary {
-      background: #eef2ff;
-      color: #4f46e5;
-    }
+          <a href="#" class="sidebar-link">
+            <span class="material-symbols-outlined">mail</span>
+            Messages
+          </a>
 
-    .secondary:hover {
-      background: #e0e7ff;
-    }
+          <a href="#" class="sidebar-link">
+            <span class="material-symbols-outlined">shield</span>
+            Report
+          </a>
 
-    @media (max-width: 600px) {
-      .success-card {
-        padding: 35px 20px;
-      }
+          <a href="../settings.html" class="sidebar-link">
+            <span class="material-symbols-outlined">settings</span>
+            Settings
+          </a>
+        </nav>
 
-      h1 {
-        font-size: 24px;
-      }
+        <!-- Logout -->
+        <div class="border-t border-slate-200 p-4">
+          <a
+            href="http://127.0.0.1:5500/pages/login.html"
+            class="flex items-center gap-3 text-sm font-medium text-red-600"
+          >
+            <span class="material-symbols-outlined">logout</span>
+            Log out
+          </a>
+        </div>
+      </aside>
 
-      .buttons {
-        flex-direction: column;
-      }
+      <!-- MOBILE OVERLAY -->
+      <div
+        id="sidebarOverlay"
+        class="fixed inset-0 z-30 hidden bg-black/40 lg:hidden"
+      ></div>
 
-      .btn {
-        width: 100%;
-      }
-    }
-  </style>
-  <script src="API.js" defer></script>
-</head>
-
-<body>
-
-  <header>
-    <div class="logo">Impactra</div>
-  </header>
-
-  <main>
-
-    <div class="success-card">
-
-      <div class="success-icon">
-        &#10003;
-      </div>
-
-      <h1>Opportunity Published Successfully!</h1>
-
-      <p>
-        Congratulations! Your opportunity has been
-        successfully submitted.
-      </p>
-
-      <p>
-        Your opportunity is now ready to connect
-        with individuals who want to make an impact.
-      </p>
-
-      <div class="opportunity-info">
-
-        <h3>Opportunity Summary</h3>
-
-        <p>
-          <strong>Title:</strong>
-          <span id="opportunityTitle">Not provided</span>
-        </p>
-
-        <p>
-          <strong>Category:</strong>
-          <span id="opportunityCategory">Not provided</span>
-        </p>
-
-        <p>
-          <strong>Location:</strong>
-          <span id="opportunityLocation">Not provided</span>
-        </p>
-
-        <p>
-          <strong>Status:</strong>
-          <span style="color: #16a34a;">
-            Submitted
-          </span>
-        </p>
-
-      </div>
-
-      <div class="buttons">
-
-        <a
-  href="opportunity-details.html"
-  class="btn primary"
->
-  View Opportunity
-</a>
-
-        <a
-          href="opportunity-list.html"
-          class="btn secondary"
+      <!-- MAIN CONTENT -->
+      <div class="flex min-w-0 flex-1 flex-col">
+        <!-- TOP BAR -->
+        <header
+          class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8"
         >
-          Back to Opportunities
-        </a>
+          <!-- Mobile menu and breadcrumb -->
+          <div class="flex min-w-0 items-center gap-3">
+            <button
+              id="openSidebar"
+              type="button"
+              aria-label="Open menu"
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-slate-700 hover:bg-slate-100 lg:hidden"
+            >
+              <span class="material-symbols-outlined">menu</span>
+            </button>
 
+            <nav
+              aria-label="Breadcrumb"
+              class="flex min-w-0 items-center gap-2 text-sm"
+            >
+              <a
+                href="opportunities-list.html"
+                class="hidden text-slate-500 hover:text-slate-900 sm:block"
+              >
+                Opportunities
+              </a>
+
+              <span class="hidden text-slate-400 sm:block">/</span>
+
+              <a
+                href="create-opportunity.html"
+                class="hidden text-slate-500 hover:text-slate-900 sm:block"
+              >
+                Create Opportunity
+              </a>
+
+              <span class="hidden text-slate-400 sm:block">/</span>
+
+              <span class="truncate font-semibold">Published</span>
+            </nav>
+          </div>
+
+          <!-- Search and profile -->
+          <div class="flex shrink-0 items-center gap-3 sm:gap-5">
+            <!-- Search -->
+            <div
+              class="hidden w-[280px] items-center gap-2 rounded-lg bg-[#eef0fb] px-3 py-2.5 md:flex lg:w-[320px]"
+            >
+              <span
+                class="material-symbols-outlined text-[20px] text-slate-600"
+              >
+                search
+              </span>
+
+              <input
+                type="search"
+                placeholder="Search opportunities, volunteers..."
+                class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-500"
+              />
+
+              <span
+                class="rounded bg-active px-1.5 py-0.5 text-[10px] text-slate-500"
+              >
+                ⌘K
+              </span>
+            </div>
+
+            <!-- Notifications -->
+            <button
+              type="button"
+              aria-label="Notifications"
+              class="relative text-slate-600"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+
+              <span
+                class="absolute right-0 top-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600"
+              ></span>
+            </button>
+
+            <!-- User -->
+            <div class="flex items-center gap-2.5">
+              <img
+                src="https://i.pravatar.cc/80?img=47"
+                alt="Toyin"
+                class="h-9 w-9 rounded-full object-cover"
+              />
+
+              <div class="hidden leading-tight sm:block">
+                <p class="text-sm font-semibold">Toyin</p>
+                <p class="text-[11px] text-slate-500">NGO</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-[1120px]">
+            <!-- Breadcrumb and reference -->
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <nav
+                aria-label="Page breadcrumb"
+                class="flex flex-wrap items-center gap-2 text-sm text-slate-500"
+              >
+                <a href="opportunities-list.html" class="hover:text-brand">
+                  Opportunities
+                </a>
+
+                <span>/</span>
+
+                <a href="create-opportunity.html" class="hover:text-brand">
+                  Create Opportunity
+                </a>
+
+                <span>/</span>
+
+                <span class="font-semibold text-slate-800">Published</span>
+              </nav>
+
+              <span
+                id="referenceNumber"
+                class="rounded-full bg-[#e4e9fa] px-3 py-1.5 text-[10px] font-semibold tracking-wide text-slate-600"
+              >
+                REFERENCE: #OPP-2026-8841
+              </span>
+            </div>
+
+            <!-- SUCCESS CARD -->
+            <section
+              class="mx-auto max-w-[800px] rounded-2xl bg-white px-4 py-8 shadow-card sm:px-8 sm:py-10 lg:px-10"
+            >
+              <!-- Success icon -->
+              <div class="flex justify-center">
+                <div
+                  class="grid h-14 w-14 place-items-center rounded-full bg-[#76f29b]"
+                >
+                  <span
+                    class="material-symbols-outlined text-[34px] font-bold text-green-950"
+                  >
+                    check
+                  </span>
+                </div>
+              </div>
+
+              <!-- Success heading -->
+              <div class="mt-6 text-center">
+                <h1
+                  class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
+                >
+                  Opportunity Published
+                </h1>
+
+                <p
+                  class="mx-auto mt-2 max-w-[540px] text-sm leading-6 text-slate-600 sm:text-base"
+                >
+                  Your opportunity is now live. Volunteers can view it and
+                  apply. Applications and questions from volunteers will appear
+                  in Applications.
+                </p>
+              </div>
+
+              <!-- OPPORTUNITY SUMMARY -->
+              <div class="mt-6 rounded-2xl bg-[#f0f2ff] p-4 sm:p-6">
+                <!-- Title and status -->
+                <div
+                  class="flex flex-col gap-4 border-b border-slate-200/80 pb-5 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div class="flex min-w-0 items-center gap-3">
+                    <div
+                      class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#dce6ff] text-brand"
+                    >
+                      <span class="material-symbols-outlined text-[25px]">
+                        volunteer_activism
+                      </span>
+                    </div>
+
+                    <div class="min-w-0">
+                      <h2
+                        id="opportunityTitle"
+                        class="break-words text-lg font-bold text-slate-900 sm:text-xl"
+                      >
+                        Food Relief Distribution
+                      </h2>
+
+                      <p
+                        id="organizationName"
+                        class="mt-1 text-xs leading-5 text-slate-600 sm:text-sm"
+                      >
+                        Lagos Metro Humanitarian Initiative · Relief Cluster IV
+                      </p>
+                    </div>
+                  </div>
+
+                  <span
+                    class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-white px-3 py-2 text-[10px] font-bold tracking-wide text-emerald-700 sm:text-[11px]"
+                  >
+                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    ACTIVE · ACCEPTING APPLICATIONS
+                  </span>
+                </div>
+
+                <!-- Details grid -->
+                <div
+                  class="grid grid-cols-1 gap-5 border-b border-slate-200/80 py-5 sm:grid-cols-2 xl:grid-cols-4"
+                >
+                  <!-- Category -->
+                  <div class="flex items-start gap-3">
+                    <span
+                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
+                    >
+                      category
+                    </span>
+
+                    <div class="min-w-0">
+                      <p
+                        class="text-[10px] font-bold tracking-wider text-slate-600"
+                      >
+                        CATEGORY
+                      </p>
+
+                      <p
+                        id="opportunityCategory"
+                        class="mt-1 break-words text-sm font-semibold text-slate-800"
+                      >
+                        Community Support
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Schedule -->
+                  <div class="flex items-start gap-3">
+                    <span
+                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
+                    >
+                      calendar_month
+                    </span>
+
+                    <div class="min-w-0">
+                      <p
+                        class="text-[10px] font-bold tracking-wider text-slate-600"
+                      >
+                        SCHEDULE
+                      </p>
+
+                      <p
+                        id="opportunityDate"
+                        class="mt-1 text-sm font-semibold text-slate-800"
+                      >
+                        Sat, Oct 14, 2026
+                      </p>
+
+                      <p
+                        id="opportunityTime"
+                        class="mt-1 text-xs text-slate-600"
+                      >
+                        09:00 AM – 01:00 PM
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Deployment area -->
+                  <div class="flex items-start gap-3">
+                    <span
+                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
+                    >
+                      location_on
+                    </span>
+
+                    <div class="min-w-0">
+                      <p
+                        class="text-[10px] font-bold tracking-wider text-slate-600"
+                      >
+                        DEPLOYMENT AREA
+                      </p>
+
+                      <p
+                        id="opportunityVenue"
+                        class="mt-1 break-words text-sm font-semibold text-slate-800"
+                      >
+                        Surulere Hall
+                      </p>
+
+                      <p
+                        id="opportunityRegion"
+                        class="mt-1 text-xs text-slate-600"
+                      >
+                        Lagos Mainland
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Staffing -->
+                  <div class="flex items-start gap-3">
+                    <span
+                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
+                    >
+                      groups
+                    </span>
+
+                    <div class="min-w-0">
+                      <p
+                        class="text-[10px] font-bold tracking-wider text-slate-600"
+                      >
+                        STAFFING TARGET
+                      </p>
+
+                      <p
+                        id="opportunityStaffing"
+                        class="mt-1 text-sm font-semibold text-slate-800"
+                      >
+                        10 Volunteers
+                      </p>
+
+                      <p class="mt-1 text-xs font-medium text-blue-700">
+                        <span id="confirmedCount">0</span> /
+                        <span id="staffingTarget">10</span> Confirmed
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Scheduled shift phases -->
+                <div
+                  class="flex flex-col gap-4 pt-5 sm:flex-row sm:items-start"
+                >
+                  <div class="flex shrink-0 items-center gap-2 sm:w-[160px]">
+                    <span
+                      class="material-symbols-outlined text-[20px] text-slate-600"
+                    >
+                      show_chart
+                    </span>
+
+                    <p
+                      class="text-[10px] font-bold leading-4 tracking-wider text-slate-600"
+                    >
+                      SCHEDULED SHIFT PHASES:
+                    </p>
+                  </div>
+
+                  <div id="shiftPhases" class="flex flex-1 flex-wrap gap-2">
+                    <span class="shift-tag">1. Briefing &amp; Safety</span>
+
+                    <span class="shift-tag">2. Parcel Packing</span>
+
+                    <span class="shift-tag">3. Distribution</span>
+
+                    <span class="shift-tag">4. Debrief &amp; Audit</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div
+                class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+              >
+                <!-- View opportunity -->
+                <a
+                  id="viewOpportunityBtn"
+                  href="opportunities-list.html"
+                  class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
+                >
+                  View Opportunity
+
+                  <span class="material-symbols-outlined text-[19px]">
+                    arrow_forward
+                  </span>
+                </a>
+
+                <!-- Share opportunity -->
+                <button
+                  id="shareOpportunityBtn"
+                  type="button"
+                  class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-transparent bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+                >
+                  <span class="material-symbols-outlined text-[19px]">
+                    share
+                  </span>
+
+                  Share Opportunity
+                </button>
+
+                <!-- Create another -->
+                <a
+                  href="create-opportunity.html"
+                  class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#eef0fb] px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#e0e6fb]"
+                >
+                  <span class="material-symbols-outlined text-[19px]">
+                    add_circle_outline
+                  </span>
+
+                  Create Another Opportunity
+                </a>
+              </div>
+
+              <!-- Back link -->
+              <div class="mt-5 text-center">
+                <a
+                  href="opportunities-list.html"
+                  class="inline-flex items-center gap-2 text-sm text-slate-600 transition hover:text-brand"
+                >
+                  <span class="material-symbols-outlined text-[18px]">
+                    arrow_back
+                  </span>
+
+                  Back to Opportunities
+                </a>
+              </div>
+            </section>
+          </div>
+        </main>
       </div>
-
     </div>
 
-  </main>
-
-  <script>
-  (() => {
-    "use strict";
-
-    /* Toast */
-    function toast(message, variant = "default") {
-      let host = document.getElementById("toast-host");
-      if (!host) {
-        host = document.createElement("div");
-        host.id = "toast-host";
-        host.className =
-          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
-        document.body.appendChild(host);
-      }
-      const palette = {
-        default: "bg-[#0F172A] text-white",
-        success: "bg-[#065F46] text-white",
-        error:   "bg-[#991B1B] text-white",
-        info:    "bg-[#1D4ED8] text-white",
-      };
-      const el = document.createElement("div");
-      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
-      el.textContent = message;
-      host.appendChild(el);
-      setTimeout(() => {
-        el.style.transition = "opacity .25s ease, transform .25s ease";
-        el.style.opacity = "0";
-        el.style.transform = "translateY(8px)";
-        setTimeout(() => el.remove(), 260);
-      }, 2800);
-    }
-
-    /* Safe element setter */
-    function setText(id, value, fallback = "Not provided") {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = (value === 0 ? "0" : value) || fallback;
-    }
-
-    /* Small helper: format ISO / yyyy-mm-dd strings */
-    function formatDate(value) {
-      if (!value) return "";
-      const d = new Date(value);
-      if (isNaN(d.getTime())) return value;
-      return d.toLocaleDateString(undefined, {
-        month: "long", day: "numeric", year: "numeric",
-      });
-    }
-
-    /* Main*/
-    document.addEventListener("DOMContentLoaded", async function () {
-      const DRAFT_KEY = "impactraOpportunityDraft";
-
-      /*  1. Load the local draft  */
-      let opportunity = {};
-      try {
-        const raw = sessionStorage.getItem(DRAFT_KEY);
-        if (raw) opportunity = JSON.parse(raw) || {};
-      } catch (error) {
-        console.error("[opportunity-detail] corrupt draft:", error);
-        toast("Couldn't read the saved draft", "error");
-      }
-
-      /*  2. If we have an API id, re-fetch the freshest copy  */
-      if (window.API && opportunity.id) {
-        try {
-          const res = await API.opportunities.get(opportunity.id);
-          const remote = res?.data || res || null;
-          if (remote) {
-            // Remote wins for fields it provides; fall back to local draft otherwise
-            opportunity = { ...opportunity, ...remote };
-            // Keep sessionStorage in sync
-            try {
-              sessionStorage.setItem(DRAFT_KEY, JSON.stringify(opportunity));
-            } catch (_) { /* ignore storage quota */ }
-          }
-        } catch (err) {
-          // Non-fatal — we still have the local copy
-          console.warn("[opportunity-detail] server refresh failed:", err);
-          toast("Using locally saved copy — server unavailable", "info");
-        }
-      }
-
-      /*  3. Render into the page  */
-      setText("opportunityTitle",    opportunity.title);
-      setText("opportunityCategory", opportunity.category);
-      setText("opportunityLocation", opportunity.location);
-
-    
-      //4. These are no-ops if the elements don't exist.
-      setText("opportunityDescription", opportunity.description);
-      setText("opportunityType",        opportunity.type);
-      setText("opportunityStartDate",   formatDate(opportunity.startDate));
-      setText("opportunityEndDate",     formatDate(opportunity.endDate));
-      setText("opportunityDeadline",    formatDate(opportunity.deadline));
-      setText("opportunitySlots",       opportunity.slots);
-      setText("opportunityRequirements", opportunity.requirements);
-      setText("opportunityBenefits",     opportunity.benefits);
-
-      /*  5. If the draft is completely empty, tell the user  */
-      const hasAnyData = Object.keys(opportunity).some((k) => opportunity[k]);
-      if (!hasAnyData) {
-        toast("No saved opportunity found — please start from step 1", "info");
-      }
-    });
-
-    /* Global 401*/
-    document.addEventListener("api:unauthorized", () => {
-      toast("Session expired — please sign in again", "error");
-      setTimeout(() => (window.location.href = "login.html"), 900);
-    });
-  })();
-</script>
-
-</body>
+    <!-- JavaScript -->
+    <script src="published.js"></script>
+  </body>
 </html>

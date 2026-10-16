@@ -4,15 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Impactra | Create Account</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="shortcut icon" href="../images/logo.png" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
       rel="stylesheet"
     />
-    <!-- Script loaded with defer -->
-     <script src="../API.js" defer></script>
+    <script src="../API.js" defer></script>
     <script src="register.js" defer></script>
   </head>
   <body class="min-h-screen bg-[#f9f9ff] flex flex-col justify-between p-6 font-['Inter',sans-serif]">
@@ -29,11 +27,7 @@
               FULL NAME
             </label>
             <div class="relative">
-              <img
-                src="../images/user.png"
-                alt=""
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-60"
-              />
+              <img src="../images/user.png" alt="" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-60" />
               <input
                 type="text"
                 id="fullName"
@@ -44,17 +38,13 @@
             </div>
           </div>
 
-          <!-- Email Address -->
+          <!-- Email -->
           <div class="mb-5">
             <label for="email" class="block text-xs font-bold text-[#172235] mb-2">
               EMAIL ADDRESS
             </label>
             <div class="relative">
-              <img
-                src="../images/email.png"
-                alt=""
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-3 pointer-events-none opacity-60"
-              />
+              <img src="../images/email.png" alt="" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-3 pointer-events-none opacity-60" />
               <input
                 type="email"
                 id="email"
@@ -65,23 +55,17 @@
             </div>
           </div>
 
-          <!-- Phone Number -->
+          <!-- Phone -->
           <div class="mb-5">
             <label class="block text-xs font-bold text-[#172235] mb-2">
               PHONE NUMBER
             </label>
             <div class="flex gap-2">
-              <div
-                class="w-[80px] h-11 rounded-lg bg-[#f0f2ff] text-sm font-medium text-[#172235] flex items-center justify-center gap-1 cursor-default select-none"
-              >
+              <div class="w-[80px] h-11 rounded-lg bg-[#f0f2ff] text-sm font-medium text-[#172235] flex items-center justify-center gap-1 cursor-default select-none">
                 +234 <span class="text-xs">⌄</span>
               </div>
               <div class="relative flex-1">
-                <img
-                  src="../images/phone.png"
-                  alt=""
-                  class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-60"
-                />
+                <img src="../images/phone.png" alt="" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-60" />
                 <input
                   type="tel"
                   id="phone"
@@ -98,11 +82,7 @@
               PASSWORD
             </label>
             <div class="relative">
-              <img
-                src="../images/password.png"
-                alt=""
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-4 pointer-events-none opacity-60"
-              />
+              <img src="../images/password.png" alt="" class="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-4 pointer-events-none opacity-60" />
               <input
                 type="password"
                 id="password"
@@ -110,39 +90,27 @@
                 class="w-full h-11 rounded-lg bg-[#f0f2ff] pl-11 pr-12 text-sm text-[#172235] outline-none focus:ring-2 focus:ring-[#0051d5]"
                 required
               />
-              <button
-                type="button"
-                id="togglePassword"
-                class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer p-1"
-              >
+              <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer p-1">
                 <img id="eyeIcon" src="../images/eye.png" alt="Show password" class="w-4 h-3.5 opacity-60" />
               </button>
             </div>
           </div>
 
-          <!-- Confirm Password -->
+          <!-- Confirm password -->
           <div class="mb-1">
             <label for="confirmPassword" class="block text-xs font-bold text-[#172235] mb-2">
               RE-ENTER PASSWORD
             </label>
             <div class="relative">
-              <img
-                src="../images/password.png"
-                alt=""
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-4 pointer-events-none opacity-60"
-              />
+              <img src="../images/password.png" alt="" class="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-4 pointer-events-none opacity-60" />
               <input
                 type="password"
                 id="confirmPassword"
-                placeholder="Create a password"
+                placeholder="Re-enter password"
                 class="w-full h-11 rounded-lg bg-[#f0f2ff] pl-11 pr-12 text-sm text-[#172235] outline-none focus:ring-2 focus:ring-[#0051d5]"
                 required
               />
-              <button
-                type="button"
-                id="toggleConfirmPassword"
-                class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer p-1"
-              >
+              <button type="button" id="toggleConfirmPassword" class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer p-1">
                 <img id="confirmEyeIcon" src="../images/eye.png" alt="Show password" class="w-4 h-3.5 opacity-60" />
               </button>
             </div>
@@ -152,42 +120,28 @@
             Must contain at least 8 characters, one number, and a symbol.
           </p>
 
-          <!-- Choose Account Type -->
+          <!-- Account type — informational only, no choice to make -->
           <h2 class="text-sm font-semibold text-[#172235] mb-3">
-            Your Organisation Profile
+            Your account type
           </h2>
-          <div class="flex items-center mb-6">
-            <!-- Organization Card -->
-            <div
-              id="ngoCard"
-              class="account-card text-left rounded-2xl border-2 border-[#0051d5] bg-[#f0f2ff] p-5 shadow-sm cursor-pointer transition-all"
-            >
-              <div class="flex items-center justify-between">
-                <div class="w-10 h-10 rounded-xl bg-[#0051d5] flex items-center justify-center">
-                  <img src="../images/page.png" alt="" class="w-5 h-5" />
-                </div>
-                <span
-                  id="ngoSelected"
-                  class="bg-[#0051d5] flex items-center gap-1 text-white text-[10px] font-semibold rounded-full px-2 py-0.5"
-                >
-                  <img src="../images/tick.png" class="w-2.5 h-2" />
-                  SELECTED
-                </span>
+
+          <div class="rounded-2xl border-2 border-[#0051d5] bg-[#f0f2ff] p-4 shadow-sm mb-6">
+            <div class="flex items-center justify-between">
+              <div class="w-9 h-9 rounded-xl bg-[#0051d5] flex items-center justify-center">
+                <img src="../images/page.png" alt="" class="w-4 h-4" />
               </div>
-
-              <h3 class="font-bold text-base text-[#172235] mt-4">Organization</h3>
-
-              <p class="text-xs text-gray-600 mt-2 leading-relaxed">
-                Create volunteer opportunities, manage applications, and track your organization's impact.
-              </p>
-
-              <p class="text-[11px] font-bold text-[#0051d5] mt-4 flex items-center gap-1">
-                <span>●</span> FULL PORTAL ACCESS
-              </p>
+              <span class="bg-[#0051d5] flex items-center gap-1 text-white text-[10px] font-semibold rounded-full px-2 py-0.5">
+                <img src="../images/tick.png" class="w-2.5 h-2" />
+                ORGANIZATION
+              </span>
             </div>
+            <h3 class="font-bold text-sm text-[#172235] mt-3">NGO / Organization</h3>
+            <p class="text-[11px] text-gray-600 mt-1 leading-relaxed">
+              Create opportunities, manage volunteers, and track your organization's impact.
+            </p>
           </div>
 
-          <!-- Submit Button -->
+          <!-- Submit -->
           <button
             type="submit"
             id="submitBtn"
@@ -196,7 +150,6 @@
             Create Account &rarr;
           </button>
 
-          <!-- Terms -->
           <p class="text-center text-xs text-gray-500 mt-5 leading-relaxed">
             By creating an account, you agree to IMPACTRA's
             <a href="#" class="text-[#0051d5] font-medium hover:underline">Terms of Service</a>
@@ -204,7 +157,6 @@
             <a href="#" class="text-[#0051d5] font-medium hover:underline">Privacy Policy</a>.
           </p>
 
-          <!-- Login Redirect -->
           <p class="text-center text-sm text-gray-600 mt-6">
             Already have an account?
             <a href="login.html" class="text-[#0051d5] font-semibold hover:underline">Log in</a>
