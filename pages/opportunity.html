@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Impactra – Opportunities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+        colors: {
+          page: "#f6f6fc",
+          ink: "#151a30",
+          muted: "#5b6078",
+          line: "#e7e8f2",
+          field: "#eceefa",
+          band: "#eef0fb",
+          brand: { DEFAULT: "#0b4fd6", dark: "#0942b3", soft: "#e9edfb" },
+          danger: { DEFAULT: "#c4231c", soft: "#fde4e4" },
+          ok: { DEFAULT: "#0f9d58", dark: "#0b7a43", soft: "#d9f3e3" },
+        },
+      },
+    },
+  };
+</script>
+<style>
+  svg.ic { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+
+<body class="flex min-h-screen bg-page font-sans text-[14px] text-ink">
+
+<!-- Icon sprite -->
+<svg width="0" height="0" class="absolute">
+  <defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-calcheck" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M9 15l2 2 4-4"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10"/><path d="M8 8h2M8 12h2M8 16h2M17 14h1M17 18h1M2 21h20"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 6v12M3 12h2M19 12h2"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 8v4M12 15.5v.01"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+    <symbol id="i-heart-hand" viewBox="0 0 24 24"><path d="M12 14s-4-2.5-4-5.2A2.3 2.3 0 0 1 12 7.5 2.3 2.3 0 0 1 16 8.8C16 11.5 12 14 12 14Z"/><path d="M3 15h3l4 2h5a2 2 0 0 0 0-4h-3M6 21H3M6 15v6l9 0 6-4"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z"/><path d="M8 7h7M8 11h5"/></symbol>
+    <symbol id="i-medical" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m8 10 3 2-3 2M13 15h4"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 10.5A6 6 0 0 1 6 13.5C6 9.2 12 3 12 3Z"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17v.01"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11A8 8 0 0 0 5.6 6.6L4 8M4 4v4h4M4 13a8 8 0 0 0 14.4 4.4L20 16M20 20v-4h-4"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sticky top-0 hidden h-screen w-[160px] shrink-0 flex-col border-r border-line bg-white md:flex">
+  <div class="flex h-[46px] items-center gap-1.5 border-b border-line px-2.5 text-[15px] font-bold tracking-wide">
+    <img src="img/impactra-logo.jpeg" alt="IMPACTRA Logo" class="brand-logo-img" />
+        <span class="brand-title">IMPACTRA</span>
+    IMPACTRA
+  </div>
+
+  <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-1.5 pb-4 pt-5 text-[11.5px]">
+    <div class="mb-1.5 px-2 text-[9.5px] font-semibold uppercase tracking-[.08em] text-muted">Operations</div>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-grid"/></svg>Dashboard</a>
+    <a href="#" class="flex items-center gap-2 rounded-md bg-[#e9ecfb] px-2 py-2 font-semibold text-brand"><svg class="ic !h-3.5 !w-3.5"><use href="#i-calcheck"/></svg>Opportunities</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-building"/></svg>Applications</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-users"/></svg>Volunteers</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-ticket"/></svg>Activities</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-trend"/></svg>Impact</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-award"/></svg>Certificates</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-message"/></svg>Messages</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-shield"/></svg>Report</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-2 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-gear"/></svg>Settings</a>
+  </nav>
+
+  <div class="flex items-center gap-3 border-t border-line px-3 py-3.5 text-[11.5px]">
+    <span class="font-bold text-muted">⋮</span>
+    <a href="#" class="flex items-center gap-2 font-medium text-danger"><svg class="ic !h-3.5 !w-3.5"><use href="#i-logout"/></svg>Log out</a>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="min-w-0 flex-1">
+
+  <!-- Top bar -->
+  <header class="flex h-[46px] items-center justify-between border-b border-line bg-white px-5">
+    <span class="text-[10.5px] font-semibold">Create Opportunity</span>
+    <div class="flex items-center gap-4">
+      <label class="flex h-[28px] w-[178px] items-center gap-2 rounded-lg border border-[#d9def2] bg-band px-2.5 text-[10.5px] text-muted">
+        <svg class="ic !h-3 !w-3"><use href="#i-search"/></svg>
+        <input type="text" placeholder="Search volunteers, shifts..." class="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-muted" />
+        <kbd class="rounded border border-[#c9cfe8] bg-white px-1 text-[8.5px] font-semibold">⌘K</kbd>
+      </label>
+      <span class="relative text-[#2b3048]">
+        <svg class="ic !h-4 !w-4"><use href="#i-bell"/></svg>
+        <span class="absolute -top-px right-0 h-[6px] w-[6px] rounded-full bg-[#e5372f]"></span>
+      </span>
+      <div class="flex items-center gap-2">
+        <img src="img/Profile.png" alt="Toyin" class="h-[20px] w-[20px] rounded-full object-cover" />
+        <div class="leading-tight">
+          <div class="text-[10.5px] font-semibold">Toyin</div>
+          <div class="text-[8.5px] text-muted">NGO</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-6 pb-10 pt-5">
+
+    <!-- Page heading -->
+    <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <h1 class="text-[26px] font-bold tracking-tight">Opportunities</h1>
+        <p class="mt-1 text-[11.5px] text-muted">Manage, deploy, and monitor your volunteer opportunities across regional missions.</p>
+      </div>
+      <button class="mt-1 flex h-[38px] items-center gap-1.5 rounded-lg bg-brand px-4 text-[12px] font-semibold text-white hover:bg-brand-dark">
+        <svg class="ic !h-3.5 !w-3.5"><use href="#i-plus"/></svg>Create Opportunity
+      </button>
+    </div>
+
+    <!-- Filter band + stats -->
+    <section class="mb-4 rounded-xl bg-band p-3.5">
+      <label class="mb-2.5 flex h-[26px] w-full max-w-[440px] items-center gap-2 rounded bg-white px-3 text-muted">
+        <svg class="ic !h-3 !w-3"><use href="#i-search"/></svg>
+        <input id="search" type="text" placeholder="Search opportunities by title, location, category..." class="min-w-0 flex-1 bg-transparent text-[10.5px] text-ink outline-none placeholder:text-muted" />
+      </label>
+
+      <div class="grid grid-cols-2 gap-2 lg:grid-cols-[1.18fr_1fr_1fr_1.05fr]">
+        <!-- Active quota -->
+        <div class="rounded-lg bg-white px-3.5 py-3 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Active Quota</span>
+            <svg class="ic !h-3.5 !w-3.5 text-brand"><use href="#i-users"/></svg>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span class="text-[20px] font-bold tracking-tight">34 / 66</span>
+            <span class="text-[10.5px] text-muted">slots filled</span>
+          </div>
+          <div class="mt-2 h-1 overflow-hidden rounded bg-field"><span class="block h-full w-[51%] rounded bg-brand"></span></div>
+        </div>
+
+        <!-- Review queue -->
+        <div class="rounded-lg bg-white px-3.5 py-3 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Review Queue</span>
+            <span class="rounded bg-danger-soft px-1.5 py-0.5 text-[8.5px] font-bold text-danger">14 URGENT</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span class="text-[20px] font-bold tracking-tight">86</span>
+            <span class="text-[10.5px] text-muted">total pending</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1.5 text-[9.5px] text-muted"><svg class="ic !h-3 !w-3 text-ok"><use href="#i-clock"/></svg>Avg. triage time: 4.2 hrs</div>
+        </div>
+
+        <!-- Direct reach -->
+        <div class="rounded-lg bg-white px-3.5 py-3 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Direct Reach</span>
+            <svg class="ic !h-3.5 !w-3.5 text-ok"><use href="#i-trend"/></svg>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span class="text-[20px] font-bold tracking-tight">3 Hubs</span>
+            <span class="text-[10.5px] text-muted">Lagos Metro</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1.5 text-[9.5px] text-muted"><span class="h-1.5 w-1.5 rounded-full bg-brand"></span>Surulere, Yaba, Ikeja</div>
+        </div>
+
+        <!-- Efficiency index -->
+        <div class="flex items-center justify-between rounded-lg bg-[#e1e8fc] px-3.5 py-3">
+          <div>
+            <div class="text-[9px] font-semibold uppercase tracking-[.08em] text-brand">Efficiency Index</div>
+            <div class="mt-2 text-[20px] font-bold tracking-tight">94.8%</div>
+            <div class="mt-1 text-[10.5px] text-[#3a3f58]">Target match rate</div>
+          </div>
+          <div class="relative grid h-[38px] w-[38px] place-items-center">
+            <svg viewBox="0 0 40 40" class="absolute inset-0 h-full w-full -rotate-90">
+              <circle cx="20" cy="20" r="17" fill="none" stroke="#c7d4f7" stroke-width="3"/>
+              <circle cx="20" cy="20" r="17" fill="none" stroke="#0b4fd6" stroke-width="3" stroke-dasharray="101 107" stroke-linecap="round"/>
+            </svg>
+            <svg class="ic !h-3.5 !w-3.5 text-brand"><use href="#i-bolt"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Opportunities table -->
+    <section class="rounded-xl bg-white shadow-sm">
+      <div class="flex items-center justify-between border-b border-line px-5 pt-3">
+        <div id="tabs" class="flex gap-5">
+          <button data-tab="all" class="tab -mb-px flex items-center gap-1.5 border-b-2 border-brand pb-2.5 pl-1 pr-1 text-[11.5px] font-semibold text-brand">All <span class="rounded-full bg-brand-soft px-1.5 py-px text-[9.5px]">18</span></button>
+          <button data-tab="active" class="tab -mb-px flex items-center gap-1.5 border-b-2 border-transparent pb-2.5 text-[11.5px] font-medium text-[#2b3048]">Active <span class="rounded-full bg-field px-1.5 py-px text-[9.5px]">8</span></button>
+          <button data-tab="draft" class="tab -mb-px flex items-center gap-1.5 border-b-2 border-transparent pb-2.5 text-[11.5px] font-medium text-[#2b3048]">Drafts <span class="rounded-full bg-field px-1.5 py-px text-[9.5px]">4</span></button>
+          <button data-tab="completed" class="tab -mb-px flex items-center gap-1.5 border-b-2 border-transparent pb-2.5 text-[11.5px] font-medium text-[#2b3048]">Completed <span class="rounded-full bg-field px-1.5 py-px text-[9.5px]">6</span></button>
+        </div>
+        <div class="flex items-center gap-1.5 pb-2.5 text-[9px] font-semibold uppercase tracking-[.06em] text-[#3a3f58]">
+          Roster status: Live <span class="h-1.5 w-1.5 rounded-full bg-ok"></span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto px-3 pt-4">
+        <table class="w-full min-w-[760px] border-collapse">
+          <thead>
+            <tr class="border-b border-line text-left text-[8.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">
+              <th class="py-2 pl-2">Opportunity</th>
+              <th class="py-2">Category</th>
+              <th class="py-2">Date &amp; Time</th>
+              <th class="py-2">Location</th>
+              <th class="py-2">Applicants</th>
+              <th class="py-2">Roster</th>
+              <th class="py-2">Status</th>
+              <th class="py-2 pr-2 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 px-5 pb-4 pt-5 text-[10.5px] text-[#2b3048]">
+        <div id="showing">Showing 1–5 of 18 opportunities</div>
+        <div class="flex items-center gap-1.5 text-[11px]">
+          <button class="h-6 rounded bg-field px-2.5 text-muted opacity-60" disabled>‹ Previous</button>
+          <button class="pg h-6 w-6 rounded bg-brand font-semibold text-white">1</button>
+          <button class="pg h-6 w-6 rounded font-medium hover:bg-field">2</button>
+          <button class="pg h-6 w-6 rounded font-medium hover:bg-field">3</button>
+          <button class="pg h-6 w-6 rounded font-medium hover:bg-field">4</button>
+          <button class="h-6 rounded bg-field px-2.5 font-medium hover:bg-[#e0e3f6]">Next ›</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom cards -->
+    <section class="mt-4 grid gap-3 md:grid-cols-3">
+      <div class="flex items-start gap-3 rounded-xl bg-white p-3.5 shadow-sm">
+        <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-[#dfe8ff] text-brand"><svg class="ic !h-4 !w-4"><use href="#i-refresh"/></svg></span>
+        <div>
+          <div class="text-[11.5px] font-semibold">Auto-Confirmation Actions</div>
+          <p class="mt-0.5 text-[10px] leading-snug text-muted">Automatically confirm verified volunteers for recurring shifts.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 rounded-xl bg-white p-3.5 shadow-sm">
+        <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-[#fdecc8] text-[#a35a00]"><svg class="ic !h-4 !w-4"><use href="#i-alert"/></svg></span>
+        <div>
+          <div class="text-[11.5px] font-semibold">Urgent Staffing Needs</div>
+          <p class="mt-0.5 text-[10px] leading-snug text-muted">3 opportunities are below their minimum roster this week.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 rounded-xl bg-white p-3.5 shadow-sm">
+        <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-brand-soft text-brand"><svg class="ic !h-4 !w-4"><use href="#i-calcheck"/></svg></span>
+        <div>
+          <div class="text-[11.5px] font-semibold">Operations Changes</div>
+          <p class="mt-0.5 text-[10px] leading-snug text-muted">Review recent schedule and location updates across missions.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  // ---- Data (replace with your API response) ----
+  const items = [
+    { title: "Food Relief Distribution", featured: true, sub: "Household staple food box dispatch", icon: "i-heart-hand", tone: "blue",
+      cat: "Community Support", day: "Sat, Oct 14", time: "9:00 AM – 1:00 PM", loc: "Surulere, Lagos",
+      applicants: 24, unreviewed: 14, filled: 8, total: 10, status: "active", bar: "blue", action: "View" },
+    { title: "School Literacy Support", sub: "Reading sessions at Central Academy", icon: "i-book", tone: "blue",
+      cat: "Education", day: "Wed, Oct 18", time: "10:00 AM – 2:00 PM", loc: "Yaba, Lagos",
+      applicants: 12, filled: 4, total: 6, status: "active", bar: "blue", action: "View" },
+    { title: "Community Health Outreach", sub: "Hypertension & blood sugar triage", icon: "i-medical", tone: "red",
+      cat: "Healthcare", day: "Fri, Oct 20", time: "8:30 AM – 3:00 PM", loc: "Ikeja, Lagos",
+      applicants: 19, filled: 7, total: 10, status: "urgent", bar: "red", action: "View" },
+    { title: "Youth Tech Mentorship Workshop", sub: "Python & web development fundamentals", icon: "i-code", tone: "blue",
+      cat: "Skills Training", day: "Sat, Oct 28", time: "11:00 AM – 4:00 PM", loc: "Victoria Island, Lagos",
+      applicants: 31, filled: 15, total: 15, status: "active", bar: "green", action: "View" },
+    { title: "Coastal Beach Cleanup Drive", sub: "Ecology sweep & waste classification", icon: "i-drop", tone: "blue",
+      cat: "Environment", day: "Sun, Nov 4", time: "7:00 AM – 11:00 AM", loc: "Elegushi Beach, Lekki",
+      applicants: 0, filled: 0, total: 25, status: "draft", bar: "blue", action: "Edit" },
+  ];
+
+  const statusBadge = {
+    active: `<span class="inline-flex items-center gap-1 rounded-full bg-ok-soft px-2 py-0.5 text-[9px] font-semibold text-ok-dark"><i class="h-1 w-1 rounded-full bg-ok"></i>Active</span>`,
+    urgent: `<span class="inline-flex items-center gap-1 rounded-full bg-[#fdecc8] px-2 py-0.5 text-[9px] font-semibold text-[#a35a00]"><i class="h-1 w-1 rounded-full bg-[#e39a1d]"></i>Urgent</span>`,
+    draft: `<span class="inline-flex items-center gap-1 rounded-full bg-[#eceef5] px-2 py-0.5 text-[9px] font-semibold text-[#4a5068]"><i class="h-1 w-1 rounded-full bg-[#7b8199]"></i>Draft</span>`,
+  };
+  const barColor = { blue: "bg-brand", red: "bg-[#b3261e]", green: "bg-ok" };
+  const iconTone = { blue: "bg-brand-soft text-brand", red: "bg-danger-soft text-danger" };
+
+  const rowsEl = document.getElementById("rows");
+  const showingEl = document.getElementById("showing");
+  let tab = "all", query = "";
+
+  function render() {
+    const q = query.toLowerCase();
+    const list = items.filter(i => {
+      const tabOk = tab === "all" || (tab === "active" && (i.status === "active" || i.status === "urgent")) || (tab === "draft" && i.status === "draft");
+      const text = `${i.title} ${i.sub} ${i.loc} ${i.cat}`.toLowerCase();
+      return tabOk && (!q || text.includes(q));
+    });
+
+    rowsEl.innerHTML = list.map(i => {
+      const pct = i.total ? Math.round((i.filled / i.total) * 100) : 0;
+      const full = i.filled === i.total && i.total > 0;
+      return `
+      <tr class="border-b border-[#f1f2f9] last:border-0">
+        <td class="py-3 pl-2 pr-2">
+          <div class="flex items-center gap-2.5">
+            <span class="grid h-[26px] w-[26px] flex-none place-items-center rounded-md ${iconTone[i.tone]}"><svg class="ic !h-3.5 !w-3.5"><use href="#${i.icon}"/></svg></span>
+            <div>
+              <div class="flex items-center gap-1.5 text-[10.5px] font-semibold">${i.title}${i.featured ? `<span class="rounded bg-brand-soft px-1 py-px text-[7.5px] font-bold uppercase tracking-wide text-brand">Featured</span>` : ""}</div>
+              <div class="text-[9px] text-muted">${i.sub}</div>
+            </div>
+          </div>
+        </td>
+        <td class="pr-2"><span class="inline-block rounded bg-field px-2 py-1 text-[9px] font-medium text-[#2b3048]">${i.cat}</span></td>
+        <td class="pr-2"><div class="text-[10px] font-semibold">${i.day}</div><div class="text-[9px] text-muted">${i.time}</div></td>
+        <td class="pr-2"><span class="flex items-center gap-1 whitespace-nowrap text-[9.5px] text-[#2b3048]"><svg class="ic !h-3 !w-3 text-muted"><use href="#i-pin"/></svg>${i.loc}</span></td>
+        <td class="pr-2">
+          <div class="text-[10px] ${i.applicants ? "font-semibold" : "text-muted"}">${i.applicants} applicants</div>
+          ${i.unreviewed ? `<div class="text-[8.5px] text-danger">(${i.unreviewed} unreviewed)</div>` : ""}
+        </td>
+        <td class="pr-3">
+          <div class="flex items-center justify-between gap-2 text-[9px]">
+            <b class="font-semibold ${full ? "text-ok" : ""}">${i.filled} / ${i.total}</b><span class="text-muted">filled</span>
+          </div>
+          <div class="mt-1 h-1 w-[72px] overflow-hidden rounded bg-field"><span class="block h-full rounded ${barColor[i.bar]}" style="width:${pct}%"></span></div>
+        </td>
+        <td class="pr-2">${statusBadge[i.status]}</td>
+        <td class="pr-2 text-right">
+          <a href="#" class="inline-flex items-center gap-1 text-[10px] font-semibold ${i.action === "View" ? "text-brand" : "text-[#2b3048]"} hover:underline">${i.action}<svg class="ic !h-3 !w-3"><use href="#i-arrow-right"/></svg></a>
+        </td>
+      </tr>`;
+    }).join("") || `<tr><td colspan="8" class="py-10 text-center text-[11px] text-muted">No opportunities found.</td></tr>`;
+
+    const all = tab === "all" && !query;
+    showingEl.textContent = all ? "Showing 1–5 of 18 opportunities" : `Showing ${list.length ? "1–" + list.length : "0"} of ${list.length} opportunities`;
+  }
+
+  // Tabs
+  const tabs = document.querySelectorAll("#tabs .tab");
+  tabs.forEach(t => t.addEventListener("click", () => {
+    tab = t.dataset.tab;
+    tabs.forEach(x => {
+      const on = x === t;
+      x.classList.toggle("border-brand", on);
+      x.classList.toggle("text-brand", on);
+      x.classList.toggle("font-semibold", on);
+      x.classList.toggle("border-transparent", !on);
+      x.classList.toggle("text-[#2b3048]", !on);
+      x.classList.toggle("font-medium", !on);
+    });
+    render();
+  }));
+
+  // Search
+  document.getElementById("search").addEventListener("input", e => { query = e.target.value.trim(); render(); });
+
+  // Pagination (visual active state only)
+  const pgs = document.querySelectorAll(".pg");
+  pgs.forEach(p => p.addEventListener("click", () => {
+    pgs.forEach(x => { x.classList.remove("bg-brand", "text-white", "font-semibold"); x.classList.add("font-medium"); });
+    p.classList.add("bg-brand", "text-white", "font-semibold");
+    p.classList.remove("font-medium");
+  }));
+
+  render();
+</script>
+</body>
+</html>

@@ -1,361 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <title>Create Opportunity - Step 1 | Impactra</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-      color: #1f2937;
-    }
-
-    header {
-      background: white;
-      padding: 20px 8%;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    main {
-      max-width: 760px;
-      margin: 40px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    p {
-      line-height: 1.6;
-      color: #64748b;
-    }
-
-    .steps {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin: 25px 0;
-      font-size: 14px;
-      color: #64748b;
-    }
-
-    .active {
-      color: #4f46e5;
-      font-weight: bold;
-    }
-
-    label {
-      display: block;
-      margin: 20px 0 8px;
-      font-weight: bold;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font: inherit;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: 2px solid #4f46e5;
-      outline-offset: 1px;
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    button {
-      background: #4f46e5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 14px 24px;
-      margin-top: 25px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background: #4338ca;
-    }
-
-    @media (max-width: 600px) {
-      main {
-        margin: 15px;
-        padding: 20px;
-      }
-
-      .steps {
-        font-size: 12px;
-      }
-    }
-  </style>
-   <script src="API.js" defer></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Impactra – Create Opportunity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+        colors: {
+          page: "#f6f6fc",
+          ink: "#151a30",
+          muted: "#5b6078",
+          line: "#e7e8f2",
+          field: "#eceefa",
+          band: "#eef0fb",
+          brand: { DEFAULT: "#0b4fd6", dark: "#0942b3", soft: "#e9edfb" },
+        },
+      },
+    },
+  };
+</script>
+<style>
+  svg.ic { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>
 </head>
 
-<body>
+<body class="flex min-h-screen bg-page font-sans text-[14px] text-ink">
 
-  <header>
-    <strong>Impactra</strong>
+<!-- Icon sprite -->
+<svg width="0" height="0" class="absolute">
+  <defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-calcheck" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M9 15l2 2 4-4"/></symbol>
+    <symbol id="i-id" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 17c.8-2 2.3-3 4-3s3.2 1 4 3"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 15h3M13 15h3"/></symbol>
+    <symbol id="i-impact" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 17v-5M12 17V8M16 17v-3"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 8v4M12 15.5v.01"/></symbol>
+    <symbol id="i-shield-plus" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 9v6M9 12h6"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10"/><path d="M8 8h2M8 12h2M8 16h2M17 14h1M17 18h1M2 21h20"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M22 9v6"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-15 0 10-6 15-14 15"/><path d="M5 19c2-5 5-8 9-10"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="12" cy="7" r="2.6" fill="currentColor"/><circle cx="5.5" cy="9.5" r="2.2" fill="currentColor"/><circle cx="18.5" cy="9.5" r="2.2" fill="currentColor"/><path d="M7.5 20v-3a4.5 4.5 0 0 1 9 0v3z" fill="currentColor"/><path d="M1.5 18v-2a3.5 3.5 0 0 1 5-3M22.5 18v-2a3.5 3.5 0 0 0-5-3" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20a4 4 0 0 1-4 2h-2"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sticky top-0 hidden h-screen w-[163px] shrink-0 flex-col border-r border-line bg-white md:flex">
+  <div class="flex h-[44px] items-center gap-1.5 px-3.5 text-[13px] font-medium tracking-wide">
+    <img data-srcs="../images/logo2.png|images/logo2.png|/images/logo2.png|../../images/logo2.png" alt="Impactra logo" class="h-[22px] w-[22px] object-contain" />
+    IMPACTRA
+  </div>
+
+  <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-1.5 pb-4 pt-3 text-[11px]">
+    <div class="mb-1.5 px-2 text-[8.5px] font-semibold uppercase tracking-[.08em] text-muted">Operations</div>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-grid"/></svg>Dashboard</a>
+    <a href="opportunity.html" class="flex items-center gap-2 rounded-md bg-[#e9ecfb] px-2 py-[9px] text-[11.5px] font-semibold text-brand"><svg class="ic !h-3.5 !w-3.5"><use href="#i-calcheck"/></svg>Opportunities</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-id"/></svg>Applications</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-users"/></svg>Volunteers</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-activity"/></svg>Activities</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-impact"/></svg>Impact</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-award"/></svg>Certificates</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-mail"/></svg>Messages</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-shield"/></svg>Report</a>
+    <a href="#" class="flex items-center gap-2 rounded-md px-2 py-[7px] text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-gear"/></svg>Settings</a>
+  </nav>
+
+  <div class="flex items-center gap-3 border-t border-line px-3 py-3.5 text-[11px]">
+    <span class="font-bold text-muted">⋮</span>
+    <a href="#" class="flex items-center gap-2 font-medium text-[#d6362f]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-logout"/></svg>Log out</a>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="min-w-0 flex-1">
+
+  <!-- Top bar -->
+  <header class="flex h-[44px] items-center justify-between bg-white px-5 shadow-[0_1px_0_#e7e8f2]">
+    <nav class="flex items-center gap-1.5 text-[10.5px] text-muted">
+      <a href="opportunity.html" class="hover:text-brand">Opportunities</a>
+      <span>/</span>
+      <span class="font-semibold text-ink">Create Opportunity</span>
+    </nav>
+    <div class="flex items-center gap-4">
+      <label class="flex h-[26px] w-[215px] items-center gap-2 rounded-md bg-band px-2.5 text-[10px] text-muted">
+        <svg class="ic !h-3 !w-3 shrink-0"><use href="#i-search"/></svg>
+        <input type="text" placeholder="Search opportunities, volunteers..." class="min-w-0 flex-1 truncate bg-transparent text-ink outline-none placeholder:text-muted" />
+        <kbd class="shrink-0 rounded bg-[#dfe4f7] px-1.5 py-px text-[8px] font-semibold text-[#3a3f58]">Ctrl K</kbd>
+      </label>
+      <span class="relative text-[#2b3048]">
+        <svg class="ic !h-4 !w-4"><use href="#i-bell"/></svg>
+        <span class="absolute -top-px right-0 h-[6px] w-[6px] rounded-full bg-[#e5372f]"></span>
+      </span>
+      <div class="flex items-center gap-2">
+        <img data-srcs="../img/Profile.png|img/Profile.png|/img/Profile.png|../../img/Profile.png" alt="Toyin" class="h-[20px] w-[20px] rounded-full object-cover" />
+        <div class="leading-tight">
+          <div class="text-[10.5px] font-semibold">Toyin</div>
+          <div class="text-[8.5px] text-muted">NGO</div>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <main>
+  <main class="px-5 pb-10 pt-16 lg:px-[19px]">
+    <div class="mx-auto w-full max-w-[1000px]">
 
-    <h1>Create an Opportunity</h1>
+      <!-- Heading -->
+      <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 class="text-[22px] font-bold tracking-tight">Create New Opportunity</h1>
+          <p class="mt-1 text-[10.5px] text-muted">Add details and volunteer needs for your upcoming event</p>
+        </div>
+        <button class="flex h-[38px] items-center gap-1.5 rounded-lg bg-brand px-6 text-[11.5px] font-semibold tracking-wide text-white hover:bg-brand-dark">
+          NEXT <svg class="ic !h-3.5 !w-3.5"><use href="#i-arrow-right"/></svg>
+        </button>
+      </div>
 
-    <p>
-      Share an opportunity and connect with
-      people ready to make an impact.
-    </p>
+      <!-- Stepper -->
+      <div class="mb-4 flex items-center rounded-xl bg-white px-7 py-3 shadow-sm">
+        <div class="flex items-center gap-2.5">
+          <span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-brand text-[10px] font-bold text-white">1</span>
+          <div class="leading-tight">
+            <div class="text-[10.5px] font-semibold text-brand">Basic Information</div>
+            <div class="text-[8px] font-semibold uppercase tracking-wider text-[#3a3f58]">Details</div>
+          </div>
+        </div>
+        <div class="mx-3 flex h-px flex-1 items-center bg-[#d9def2]"><span class="h-[2px] w-1 bg-brand"></span></div>
+        <div class="flex items-center gap-2.5 opacity-70">
+          <span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-[#dbe5ff] text-[10px] font-bold text-[#3a3f58]">2</span>
+          <div class="leading-tight">
+            <div class="text-[10.5px] font-semibold text-[#3a3f58]">Details &amp; Schedule</div>
+            <div class="text-[8px] font-semibold uppercase tracking-wider text-muted">Shifts &amp; Skills</div>
+          </div>
+        </div>
+        <div class="mx-3 h-px flex-1 bg-[#d9def2]"></div>
+        <div class="flex items-center gap-2.5 opacity-60">
+          <span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-[#dbe5ff] text-[10px] font-bold text-[#3a3f58]">3</span>
+          <div class="leading-tight">
+            <div class="text-[10.5px] font-semibold text-[#3a3f58]">Review &amp; Publish</div>
+            <div class="text-[8px] font-semibold uppercase tracking-wider text-muted">Publish Events</div>
+          </div>
+        </div>
+      </div>
 
-    <div class="steps">
-      <span class="active">1. Basic Information</span>
-      <span>2. Details</span>
-      <span>3. Review</span>
+      <!-- Two columns -->
+      <div class="grid items-start gap-3.5 lg:grid-cols-[minmax(0,1fr)_240px]">
+
+        <!-- ===== FORM ===== -->
+        <form id="form" class="rounded-xl bg-white px-5 pb-6 pt-5 shadow-sm" onsubmit="return false">
+
+          <!-- Name -->
+          <div class="flex items-center justify-between">
+            <label for="name" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Opportunity Name <span class="text-[#d6362f]">*</span></label>
+            <span id="nameCount" class="text-[9px] text-muted">26 / 80 characters</span>
+          </div>
+          <div class="mt-1.5 flex items-center gap-2.5 border-b border-line pb-2 pl-2">
+            <svg class="ic !h-3.5 !w-3.5 text-[#3a3f58]"><use href="#i-text"/></svg>
+            <input id="name" maxlength="80" type="text" value="Food Relief Distribution" class="min-w-0 flex-1 bg-transparent text-[11px] font-medium outline-none" />
+          </div>
+          <p class="mt-2 text-[9.5px] text-muted">A concise, inspiring title attracts higher commitment from prospective volunteers.</p>
+
+          <!-- Category -->
+          <div class="mt-4 text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Category <span class="text-[#d6362f]">*</span></div>
+          <div id="cats" class="mt-1.5 grid grid-cols-5 gap-1.5">
+            <button type="button" data-cat="Community Support" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-brand px-1 text-[8.5px] font-medium leading-tight text-white"><svg class="ic !h-3.5 !w-3.5"><use href="#i-people"/></svg><span>Community<br/>Support</span></button>
+            <button type="button" data-cat="Education" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-cap"/></svg><span>Education</span></button>
+            <button type="button" data-cat="Healthcare" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-shield-plus"/></svg><span>Healthcare</span></button>
+            <button type="button" data-cat="Skills Training" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-target"/></svg><span>Skills Training</span></button>
+            <button type="button" data-cat="Environment" class="cat flex h-[44px] flex-col items-center justify-center gap-1 rounded-md bg-band px-1 text-[8.5px] font-medium leading-tight text-[#2b3048] hover:bg-[#e3e7f8]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-leaf"/></svg><span>Environment</span></button>
+          </div>
+
+          <!-- Description -->
+          <div class="mt-4 flex items-center justify-between">
+            <label for="desc" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Short Description <span class="text-[#d6362f]">*</span></label>
+            <span id="descCount" class="text-[9px] text-muted">38 / 300 words</span>
+          </div>
+          <textarea id="desc" rows="3" class="mt-1.5 w-full resize-none border-b border-line bg-transparent px-2.5 pb-3 pt-1 text-[11px] leading-[1.75] text-[#1c2036] outline-none">Help us pack and distribute essential food items, grains, and nutrition packs to over 250 vulnerable families in Surulere. Volunteers work in collaborative shifts to organise inventory, verify recipient vouchers, and distribute care packages.</textarea>
+
+          <!-- Location type -->
+          <h3 class="mt-5 flex items-center gap-1.5 text-[11.5px] font-semibold"><svg class="ic !h-3.5 !w-3.5 text-brand"><use href="#i-pin"/></svg>Location type</h3>
+
+          <div class="mt-3">
+            <label class="flex cursor-pointer items-start gap-2.5 rounded-lg bg-band px-3 py-2.5">
+              <input type="radio" name="loc" value="in-person" checked class="mt-0.5 h-3 w-3 accent-brand" />
+              <span class="leading-snug">
+                <span class="block text-[10.5px] font-semibold">In-person Venue</span>
+                <span class="block text-[9.5px] text-muted">Requires physical attendance at<br/>designated site</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Venue + Hub -->
+          <div class="mt-4 grid gap-4 sm:grid-cols-[1.3fr_1fr]">
+            <div>
+              <label for="addr" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Venue / Address <span class="text-[#d6362f]">*</span></label>
+              <div class="mt-1.5 flex items-center gap-2.5 border-b border-line pb-2 pl-2">
+                <svg class="ic !h-3.5 !w-3.5 text-[#3a3f58]"><use href="#i-building"/></svg>
+                <input id="addr" type="text" value="Surulere Community Hall, 14 Bishop Street, Lagos" class="min-w-0 flex-1 bg-transparent text-[10.5px] font-medium outline-none" />
+              </div>
+            </div>
+            <div>
+              <label for="hub" class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#1c2036]">Hub / Region <span class="text-[#d6362f]">*</span></label>
+              <div class="relative mt-1.5 border-b border-line pb-2">
+                <select id="hub" class="w-full appearance-none bg-transparent pl-2.5 pr-5 text-[10.5px] font-medium outline-none">
+                  <option>Surulere, Lagos</option>
+                  <option>Yaba, Lagos</option>
+                  <option>Ikeja, Lagos</option>
+                  <option>Victoria Island, Lagos</option>
+                  <option>Lekki, Lagos</option>
+                </select>
+                <svg class="ic pointer-events-none absolute right-1 top-0.5 !h-3.5 !w-3.5 text-[#3a3f58]"><use href="#i-chevron-down"/></svg>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- ===== PREVIEW COLUMN ===== -->
+        <aside class="space-y-3.5">
+          <section class="rounded-xl bg-white p-3.5 shadow-sm">
+            <h2 class="mb-3 flex items-center gap-1.5 text-[11px] font-semibold"><svg class="ic !h-3.5 !w-3.5 text-brand"><use href="#i-eye"/></svg>Schedule Card Preview</h2>
+
+            <div class="overflow-hidden rounded-lg bg-white">
+              <div class="relative h-[92px] overflow-hidden rounded-md bg-gradient-to-br from-[#c9b79a] to-[#7a8c6b]">
+                <img data-srcs="../img/lp.jpeg|img/lp.jpeg|/img/lp.jpeg|../img/Lp.jpeg|img/Lp.jpeg|/img/Lp.jpeg" alt="Volunteers packing food" class="h-full w-full object-cover" />
+                <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
+                <span id="pvCat" class="absolute bottom-1 left-2.5 rounded-full bg-white px-2 py-0.5 text-[8px] font-semibold text-brand shadow-sm">Community Support</span>
+              </div>
+
+              <div class="px-1 pb-1 pt-2.5">
+                <div id="pvName" class="text-[11px] font-bold">Food Relief Distribution</div>
+                <p id="pvDesc" class="mt-1 line-clamp-2 text-[9px] leading-snug text-muted">Help us pack and distribute essential food items, grains, and nutrition packs</p>
+
+                <div class="mt-2.5 space-y-1.5 text-[9px] text-[#1c2036]">
+                  <div class="flex items-center gap-1.5"><svg class="ic !h-3 !w-3 shrink-0 text-brand"><use href="#i-pin"/></svg><span id="pvAddr" class="truncate">Surulere Community Hall, 14 Bishop Street, Lagos</span></div>
+                  <div class="flex items-center gap-1.5"><svg class="ic !h-3 !w-3 shrink-0 text-brand"><use href="#i-building"/></svg><span id="pvHub" class="font-medium">Surulere, Lagos</span></div>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between text-[9px]">
+                  <span class="text-muted">Headcount Target</span>
+                  <b class="font-bold text-brand">10 Volunteers</b>
+                </div>
+                <div class="mt-1 h-1 overflow-hidden rounded bg-field"><span class="block h-full w-[20%] rounded bg-brand"></span></div>
+              </div>
+            </div>
+
+            <p class="mt-3 px-2 text-center text-[8.5px] leading-snug text-muted">Real-time approximation of how this listing displays across volunteer mobile apps.</p>
+          </section>
+
+          <section class="flex items-center justify-between rounded-xl bg-[#e9edfb] px-3.5 py-3">
+            <div>
+              <div class="text-[10px] font-semibold">Need specialized assistance?</div>
+              <div class="mt-0.5 text-[8.5px] text-[#3a3f58]">Contact IMPACTRA Dispatch Desk</div>
+            </div>
+            <span class="grid h-6 w-6 place-items-center rounded-md bg-white text-ink shadow-sm"><svg class="ic !h-3.5 !w-3.5"><use href="#i-headset"/></svg></span>
+          </section>
+        </aside>
+      </div>
     </div>
-
-    <form id="opportunityForm">
-
-      <label for="title">
-        Opportunity Title
-      </label>
-
-      <input
-        type="text"
-        id="title"
-        name="title"
-        placeholder="e.g. Community Outreach Volunteer"
-        required
-      >
-
-      <label for="category">
-        Opportunity Category
-      </label>
-
-      <select
-        id="category"
-        name="category"
-        required
-      >
-        <option value="">
-          Select a category
-        </option>
-
-        <option value="Volunteering">
-          Volunteering
-        </option>
-
-        <option value="Internship">
-          Internship
-        </option>
-
-        <option value="Mentorship">
-          Mentorship
-        </option>
-
-        <option value="Training">
-          Training
-        </option>
-
-        <option value="Community Development">
-          Community Development
-        </option>
-      </select>
-
-      <label for="location">
-        Location
-      </label>
-
-      <input
-        type="text"
-        id="location"
-        name="location"
-        placeholder="e.g. Lagos, Nigeria or Remote"
-        required
-      >
-
-      <label for="description">
-        Brief Description
-      </label>
-
-      <textarea
-        id="description"
-        name="description"
-        placeholder="Briefly describe the opportunity..."
-        required
-      ></textarea>
-
-      <button type="submit">
-        Save and Continue
-      </button>
-
-    </form>
-
   </main>
+</div>
 
-  <script>
-  (() => {
-    "use strict";
+<script>
+  // ---- Image loader: tries each path in data-srcs until one works ----
+  document.querySelectorAll("img[data-srcs]").forEach(img => {
+    const list = img.dataset.srcs.split("|");
+    let i = 0;
+    const next = () => {
+      if (i < list.length) img.src = list[i++];
+      else img.style.visibility = "hidden";
+    };
+    img.addEventListener("error", next);
+    next();
+  });
 
-    /* Toast */
-    function toast(message, variant = "default") {
-      let host = document.getElementById("toast-host");
-      if (!host) {
-        host = document.createElement("div");
-        host.id = "toast-host";
-        host.className =
-          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
-        document.body.appendChild(host);
-      }
-      const palette = {
-        default: "bg-[#0F172A] text-white",
-        success: "bg-[#065F46] text-white",
-        error:   "bg-[#991B1B] text-white",
-        info:    "bg-[#1D4ED8] text-white",
-      };
-      const el = document.createElement("div");
-      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
-      el.textContent = message;
-      host.appendChild(el);
-      setTimeout(() => {
-        el.style.transition = "opacity .25s ease, transform .25s ease";
-        el.style.opacity = "0";
-        el.style.transform = "translateY(8px)";
-        setTimeout(() => el.remove(), 260);
-      }, 2800);
-    }
+  // ---- Form + live preview ----
+  const $ = id => document.getElementById(id);
+  const nameEl = $("name"), descEl = $("desc"), addrEl = $("addr"), hubEl = $("hub");
+  let category = "Community Support";
 
-    /* Field highlighting */
-    function markInvalid(field, message) {
-      if (!field) return;
-      field.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-      field.classList.remove("border-gray-200");
-      field.focus();
-      toast(message, "error");
-    }
+  function wordCount(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
 
-    function clearInvalid(field) {
-      if (!field) return;
-      field.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-      field.classList.add("border-gray-200");
-    }
+  function update() {
+    $("nameCount").textContent = `${nameEl.value.length} / 80 characters`;
+    $("descCount").textContent = `${wordCount(descEl.value)} / 300 words`;
 
-    const form = document.getElementById("opportunityForm");
-    if (!form) return;
+    $("pvName").textContent = nameEl.value.trim() || "Untitled opportunity";
+    $("pvDesc").textContent = descEl.value.trim() || "Your short description will appear here.";
+    $("pvAddr").textContent = addrEl.value.trim() || "Venue not set";
+    $("pvHub").textContent = hubEl.value;
+    $("pvCat").textContent = category;
+  }
 
-    const titleInput       = document.getElementById("title");
-    const categoryInput    = document.getElementById("category");
-    const locationInput    = document.getElementById("location");
-    const descriptionInput = document.getElementById("description");
+  [nameEl, descEl, addrEl].forEach(el => el.addEventListener("input", update));
+  hubEl.addEventListener("change", update);
 
-    const DRAFT_KEY = "impactraOpportunityDraft";
+  // Limit description to 300 words
+  descEl.addEventListener("input", () => {
+    const words = descEl.value.trim().split(/\s+/);
+    if (words.length > 300) descEl.value = words.slice(0, 300).join(" ");
+    update();
+  });
 
-    /* Restore draft if the user came back */
-    try {
-      const raw = sessionStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        const draft = JSON.parse(raw);
-        if (draft.title && titleInput)             titleInput.value = draft.title;
-        if (draft.category && categoryInput)       categoryInput.value = draft.category;
-        if (draft.location && locationInput)       locationInput.value = draft.location;
-        if (draft.description && descriptionInput) descriptionInput.value = draft.description;
-      }
-    } catch (_) { /* ignore corrupt draft */ }
-
-    /* Clear red rings on input */
-    [titleInput, categoryInput, locationInput, descriptionInput].forEach((el) => {
-      if (!el) return;
-      el.addEventListener("input", () => clearInvalid(el));
-      el.addEventListener("change", () => clearInvalid(el));
+  // Category tiles
+  const tiles = document.querySelectorAll("#cats .cat");
+  tiles.forEach(tile => tile.addEventListener("click", () => {
+    category = tile.dataset.cat;
+    tiles.forEach(t => {
+      const on = t === tile;
+      t.classList.toggle("bg-brand", on);
+      t.classList.toggle("text-white", on);
+      t.classList.toggle("bg-band", !on);
+      t.classList.toggle("text-[#2b3048]", !on);
     });
+    update();
+  }));
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const opportunity = {
-        title:       titleInput?.value.trim() || "",
-        category:    categoryInput?.value || "",
-        location:    locationInput?.value.trim() || "",
-        description: descriptionInput?.value.trim() || "",
-      };
-
-      /* Validation */
-      if (!opportunity.title) {
-        markInvalid(titleInput, "Please enter a title for the opportunity");
-        return;
-      }
-      if (opportunity.title.length < 4) {
-        markInvalid(titleInput, "Title is a bit short — try at least 4 characters");
-        return;
-      }
-      if (!opportunity.category) {
-        markInvalid(categoryInput, "Please choose a category");
-        return;
-      }
-      if (!opportunity.location) {
-        markInvalid(locationInput, "Please enter a location");
-        return;
-      }
-      if (!opportunity.description) {
-        markInvalid(descriptionInput, "Please add a short description");
-        return;
-      }
-      if (opportunity.description.length < 20) {
-        markInvalid(descriptionInput, "Description is too short — add at least 20 characters");
-        return;
-      }
-
-      /* Busy state */
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const original  = submitBtn ? submitBtn.innerHTML : "";
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.classList.add ("opacity-80", "cursor-not-allowed");
-        submitBtn.innerHTML = "Saving…";
-      }
-
-      try {
-        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(opportunity));
-
-        toast("Draft saved — continuing…", "success");
-        setTimeout(() => {
-          window.location.href = "create-opportunities-step-2.html";
-        }, 500);
-
-      } catch (error) {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.classList.remove("opacity-80", "cursor-not-allowed");
-          submitBtn.innerHTML = original;
-        }
-        console.error("[create-opportunity] draft save failed:", error);
-        toast("Unable to save your draft — please try again", "error");
-      }
-    });
-  })();
+  update();
 </script>
-
 </body>
 </html>
