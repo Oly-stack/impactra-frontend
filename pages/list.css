@@ -1,0 +1,212 @@
+.label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #334155;
+}
+
+.shadow-card {
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.08),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  line-height: 1;
+  user-select: none;
+}
+
+/* Sidebar */
+.sidebar {
+  transition: transform 220ms ease;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.12);
+}
+@media (min-width: 1024px) {
+  .sidebar {
+    box-shadow: none;
+  }
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: 0.5rem;
+  color: #475569;
+}
+.nav-link:hover {
+  background: #f8fafc;
+}
+.nav-link .material-symbols-outlined {
+  font-size: 22px;
+}
+.nav-active {
+  background: #dfe5fb;
+  color: #0b4fd6;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.65rem 0.75rem;
+}
+
+/* Stat cards */
+.stat-card {
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+/* Tabs */
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.25rem;
+  white-space: nowrap;
+  color: #334155;
+  border-bottom: 2px solid transparent;
+}
+.tab-active {
+  color: #0b4fd6;
+  font-weight: 600;
+  border-bottom-color: #0b4fd6;
+}
+.tab-count {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #dfe5fb;
+  color: #1e293b;
+  border-radius: 9999px;
+  padding: 0.1rem 0.55rem;
+}
+.tab-active .tab-count {
+  color: #0b4fd6;
+}
+
+/* Table */
+.th {
+  padding: 0.9rem 0.75rem;
+  font-weight: 600;
+}
+.td {
+  padding: 0.8rem 0.75rem;
+  vertical-align: middle;
+}
+
+.row-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #e8ebf9;
+  border-radius: 0.5rem;
+}
+.row-icon .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.pill {
+  display: inline-block;
+  font-size: 0.75rem;
+  background: #e8ebf9;
+  color: #1e293b;
+  padding: 0.25rem 0.7rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* Roster bars */
+.roster {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+  min-width: 90px;
+}
+.bar {
+  height: 4px;
+  border-radius: 9999px;
+  background: #dfe5fb;
+  overflow: hidden;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 9999px;
+}
+
+/* Status pills */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+.status i {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: currentColor;
+}
+.st-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+.st-urgent {
+  background: #fef3c7;
+  color: #b45309;
+}
+.st-draft {
+  background: #e8ebf9;
+  color: #475569;
+}
+
+.act {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0b4fd6;
+}
+
+/* Pagination */
+.page-btn {
+  min-width: 40px;
+  height: 36px;
+  padding: 0 0.9rem;
+  border-radius: 0.375rem;
+  color: #334155;
+}
+.page-btn:hover:not(:disabled):not(.bg-brand) {
+  background: #eef0fb;
+}
+
+/* Bottom info cards */
+.info-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+.info-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 0.75rem;
+}

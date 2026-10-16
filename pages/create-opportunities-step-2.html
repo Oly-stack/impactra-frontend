@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impactra – Create Opportunity (Details &amp; Schedule)</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: { brand: "#0b4fd6", surface: "#f3f4fb", active: "#dfe5fb" },
+          },
+        },
+      };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="create.css" />
+  </head>
+
+  <body class="font-sans bg-[#f8f8fc] text-slate-900 min-h-screen flex">
+    <!-- SIDEBAR -->
+    <aside
+      id="sidebar"
+      class="sidebar fixed lg:sticky top-0 left-0 z-40 w-[256px] shrink-0 h-screen bg-white border-r border-slate-200 flex flex-col -translate-x-full lg:translate-x-0"
+    >
+      <div
+        class="h-16 flex items-center justify-between px-5 border-b border-slate-200"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-full border border-blue-600 grid place-items-center text-blue-700"
+          >
+            <span class="material-symbols-outlined text-[20px]">groups</span>
+          </div>
+          <span class="font-bold text-lg tracking-tight">IMPACTRA</span>
+        </div>
+        <button
+          id="closeSidebar"
+          type="button"
+          aria-label="Close menu"
+          class="lg:hidden text-slate-600 hover:text-slate-900"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 px-3 pt-5 overflow-y-auto">
+        <p class="label px-2 mb-2">Operations</p>
+        <div class="space-y-1">
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">dashboard</span>
+            Dashboard</a
+          >
+          <a href="#" class="nav-link nav-active"
+            ><span class="material-symbols-outlined">event_available</span>
+            Opportunities</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">assignment_ind</span>
+            Applications</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">groups</span> Volunteers</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">event_note</span>
+            Activities</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">monitoring</span> Impact</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">workspace_premium</span>
+            Certificates</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">chat_bubble</span>
+            Messages</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">gpp_maybe</span> Report</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">settings</span> Settings</a
+          >
+        </div>
+      </nav>
+
+      <div
+        class="border-t border-slate-200 p-4 flex items-center gap-4 text-red-600"
+      >
+        <span class="material-symbols-outlined text-slate-500">more_vert</span>
+        <a href="#" class="flex items-center gap-2 font-medium">
+          <span class="material-symbols-outlined">logout</span> Log out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Backdrop (hidden with Tailwind classes only) -->
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 z-30 bg-slate-900/40 lg:hidden opacity-0 pointer-events-none transition-opacity duration-200"
+    ></div>
+
+    <!-- MAIN -->
+    <div class="flex-1 min-w-0 flex flex-col">
+      <!-- TOP BAR -->
+      <header
+        class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 lg:px-10 sticky top-0 z-20"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <button
+            id="openSidebar"
+            type="button"
+            aria-label="Open menu"
+            class="lg:hidden shrink-0 w-10 h-10 grid place-items-center rounded-lg text-slate-700 hover:bg-slate-100"
+          >
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <p class="font-medium truncate">Create Opportunity</p>
+        </div>
+
+        <div class="flex items-center gap-4 shrink-0">
+          <div
+            class="hidden md:flex items-center gap-2 bg-[#eef0fb] rounded-lg px-3 py-2.5 w-[290px] lg:w-[330px]"
+          >
+            <span class="material-symbols-outlined text-slate-700 text-[20px]"
+              >search</span
+            >
+            <input
+              type="text"
+              placeholder="Search opportunities, volunteers..."
+              class="bg-transparent outline-none flex-1 min-w-0 text-sm text-slate-700 placeholder:text-slate-500"
+            />
+            <span
+              class="text-[11px] text-slate-500 bg-active rounded px-1.5 py-0.5"
+              >⌘K</span
+            >
+          </div>
+
+          <button class="relative text-slate-600" aria-label="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+            <span
+              class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full"
+            ></span>
+          </button>
+
+          <div class="flex items-center gap-2.5">
+            <img
+              src="https://i.pravatar.cc/80?img=47"
+              alt="Toyin"
+              class="w-9 h-9 rounded-full object-cover"
+            />
+            <p class="hidden sm:block text-sm font-semibold">Toyin</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="p-4 sm:p-6 lg:px-8 lg:py-6 max-w-[1440px] w-full">
+        <!-- Action bar -->
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <a
+            href="create-opportunities-step-1.html"
+            class="flex items-center gap-2 bg-white rounded-lg shadow-card px-4 py-3 font-medium hover:bg-slate-50"
+          >
+            <span class="material-symbols-outlined text-[20px]"
+              >arrow_back</span
+            >
+            Back to Basic Information
+          </a>
+          <div class="flex items-center gap-5">
+            <button
+              type="button"
+              class="font-medium text-slate-800 hover:text-brand"
+            >
+              Save Draft
+            </button>
+            <button
+              type="button"
+              class="flex items-center gap-2 px-6 py-3 font-semibold text-white bg-brand rounded-lg hover:bg-blue-800"
+            >
+              Review &amp; Publish
+              <span class="material-symbols-outlined text-[20px]"
+                >arrow_forward</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Title row -->
+        <div class="mt-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">
+              Create New Opportunity
+            </h1>
+            <p class="mt-1 text-slate-600">
+              Add the opportunity details, schedule, and volunteer requirements
+            </p>
+          </div>
+          <span
+            class="inline-flex items-center gap-2 bg-active text-slate-800 text-sm px-3 py-1.5 rounded-full"
+          >
+            <span class="w-2 h-2 rounded-full bg-brand"></span> Draft #OP-8821 ·
+            Auto-saved 2m ago
+          </span>
+        </div>
+
+        <!-- Stepper -->
+        <section
+          class="mt-6 bg-white rounded-xl shadow-card px-4 sm:px-8 pt-5 pb-4"
+        >
+          <div
+            class="sm:hidden bg-white rounded-2xl border border-slate-200 p-5 shadow-sm"
+          >
+            <!-- Step heading -->
+            <div class="flex items-start gap-3">
+              <span
+                class="w-9 h-9 rounded-full bg-slate-900 text-green-400 grid place-items-center"
+              >
+                <span class="material-symbols-outlined text-[20px]">check</span>
+              </span>
+
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center flex-wrap gap-2">
+                  <div>
+                    <p
+                      class="text-[11px] font-semibold tracking-wider text-green-700"
+                    >
+                      STEP 1
+                    </p>
+                    <p class="font-medium">Basic Information</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="mt-4 h-1 rounded-full bg-active overflow-hidden">
+              <div class="h-full w-[66%] bg-brand rounded-full"></div>
+            </div>
+
+            <!-- Remaining steps -->
+            <div class="mt-6 space-y-4">
+              <div class="flex items-center gap-3">
+                <span
+                  class="w-9 h-9 rounded-full bg-brand text-white font-semibold grid place-items-center"
+                  >2</span
+                >
+                <div class="leading-tight">
+                  <p
+                    class="text-[11px] font-semibold tracking-wider text-brand"
+                  >
+                    STEP 2 · IN PROGRESS
+                  </p>
+                  <p class="font-medium">Details &amp; Schedule</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 shrink-0 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-semibold"
+                >
+                  3
+                </div>
+
+                <div class="leading-tight sm:block">
+                  <p
+                    class="text-[11px] font-semibold tracking-wider text-slate-500"
+                  >
+                    STEP 3
+                  </p>
+                  <p class="font-medium text-slate-500">Review &amp; Publish</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ol class="hidden flex items-center justify-center gap-40">
+            <li class="flex items-center gap-3">
+              <span
+                class="w-9 h-9 rounded-full bg-slate-900 text-green-400 grid place-items-center"
+              >
+                <span class="material-symbols-outlined text-[20px]">check</span>
+              </span>
+              <div class="leading-tight hidden sm:block">
+                <p
+                  class="text-[11px] font-semibold tracking-wider text-green-700"
+                >
+                  STEP 1
+                </p>
+                <p class="font-medium">Basic Information</p>
+              </div>
+            </li>
+            <li class="flex items-center gap-3">
+              <span
+                class="w-9 h-9 rounded-full bg-brand text-white font-semibold grid place-items-center"
+                >2</span
+              >
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold tracking-wider text-brand">
+                  STEP 2 · IN PROGRESS
+                </p>
+                <p class="font-medium">Details &amp; Schedule</p>
+              </div>
+            </li>
+            <li class="flex items-center gap-3">
+              <span
+                class="w-9 h-9 rounded-full bg-active text-slate-600 font-medium grid place-items-center"
+                >3</span
+              >
+              <div class="leading-tight hidden sm:block">
+                <p
+                  class="text-[11px] font-semibold tracking-wider text-slate-500"
+                >
+                  STEP 3
+                </p>
+                <p class="font-medium text-slate-500">Review &amp; Publish</p>
+              </div>
+            </li>
+          </ol>
+          <div class="hidden mt-4 h-1 rounded-full bg-active overflow-hidden">
+            <div class="h-full w-[66%] bg-brand rounded-full"></div>
+          </div>
+        </section>
+
+        <!-- GRID -->
+        <div
+          class="mt-6 grid grid-cols-1 xl:grid-cols-[1fr_500px] gap-6 items-start"
+        >
+          <!-- LEFT COLUMN -->
+          <div class="space-y-6 min-w-0">
+            <!-- DATE & TIME -->
+            <section class="bg-white rounded-xl shadow-card p-5 sm:p-6">
+              <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-brand mt-1"
+                    >calendar_month</span
+                  >
+                  <div>
+                    <h2 class="text-xl font-semibold">Date &amp; Time</h2>
+                    <p class="text-sm text-slate-600">
+                      Specify shift date, daily operating windows, and cadence.
+                    </p>
+                  </div>
+                </div>
+                <div id="eventType" class="seg">
+                  <button type="button" class="seg-btn seg-active">
+                    One-time Event
+                  </button>
+                  <button type="button" class="seg-btn">Recurring Shift</button>
+                </div>
+              </div>
+
+              <div class="mt-6 grid md:grid-cols-2 gap-x-6 gap-y-5">
+                <div>
+                  <label for="date" class="font-medium">Date</label>
+                  <div class="field mt-3">
+                    <span class="material-symbols-outlined text-slate-600"
+                      >event</span
+                    >
+                    <input
+                      id="date"
+                      type="date"
+                      value="2026-10-14"
+                      class="flex-1 min-w-0 bg-transparent outline-none"
+                    />
+                  </div>
+                  <p class="mt-3 text-sm text-slate-600">
+                    Timezone defaults to operational field office (GMT+1)
+                  </p>
+                </div>
+
+                <div class="md:pt-9">
+                  <div
+                    class="flex items-center justify-between gap-3 bg-active/70 rounded-lg px-4 py-3"
+                  >
+                    <p class="flex items-center gap-2 text-sm">
+                      <span
+                        class="material-symbols-outlined text-brand text-[20px]"
+                        >schedule</span
+                      >
+                      <span
+                        ><b id="hoursTotal" class="font-semibold">4.0 Hours</b>
+                        total commitment</span
+                      >
+                    </p>
+                    <span
+                      class="bg-white text-brand w-[70px] text-center text-xs font-semibold p-1 rounded-full"
+                      >1 Shift</span
+                    >
+                  </div>
+                </div>
+
+                <div>
+                  <label for="startTime" class="font-medium">Start Time</label>
+                  <div class="field mt-3 relative">
+                    <span class="material-symbols-outlined text-slate-600"
+                      >alarm</span
+                    >
+                    <select
+                      id="startTime"
+                      class="flex-1 min-w-0 bg-transparent outline-none appearance-none pr-6"
+                    ></select>
+                    <span
+                      class="material-symbols-outlined text-slate-600 absolute right-3 pointer-events-none"
+                      >expand_more</span
+                    >
+                  </div>
+                </div>
+                <div>
+                  <label for="endTime" class="font-medium">End Time</label>
+                  <div class="field mt-3 relative">
+                    <span class="material-symbols-outlined text-slate-600"
+                      >alarm</span
+                    >
+                    <select
+                      id="endTime"
+                      class="flex-1 min-w-0 bg-transparent outline-none appearance-none pr-6"
+                    ></select>
+                    <span
+                      class="material-symbols-outlined text-slate-600 absolute right-3 pointer-events-none"
+                      >expand_more</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- VOLUNTEER REQUIREMENTS -->
+            <section class="bg-white rounded-xl shadow-card p-5 sm:p-6">
+              <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-brand mt-0.5"
+                  >badge</span
+                >
+                <div>
+                  <h2 class="text-lg font-semibold">Volunteer Requirements</h2>
+                  <p class="text-xs text-slate-600">
+                    Filter participant eligibility and manage physical threshold
+                    criteria.
+                  </p>
+                </div>
+              </div>
+
+              <p class="mt-5 text-sm font-medium">Minimum Age Requirement</p>
+              <div id="ageChips" class="mt-2 flex flex-wrap gap-2">
+                <button type="button" class="age-chip age-active">
+                  <span class="material-symbols-outlined text-[16px]"
+                    >check_circle</span
+                  >
+                  16+ Years
+                </button>
+                <button type="button" class="age-chip">18+ Years</button>
+                <button type="button" class="age-chip">
+                  All Ages (Family Friendly)
+                </button>
+              </div>
+              <p
+                id="ageNote"
+                class="mt-3 flex items-start gap-2 text-xs text-slate-600"
+              >
+                <span class="material-symbols-outlined text-brand text-[16px]"
+                  >info</span
+                >
+                Minors under 18 require signed guardian consent acknowledgment
+                before mission check-in.
+              </p>
+
+              <p class="mt-6 text-sm font-medium">
+                Experience &amp; Skill Level
+              </p>
+              <div id="expCards" class="mt-2 grid sm:grid-cols-2 gap-3">
+                <button type="button" class="exp-card exp-active">
+                  <span class="flex items-center justify-between w-full">
+                    <span class="radio"></span>
+                    <span
+                      class="text-[10px] font-bold tracking-wider text-brand"
+                      >STANDARD</span
+                    >
+                  </span>
+                  <span class="mt-4 block text-left">
+                    <span class="block text-sm font-semibold">None Needed</span>
+                    <span class="block text-xs text-slate-600 mt-0.5"
+                      >Full training provided on site during orientation.</span
+                    >
+                  </span>
+                </button>
+                <button type="button" class="exp-card">
+                  <span class="flex items-center justify-between w-full">
+                    <span class="radio"></span>
+                    <span
+                      class="text-[10px] font-bold tracking-wider text-slate-600"
+                      >PRIOR EXPED.</span
+                    >
+                  </span>
+                  <span class="mt-4 block text-left">
+                    <span class="block text-sm font-semibold"
+                      >Intermediate Experience</span
+                    >
+                    <span class="block text-xs text-slate-600 mt-0.5"
+                      >Prior humanitarian or pantry handling preferred.</span
+                    >
+                  </span>
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="space-y-5 min-w-0">
+            <!-- Context -->
+            <section class="bg-white rounded-xl shadow-card p-5">
+              <div class="flex items-center justify-between">
+                <p class="label">Opportunity Context</p>
+                <span class="w-2 h-2 rounded-full bg-brand"></span>
+              </div>
+              <h3 class="mt-3 text-lg font-semibold">
+                Food Relief Distribution
+              </h3>
+              <ul class="mt-3 bg-surface rounded-lg p-3 space-y-2 text-sm">
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-brand text-[18px]"
+                    >calendar_month</span
+                  >
+                  <span id="ctxDate">Sat, Oct 14, 2026</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-brand text-[18px]"
+                    >schedule</span
+                  >
+                  <span id="ctxHours">4.0 Total Hours (09:00 - 13:00)</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-brand text-[18px]"
+                    >groups</span
+                  >
+                  10 Volunteers Target Capacity
+                </li>
+              </ul>
+            </section>
+
+            <!-- Location dispatch -->
+            <section class="bg-[#2f6bf0] text-white rounded-xl p-5">
+              <h3 class="flex items-center gap-2 font-semibold">
+                <span class="material-symbols-outlined">apartment</span>
+                Location Dispatch
+              </h3>
+              <p class="mt-2 text-sm text-blue-100 leading-relaxed">
+                Metro Logistics Hub, Gate B — Warehouse 4, Bay Area Food Bank
+                Center.
+              </p>
+            </section>
+
+            <!-- Volunteer tasks -->
+            <section class="bg-white rounded-xl shadow-card p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="material-symbols-outlined text-brand mt-0.5"
+                    >checklist</span
+                  >
+                  <div>
+                    <h3 class="font-semibold">Volunteer Tasks</h3>
+                    <p class="text-xs text-slate-600">
+                      Break down the 4-hour commitment into actionable timeline
+                      milestones.
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="shrink-0 bg-active text-brand text-[10px] font-bold tracking-wide px-2 py-1 rounded"
+                  >4 MILESTONES</span
+                >
+              </div>
+
+              <ol class="mt-4 space-y-3">
+                <li class="task">
+                  <span class="task-num">1</span>
+                  <span class="task-time sm:w-none w-[100px]"
+                    >09:00 - 09:15</span
+                  >
+                  <div class="min-w-0">
+                    <p class="text-[16px] font-semibold">
+                      Orientation &amp; Safety Walkthrough
+                    </p>
+                    <p class="text-[14px] text-slate-600 mt-0.5">
+                      Sign-in, PPE distribution, and emergency protocol briefing
+                      at main depot gate.
+                    </p>
+                  </div>
+                </li>
+                <li class="task">
+                  <span class="task-num">2</span>
+                  <span class="task-time sm:w-none w-[100px]"
+                    >09:15 - 11:30</span
+                  >
+                  <div class="min-w-0">
+                    <p class="text-[16px] font-semibold">
+                      Packaging Food Boxes
+                    </p>
+                    <p class="text-[14px] text-slate-600 mt-0.5">
+                      Batch packaging dry goods: rice, garri, pulses, and sealed
+                      cooking oils onto pallet stations.
+                    </p>
+                  </div>
+                </li>
+                <li class="task">
+                  <span class="task-num">3</span>
+                  <span class="task-time sm:w-none w-[100px]"
+                    >11:30 - 12:45</span
+                  >
+                  <div class="min-w-0">
+                    <p class="text-[16px] font-semibold">
+                      Handing Out Food to Community Families
+                    </p>
+                    <p class="text-[14px] text-slate-600 mt-0.5">
+                      Voucher QR scanning, managing pedestrian collection lanes,
+                      and loading assistance.
+                    </p>
+                  </div>
+                </li>
+                <li class="task">
+                  <span class="task-num">4</span>
+                  <span class="task-time sm:w-none w-[100px]"
+                    >12:45 - 01:00</span
+                  >
+                  <div class="min-w-0">
+                    <p class="text-[16px] font-semibold">
+                      Clean Up &amp; Sign-Out
+                    </p>
+                    <p class="text-[14px] text-slate-600 mt-0.5">
+                      Inventory audit count, team debrief huddle, and automated
+                      mobile checkout certificates.
+                    </p>
+                  </div>
+                </li>
+              </ol>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      /* ---------- Sidebar drawer ---------- */
+      const sidebar = $("sidebar");
+      const overlay = $("sidebarOverlay");
+
+      const openSidebar = () => {
+        sidebar.classList.remove("-translate-x-full");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "hidden";
+      };
+      const closeSidebar = () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "";
+      };
+
+      $("openSidebar").addEventListener("click", openSidebar);
+      $("closeSidebar").addEventListener("click", closeSidebar);
+      overlay.addEventListener("click", closeSidebar);
+      sidebar.querySelectorAll("nav a").forEach((a) =>
+        a.addEventListener("click", () => {
+          if (window.innerWidth < 1024) closeSidebar();
+        }),
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSidebar();
+      });
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) closeSidebar();
+      });
+
+      /* ---------- Time selects (every 30 min) ---------- */
+      const start = $("startTime"),
+        end = $("endTime");
+
+      const label12 = (h, m) => {
+        const ap = h >= 12 ? "PM" : "AM";
+        const hh = h % 12 === 0 ? 12 : h % 12;
+        return `${String(hh).padStart(2, "0")}:${String(m).padStart(2, "0")} ${ap}`;
+      };
+      for (let h = 0; h < 24; h++) {
+        for (const m of [0, 30]) {
+          const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+          start.add(new Option(label12(h, m), value));
+          end.add(new Option(label12(h, m), value));
+        }
+      }
+      start.value = "09:00";
+      end.value = "13:00";
+
+      const toMin = (v) => {
+        const [h, m] = v.split(":").map(Number);
+        return h * 60 + m;
+      };
+
+      const syncTimes = () => {
+        let diff = toMin(end.value) - toMin(start.value);
+        if (diff <= 0) diff += 24 * 60; // overnight shift
+        const hrs = (diff / 60).toFixed(1);
+        $("hoursTotal").textContent = `${hrs} Hours`;
+        $("ctxHours").textContent =
+          `${hrs} Total Hours (${start.value} - ${end.value})`;
+      };
+      start.addEventListener("change", syncTimes);
+      end.addEventListener("change", syncTimes);
+      syncTimes();
+
+      /* ---------- Date -> context card ---------- */
+      const dateInput = $("date");
+      const syncDate = () => {
+        if (!dateInput.value) return;
+        const d = new Date(dateInput.value + "T00:00:00");
+        $("ctxDate").textContent = d.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      };
+      dateInput.addEventListener("change", syncDate);
+      syncDate();
+
+      /* ---------- Event type toggle ---------- */
+      const segBtns = document.querySelectorAll("#eventType .seg-btn");
+      segBtns.forEach((b) =>
+        b.addEventListener("click", () => {
+          segBtns.forEach((x) => x.classList.remove("seg-active"));
+          b.classList.add("seg-active");
+        }),
+      );
+
+      /* ---------- Age chips ---------- */
+      const ageNotes = [
+        "Minors under 18 require signed guardian consent acknowledgment before mission check-in.",
+        "Only volunteers aged 18 and above can apply for this opportunity.",
+        "Family-friendly: children must be accompanied by a responsible adult.",
+      ];
+      const chips = document.querySelectorAll("#ageChips .age-chip");
+      chips.forEach((chip, i) =>
+        chip.addEventListener("click", () => {
+          chips.forEach((c) => {
+            c.classList.remove("age-active");
+            const icon = c.querySelector(".material-symbols-outlined");
+            if (icon) icon.remove();
+          });
+          chip.classList.add("age-active");
+          chip.insertAdjacentHTML(
+            "afterbegin",
+            '<span class="material-symbols-outlined text-[16px]">check_circle</span> ',
+          );
+          $("ageNote").lastChild.textContent = " " + ageNotes[i];
+        }),
+      );
+
+      /* ---------- Experience cards ---------- */
+      const cards = document.querySelectorAll("#expCards .exp-card");
+      cards.forEach((card) =>
+        card.addEventListener("click", () => {
+          cards.forEach((c) => c.classList.remove("exp-active"));
+          card.classList.add("exp-active");
+        }),
+      );
+    </script>
+  </body>
+</html>

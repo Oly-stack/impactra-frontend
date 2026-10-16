@@ -1,34 +1,721 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opportunities | Impactra</title>
-  <link rel="shortcut icon" href="img/impactra-logo.jpeg" type="image/x-icon" />
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, sans-serif; background: #f8fafc; color: #1f2937; }
-    header { background: white; padding: 20px 8%; border-bottom: 1px solid #e5e7eb; }
-    main { max-width: 1100px; margin: auto; padding: 40px 20px; }
-    h1 { margin-bottom: 10px; }
-    .search { width: 100%; padding: 14px; margin: 20px 0; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-    .card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #e5e7eb; }
-    .card h2 { font-size: 20px; margin-top: 0; }
-    .card p { line-height: 1.6; }
-    #empty { display: none; margin-top: 20px; color: #64748b; }
-  </style>
-  <script src="../API.js" defer></script>
-  <script src="opportunity-workflow.js" defer></script>
-</head>
-<body>
-  <header><strong>Impactra</strong></header>
-  <main>
-    <h1>Explore Opportunities</h1>
-    <p>Discover opportunities to make an impact.</p>
-    <input class="search" id="search" type="search" placeholder="Search opportunities..." aria-label="Search opportunities" />
-    <section class="grid" id="opportunities"></section>
-    <p id="empty">No matching opportunities found.</p>
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impactra – Opportunities</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: { brand: "#0b4fd6", surface: "#f3f4fb", active: "#dfe5fb" },
+          },
+        },
+      };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="list.css" />
+  </head>
+
+  <body class="font-sans bg-white text-slate-900 min-h-screen flex">
+    <!-- SIDEBAR -->
+    <aside
+      id="sidebar"
+      class="sidebar fixed lg:sticky top-0 left-0 z-40 w-[256px] shrink-0 h-screen bg-white border-r border-slate-200 flex flex-col -translate-x-full lg:translate-x-0"
+    >
+      <div
+        class="h-16 flex items-center justify-between px-5 border-b border-slate-200"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-full border border-blue-600 grid place-items-center text-blue-700"
+          >
+            <span class="material-symbols-outlined text-[20px]">groups</span>
+          </div>
+          <span class="font-bold text-lg tracking-tight">IMPACTRA</span>
+        </div>
+        <button
+          id="closeSidebar"
+          type="button"
+          aria-label="Close menu"
+          class="lg:hidden text-slate-600 hover:text-slate-900"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 px-3 pt-5 overflow-y-auto">
+        <p class="label px-2 mb-2">Operations</p>
+        <div class="space-y-1">
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">dashboard</span>
+            Dashboard</a
+          >
+          <a href="#" class="nav-link nav-active"
+            ><span class="material-symbols-outlined">event_available</span>
+            Opportunities</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">assignment_ind</span>
+            Applications</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">groups</span> Volunteers</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">event_note</span>
+            Activities</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">monitoring</span> Impact</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">workspace_premium</span>
+            Certificates</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">chat_bubble</span>
+            Messages</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">gpp_maybe</span> Report</a
+          >
+          <a href="#" class="nav-link"
+            ><span class="material-symbols-outlined">settings</span> Settings</a
+          >
+        </div>
+      </nav>
+
+      <div
+        class="border-t border-slate-200 p-4 flex items-center gap-4 text-red-600"
+      >
+        <span class="material-symbols-outlined text-slate-500">more_vert</span>
+        <a href="#" class="flex items-center gap-2 font-medium">
+          <span class="material-symbols-outlined">logout</span> Log out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Backdrop (hidden with Tailwind classes only) -->
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 z-30 bg-slate-900/40 lg:hidden opacity-0 pointer-events-none transition-opacity duration-200"
+    ></div>
+
+    <!-- MAIN -->
+    <div class="flex-1 min-w-0 flex flex-col">
+      <!-- TOP BAR -->
+      <header
+        class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 lg:px-6 sticky top-0 z-20"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <button
+            id="openSidebar"
+            type="button"
+            aria-label="Open menu"
+            class="lg:hidden shrink-0 w-10 h-10 grid place-items-center rounded-lg text-slate-700 hover:bg-slate-100"
+          >
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <p class="font-medium truncate">Create Opportunity</p>
+        </div>
+
+        <div class="flex items-center gap-4 shrink-0">
+          <div
+            class="hidden md:flex items-center gap-2 bg-[#eef0fb] border border-slate-300 rounded-lg px-3 py-2 w-[290px]"
+          >
+            <span class="material-symbols-outlined text-slate-700 text-[20px]"
+              >search</span
+            >
+            <input
+              type="text"
+              placeholder="Search volunteers, shifts..."
+              class="bg-transparent outline-none flex-1 min-w-0 text-sm text-slate-700 placeholder:text-slate-500"
+            />
+            <span
+              class="text-[11px] text-slate-500 bg-active rounded px-1.5 py-0.5"
+              >⌘K</span
+            >
+          </div>
+
+          <button class="relative text-slate-600" aria-label="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+            <span
+              class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full"
+            ></span>
+          </button>
+
+          <div
+            class="flex items-center gap-2.5 sm:pl-4 sm:border-l sm:border-slate-200"
+          >
+            <img
+              src="https://i.pravatar.cc/80?img=47"
+              alt="Toyin"
+              class="w-9 h-9 rounded-full object-cover"
+            />
+            <div class="hidden sm:block leading-tight">
+              <p class="text-sm font-semibold">Toyin</p>
+              <p class="text-[11px] text-slate-500 tracking-wide">NGO</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="p-4 sm:p-6 lg:px-8 lg:py-10 max-w-[1440px] w-full">
+        <!-- Title row -->
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">
+              Opportunities
+            </h1>
+            <p class="mt-1 text-slate-600">
+              Manage, deploy, and monitor your volunteer opportunities across
+              regional missions.
+            </p>
+          </div>
+          <a
+            href="http://127.0.0.1:5500/pages/create-opportunities-step-1.html"
+            class="flex items-center gap-2 px-6 py-3 font-semibold text-white bg-brand rounded-lg hover:bg-blue-800"
+          >
+            <span class="material-symbols-outlined text-[22px]">add</span>
+            Create Opportunity
+          </a>
+        </div>
+
+        <!-- Search band -->
+        <div class="mt-10 bg-[#eef0fb] rounded-t-lg px-4 sm:px-6 py-4">
+          <div
+            class="flex items-center gap-3 bg-white rounded-md px-4 py-2.5 w-full max-w-[705px]"
+          >
+            <span class="material-symbols-outlined text-slate-700 text-[20px]"
+              >search</span
+            >
+            <input
+              type="text"
+              placeholder="Search opportunities by title, location, category..."
+              class="flex-1 min-w-0 outline-none text-sm placeholder:text-slate-600"
+            />
+          </div>
+        </div>
+
+        <!-- Stat cards -->
+        <div
+          class="-mt-0 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1.3fr_1fr_1fr_1fr] gap-4 bg-[#eef0fb] rounded-b-lg px-4 sm:px-6 pb-4 pt-0"
+        >
+          <div class="stat-card">
+            <div class="flex items-center justify-between">
+              <p class="label !text-sm">Active Quota</p>
+              <span class="material-symbols-outlined text-brand"
+                >volunteer_activism</span
+              >
+            </div>
+            <p class="mt-3 text-2xl font-semibold">
+              34 / 66
+              <span class="text-base font-normal text-slate-700"
+                >slots filled</span
+              >
+            </p>
+            <div class="mt-4 h-2 rounded-full bg-active overflow-hidden">
+              <div class="h-full w-[51%] bg-brand rounded-full"></div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="flex items-center justify-between">
+              <p class="label">Review Queue</p>
+              <span
+                class="bg-red-100 text-red-700 text-[11px] font-bold px-2 py-1 rounded"
+                >14 URGENT</span
+              >
+            </div>
+            <p class="mt-3 text-2xl font-semibold">
+              86
+              <span class="text-sm font-normal text-slate-700"
+                >total pending</span
+              >
+            </p>
+            <p class="mt-3 flex items-center gap-2 text-sm text-slate-700">
+              <span class="material-symbols-outlined text-green-600 text-[18px]"
+                >schedule</span
+              >
+              Avg. triage time: 4.2 hrs
+            </p>
+          </div>
+
+          <div class="stat-card">
+            <div class="flex items-center justify-between">
+              <p class="label">Direct Reach</p>
+              <span class="material-symbols-outlined text-green-600 text-[20px]"
+                >trending_up</span
+              >
+            </div>
+            <p class="mt-3 text-2xl font-semibold">
+              3 Hubs
+              <span class="text-sm font-normal text-slate-700"
+                >Lagos Metro</span
+              >
+            </p>
+            <p class="mt-3 flex items-center gap-2 text-sm text-slate-700">
+              <span class="w-2 h-2 rounded-full bg-brand"></span> Surulere,
+              Yaba, Ikeja
+            </p>
+          </div>
+
+          <div
+            class="rounded-xl bg-[#e3e8fb] p-5 flex items-center justify-between gap-3"
+          >
+            <div>
+              <p class="text-[11px] font-semibold tracking-widest text-brand">
+                EFFICIENCY INDEX
+              </p>
+              <p class="mt-3 text-2xl font-semibold">94.8%</p>
+              <p class="mt-1 text-sm text-slate-700">Target match rate</p>
+            </div>
+            <div class="relative w-[58px] h-[58px] shrink-0">
+              <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.5"
+                  fill="none"
+                  stroke="#c9d3f5"
+                  stroke-width="3"
+                />
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.5"
+                  fill="none"
+                  stroke="#0b4fd6"
+                  stroke-width="3"
+                  stroke-dasharray="97.4"
+                  stroke-dashoffset="5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span
+                class="material-symbols-outlined text-brand text-[20px] absolute inset-0 grid place-items-center"
+                >bolt</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- TABLE CARD -->
+        <section class="mt-6 bg-white rounded-xl shadow-card overflow-hidden">
+          <!-- Tabs -->
+          <div
+            class="px-4 sm:px-6 pt-6 pb-7 flex items-center justify-between gap-4 flex-wrap"
+          >
+            <div
+              id="tabs"
+              class="flex items-center gap-2 sm:gap-6 overflow-x-auto"
+            >
+              <button class="tab tab-active">
+                All <span class="tab-count">18</span>
+              </button>
+              <button class="tab">
+                Active <span class="tab-count">8</span>
+              </button>
+              <button class="tab">
+                Drafts <span class="tab-count">4</span>
+              </button>
+              <button class="tab">
+                Completed <span class="tab-count">6</span>
+              </button>
+            </div>
+            <p
+              class="text-xs font-semibold tracking-wider text-slate-700 flex items-center gap-2"
+            >
+              ROSTER STATUS: LIVE
+              <span class="w-2 h-2 rounded-full bg-green-600"></span>
+            </p>
+          </div>
+
+          <!-- Scrollable table -->
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[1000px] text-left">
+              <thead>
+                <tr
+                  class="bg-[#eef0fb] text-[11px] font-semibold tracking-wider text-slate-700 uppercase"
+                >
+                  <th class="th pl-6">Opportunity</th>
+                  <th class="th">Category</th>
+                  <th class="th">Date &amp; Time</th>
+                  <th class="th">Location</th>
+                  <th class="th">Applicants</th>
+                  <th class="th">Roster</th>
+                  <th class="th">Status</th>
+                  <th class="th pr-6">Action</th>
+                </tr>
+              </thead>
+
+              <tbody class="text-sm">
+                <!-- Row 1 -->
+                <tr>
+                  <td class="td pl-6">
+                    <div class="flex items-center gap-3">
+                      <span class="row-icon"
+                        ><span class="material-symbols-outlined text-brand"
+                          >volunteer_activism</span
+                        ></span
+                      >
+                      <div>
+                        <p class="font-semibold">
+                          Food Relief Distribution
+                          <span
+                            class="ml-1 text-[9px] font-bold bg-active text-brand px-1.5 py-0.5 rounded align-middle"
+                            >FEATURED</span
+                          >
+                        </p>
+                        <p class="text-xs text-slate-600">
+                          Household staple food box dispatch
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="td">
+                    <span class="pill mr-6">Community Support</span>
+                  </td>
+                  <td class="td">
+                    <p class="font-semibold">Sat, Oct 14</p>
+                    <p class="text-xs text-slate-600">9:00 AM – 1:00 PM</p>
+                  </td>
+                  <td class="td">
+                    <span class="inline-flex items-center gap-1"
+                      ><span class="material-symbols-outlined text-[16px]"
+                        >location_on</span
+                      >
+                      Surulere, Lagos</span
+                    >
+                  </td>
+                  <td class="td">
+                    <p class="font-semibold">24 applicants</p>
+                    <p class="text-[11px] text-red-600">(14 unreviewed)</p>
+                  </td>
+                  <td class="td">
+                    <div class="roster">
+                      <span>8 / 10</span
+                      ><span class="text-slate-500">filled</span>
+                    </div>
+                    <div class="bar">
+                      <i class="bg-brand" style="width: 80%"></i>
+                    </div>
+                  </td>
+                  <td class="td">
+                    <span class="status st-active"><i></i>Active</span>
+                  </td>
+                  <td class="td pr-6"><a href="#" class="act">View →</a></td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr>
+                  <td class="td pl-6">
+                    <div class="flex items-center gap-3">
+                      <span class="row-icon"
+                        ><span class="material-symbols-outlined text-brand"
+                          >menu_book</span
+                        ></span
+                      >
+                      <div>
+                        <p class="font-semibold">School Literacy Support</p>
+                        <p class="text-xs text-slate-600">
+                          Reading sessions at Central Academy
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="td"><span class="pill">Education</span></td>
+                  <td class="td">
+                    <p class="font-semibold">Wed, Oct 18</p>
+                    <p class="text-xs text-slate-600">10:00 AM – 2:00 PM</p>
+                  </td>
+                  <td class="td">
+                    <span class="inline-flex items-center gap-1"
+                      ><span class="material-symbols-outlined text-[16px]"
+                        >location_on</span
+                      >
+                      Yaba, Lagos</span
+                    >
+                  </td>
+                  <td class="td"><p class="font-semibold">12 applicants</p></td>
+                  <td class="td">
+                    <div class="roster">
+                      <span>4 / 6</span
+                      ><span class="text-slate-500">filled</span>
+                    </div>
+                    <div class="bar">
+                      <i class="bg-brand" style="width: 66%"></i>
+                    </div>
+                  </td>
+                  <td class="td">
+                    <span class="status st-active"><i></i>Active</span>
+                  </td>
+                  <td class="td pr-6"><a href="#" class="act">View →</a></td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr>
+                  <td class="td pl-6">
+                    <div class="flex items-center gap-3">
+                      <span class="row-icon"
+                        ><span class="material-symbols-outlined text-red-600"
+                          >medical_services</span
+                        ></span
+                      >
+                      <div>
+                        <p class="font-semibold">Community Health Outreach</p>
+                        <p class="text-xs text-slate-600">
+                          Hypertension &amp; blood sugar triage
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="td"><span class="pill">Healthcare</span></td>
+                  <td class="td">
+                    <p class="font-semibold">Fri, Oct 20</p>
+                    <p class="text-xs text-slate-600">8:30 AM – 3:00 PM</p>
+                  </td>
+                  <td class="td">
+                    <span class="inline-flex items-center gap-1"
+                      ><span class="material-symbols-outlined text-[16px]"
+                        >location_on</span
+                      >
+                      Ikeja, Lagos</span
+                    >
+                  </td>
+                  <td class="td"><p class="font-semibold">19 applicants</p></td>
+                  <td class="td">
+                    <div class="roster">
+                      <span>7 / 10</span
+                      ><span class="text-slate-500">filled</span>
+                    </div>
+                    <div class="bar">
+                      <i class="bg-red-700" style="width: 70%"></i>
+                    </div>
+                  </td>
+                  <td class="td">
+                    <span class="status st-urgent"><i></i>Urgent</span>
+                  </td>
+                  <td class="td pr-6"><a href="#" class="act">View →</a></td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr>
+                  <td class="td pl-6">
+                    <div class="flex items-center gap-3">
+                      <span class="row-icon"
+                        ><span class="material-symbols-outlined text-brand"
+                          >terminal</span
+                        ></span
+                      >
+                      <div>
+                        <p class="font-semibold">
+                          Youth Tech Mentorship Workshop
+                        </p>
+                        <p class="text-xs text-slate-600">
+                          Python &amp; web development fundamentals
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="td"><span class="pill">Skills Training</span></td>
+                  <td class="td">
+                    <p class="font-semibold">Sat, Oct 28</p>
+                    <p class="text-xs text-slate-600">11:00 AM – 4:00 PM</p>
+                  </td>
+                  <td class="td">
+                    <span class="inline-flex items-center gap-1"
+                      ><span class="material-symbols-outlined text-[16px]"
+                        >location_on</span
+                      >
+                      Victoria Island, Lagos</span
+                    >
+                  </td>
+                  <td class="td"><p class="font-semibold">31 applicants</p></td>
+                  <td class="td">
+                    <div class="roster">
+                      <span class="text-green-700">15 / 15</span
+                      ><span class="text-slate-500">filled</span>
+                    </div>
+                    <div class="bar">
+                      <i class="bg-green-600" style="width: 100%"></i>
+                    </div>
+                  </td>
+                  <td class="td">
+                    <span class="status st-active"><i></i>Active</span>
+                  </td>
+                  <td class="td pr-6"><a href="#" class="act">View →</a></td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr>
+                  <td class="td pl-6 pb-8">
+                    <div class="flex items-center gap-3">
+                      <span class="row-icon"
+                        ><span class="material-symbols-outlined text-slate-700"
+                          >water_drop</span
+                        ></span
+                      >
+                      <div>
+                        <p class="font-semibold">Coastal Beach Cleanup Drive</p>
+                        <p class="text-xs text-slate-600">
+                          Ecology sweep &amp; waste classification
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="td pb-8"><span class="pill">Environment</span></td>
+                  <td class="td pb-8">
+                    <p class="font-semibold">Sat, Nov 4</p>
+                    <p class="text-xs text-slate-600">7:00 AM – 11:00 AM</p>
+                  </td>
+                  <td class="td pb-8">
+                    <span class="inline-flex items-center gap-1"
+                      ><span class="material-symbols-outlined text-[16px]"
+                        >location_on</span
+                      >
+                      Elegushi Beach, Lekki</span
+                    >
+                  </td>
+                  <td class="td pb-8">
+                    <p class="text-slate-600">0 applicants</p>
+                  </td>
+                  <td class="td pb-8">
+                    <div class="roster">
+                      <span class="text-slate-600">0 / 25</span
+                      ><span class="text-slate-500">filled</span>
+                    </div>
+                    <div class="bar"></div>
+                  </td>
+                  <td class="td pb-8">
+                    <span class="status st-draft"><i></i>Draft</span>
+                  </td>
+                  <td class="td pr-6 pb-8">
+                    <a href="#" class="text-xs font-medium text-slate-800"
+                      >Edit →</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="px-4 sm:px-6 pb-6 pt-2 flex items-center justify-between gap-4 flex-wrap"
+          >
+            <p class="text-sm text-slate-700">
+              Showing 1–5 of 18 opportunities
+            </p>
+            <div class="flex items-center gap-2 text-sm">
+              <button class="page-btn text-slate-400 bg-surface" disabled>
+                ‹ Previous
+              </button>
+              <button class="page-btn bg-brand text-white font-semibold">
+                1
+              </button>
+              <button class="page-btn">2</button>
+              <button class="page-btn hidden sm:block">3</button>
+              <button class="page-btn hidden sm:block">4</button>
+              <button class="page-btn bg-surface">Next ›</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom info cards -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="info-card">
+            <span class="info-icon bg-active text-brand"
+              ><span class="material-symbols-outlined">bolt</span></span
+            >
+            <div>
+              <p class="font-semibold text-lg">Auto-Confirmation Active</p>
+              <p class="text-sm text-slate-600 mt-1">
+                Volunteers matching all criteria are confirmed automatically.
+              </p>
+            </div>
+          </div>
+          <div class="info-card">
+            <span class="info-icon bg-amber-100 text-amber-600"
+              ><span class="material-symbols-outlined">warning</span></span
+            >
+            <div>
+              <p class="font-semibold text-lg">Urgent Staffing Needs</p>
+              <p class="text-sm text-slate-600 mt-1">
+                3 opportunities are below 75% roster capacity this week.
+              </p>
+            </div>
+          </div>
+          <div class="info-card">
+            <span class="info-icon bg-active text-brand"
+              ><span class="material-symbols-outlined"
+                >verified_user</span
+              ></span
+            >
+            <div>
+              <p class="font-semibold text-lg">Compliance Clearance</p>
+              <p class="text-sm text-slate-600 mt-1">
+                All active opportunities have valid safeguarding documents.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      /* Sidebar drawer */
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+
+      const openSidebar = () => {
+        sidebar.classList.remove("-translate-x-full");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "hidden";
+      };
+      const closeSidebar = () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "";
+      };
+
+      document
+        .getElementById("openSidebar")
+        .addEventListener("click", openSidebar);
+      document
+        .getElementById("closeSidebar")
+        .addEventListener("click", closeSidebar);
+      overlay.addEventListener("click", closeSidebar);
+
+      sidebar.querySelectorAll("nav a").forEach((a) =>
+        a.addEventListener("click", () => {
+          if (window.innerWidth < 1024) closeSidebar();
+        }),
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSidebar();
+      });
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) closeSidebar();
+      });
+
+      /* Tabs: switch the active style */
+      const tabs = document.querySelectorAll("#tabs .tab");
+      tabs.forEach((tab) =>
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("tab-active"));
+          tab.classList.add("tab-active");
+        }),
+      );
+    </script>
+  </body>
 </html>
