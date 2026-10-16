@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMPACTRA Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+            colors: { brand: "#0b4fd6" },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-[#f8f9fd] font-sans text-slate-900 min-h-screen">
+    <!--  SIDEBAR  -->
+
+    <!-- MOBILE OVERLAY -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden"
+    ></div>
+
+    <!-- SIDEBAR -->
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-50 w-72 flex flex-col bg-white border-r border-slate-200 -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0"
+    >
+      <!-- Logo -->
+      <div
+        class="h-[70px] px-6 flex items-center justify-between gap-3 border-b border-slate-200"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full border-2 border-brand grid place-items-center text-brand"
+          >
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+
+          <span class="text-lg font-bold">IMPACTRA</span>
+        </div>
+
+        <!-- Close button: mobile only -->
+        <button
+          id="closeMenu"
+          type="button"
+          class="lg:hidden p-2 rounded-lg hover:bg-slate-100"
+          aria-label="Close sidebar"
+        >
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 p-2.5 space-y-2">
+        <a
+          href="http://127.0.0.1:5500/Dashboard.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-100 text-brand font-medium"
+        >
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          Dashboard
+        </a>
+
+        <a
+          href="http://127.0.0.1:5500/pages/Organisation.html"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="building-2" class="w-5 h-5"></i>
+          Applications
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+          Reports
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="headset" class="w-5 h-5"></i>
+          Support
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="users" class="w-5 h-5"></i>
+          User Management
+        </a>
+
+        <a
+          href="http://127.0.0.1:5500/settings.html#"
+          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="settings" class="w-5 h-5"></i>
+          Settings
+        </a>
+      </nav>
+
+      <!-- Logout -->
+      <div class="border-t border-slate-200 px-4 py-4 flex items-center gap-3">
+        <i data-lucide="more-vertical" class="w-4 h-4 text-slate-500"></i>
+
+        <a
+          href="http://127.0.0.1:5500/pages/login.html"
+          class="flex items-center gap-2 text-red-600 font-medium"
+        >
+          <i data-lucide="log-out" class="w-5 h-5"></i>
+          Log out
+        </a>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN WRAPPER ================= -->
+    <div class="lg:ml-72">
+      <!-- Top bar -->
+      <header
+        class="h-[70px] bg-white border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between"
+      >
+        <!-- Top bar -->
+
+        <!-- Mobile menu button -->
+        <button
+          id="openMenu"
+          type="button"
+          class="lg:hidden shrink-0 p-2 rounded-lg hover:bg-slate-100"
+          aria-label="Open sidebar"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Search bar -->
+        <div
+          class="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2.5 w-full max-w-sm"
+        >
+          <i data-lucide="search" class="w-5 h-5 text-slate-700 shrink-0"></i>
+
+          <input
+            type="text"
+            placeholder="Search administrative logs, orgs, entities..."
+            class="bg-transparent outline-none w-full min-w-0 text-sm placeholder:text-slate-600"
+          />
+        </div>
+
+        <!-- Right side of header -->
+        <div class="flex items-center gap-5 ml-auto shrink-0">
+          <button class="relative" type="button" aria-label="Notifications">
+            <i data-lucide="bell" class="w-5 h-5 text-slate-600"></i>
+            <span
+              class="absolute -top-1 -right-0.5 w-2.5 h-2.5 bg-red-600 rounded-full"
+            ></span>
+          </button>
+
+          <div class="h-8 w-px bg-slate-200"></div>
+
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-full bg-slate-700 text-white grid place-items-center text-sm font-semibold"
+            >
+              EV
+            </div>
+
+            <span class="font-medium hidden sm:block">Eleanor V.</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="p-4 sm:p-8 max-w-[1400px]">
+        <!-- Welcome row -->
+        <div
+          class="flex flex-col sm:flex-row sm:items-start justify-between gap-4"
+        >
+          <div>
+            <h1 class="text-4xl font-bold tracking-tight">Welcome back</h1>
+            <p class="text-slate-600 mt-1">
+              Here's what's happening on IMPACTRA today.
+            </p>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white rounded-lg px-4 py-2.5 shadow-sm self-start"
+          >
+            <i data-lucide="calendar" class="w-4 h-4 text-slate-600"></i>
+            <span class="text-sm font-medium">Tuesday, 13 Aug 2024</span>
+          </div>
+        </div>
+
+        <!-- Stat cards (items-start lets cards have different heights) -->
+        <section
+          class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 max-w-[1500px] items-start mt-10"
+        >
+          <!-- Reports -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="flex items-center justify-between">
+              <h2 class="tracking-wider text-slate-800 uppercase">Reports</h2>
+              <span
+                class="w-9 h-9 rounded-lg bg-red-50 grid place-items-center"
+              >
+                <svg
+                  width="14"
+                  height="17"
+                  viewBox="0 0 14 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.66667 11.6667C6.90278 11.6667 7.10069 11.5868 7.26042 11.4271C7.42014 11.2674 7.5 11.0694 7.5 10.8333C7.5 10.5972 7.42014 10.3993 7.26042 10.2396C7.10069 10.0799 6.90278 10 6.66667 10C6.43056 10 6.23264 10.0799 6.07292 10.2396C5.91319 10.3993 5.83333 10.5972 5.83333 10.8333C5.83333 11.0694 5.91319 11.2674 6.07292 11.4271C6.23264 11.5868 6.43056 11.6667 6.66667 11.6667ZM5.83333 8.33333H7.5V4.16667H5.83333V8.33333ZM6.66667 16.6667C4.73611 16.1806 3.14236 15.0729 1.88542 13.3438C0.628472 11.6146 0 9.69444 0 7.58333V2.5L6.66667 0L13.3333 2.5V7.58333C13.3333 9.69444 12.7049 11.6146 11.4479 13.3438C10.191 15.0729 8.59722 16.1806 6.66667 16.6667ZM6.66667 14.9167C8.11111 14.4583 9.30556 13.5417 10.25 12.1667C11.1944 10.7917 11.6667 9.26389 11.6667 7.58333V3.64583L6.66667 1.77083L1.66667 3.64583V7.58333C1.66667 9.26389 2.13889 10.7917 3.08333 12.1667C4.02778 13.5417 5.22222 14.4583 6.66667 14.9167Z"
+                    fill="#BA1A1A"
+                  />
+                </svg>
+              </span>
+            </div>
+            <p class="text-4xl font-bold mt-6">8</p>
+            <a
+              href="#"
+              class="inline-block mt-5 text-brand font-medium hover:underline"
+              >Review reports</a
+            >
+          </div>
+
+          <!-- Support -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="flex items-center justify-between">
+              <h2 class="tracking-wider text-slate-800 uppercase">Support</h2>
+              <svg
+                width="17"
+                height="15"
+                viewBox="0 0 17 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.5 15V13.3333H14.1667V7.41667C14.1667 5.79167 13.6007 4.41319 12.4688 3.28125C11.3368 2.14931 9.95833 1.58333 8.33333 1.58333C6.70833 1.58333 5.32986 2.14931 4.19792 3.28125C3.06597 4.41319 2.5 5.79167 2.5 7.41667V12.5H1.66667C1.20833 12.5 0.815972 12.3368 0.489583 12.0104C0.163194 11.684 0 11.2917 0 10.8333V9.16667C0 8.875 0.0729167 8.60069 0.21875 8.34375C0.364583 8.08681 0.569444 7.88194 0.833333 7.72917L0.895833 6.625C1.00694 5.68056 1.28125 4.80556 1.71875 4C2.15625 3.19444 2.70486 2.49306 3.36458 1.89583C4.02431 1.29861 4.78125 0.833333 5.63542 0.5C6.48958 0.166667 7.38889 0 8.33333 0C9.27778 0 10.1736 0.166667 11.0208 0.5C11.8681 0.833333 12.625 1.29514 13.2917 1.88542C13.9583 2.47569 14.5069 3.17361 14.9375 3.97917C15.3681 4.78472 15.6458 5.65972 15.7708 6.60417L15.8333 7.6875C16.0972 7.8125 16.3021 8 16.4479 8.25C16.5938 8.5 16.6667 8.76389 16.6667 9.04167V10.9583C16.6667 11.2361 16.5938 11.5 16.4479 11.75C16.3021 12 16.0972 12.1875 15.8333 12.3125V13.3333C15.8333 13.7917 15.6701 14.184 15.3438 14.5104C15.0174 14.8368 14.625 15 14.1667 15H7.5ZM5.83333 9.16667C5.59722 9.16667 5.39931 9.08681 5.23958 8.92708C5.07986 8.76736 5 8.56944 5 8.33333C5 8.09722 5.07986 7.89931 5.23958 7.73958C5.39931 7.57986 5.59722 7.5 5.83333 7.5C6.06944 7.5 6.26736 7.57986 6.42708 7.73958C6.58681 7.89931 6.66667 8.09722 6.66667 8.33333C6.66667 8.56944 6.58681 8.76736 6.42708 8.92708C6.26736 9.08681 6.06944 9.16667 5.83333 9.16667ZM10.8333 9.16667C10.5972 9.16667 10.3993 9.08681 10.2396 8.92708C10.0799 8.76736 10 8.56944 10 8.33333C10 8.09722 10.0799 7.89931 10.2396 7.73958C10.3993 7.57986 10.5972 7.5 10.8333 7.5C11.0694 7.5 11.2674 7.57986 11.4271 7.73958C11.5868 7.89931 11.6667 8.09722 11.6667 8.33333C11.6667 8.56944 11.5868 8.76736 11.4271 8.92708C11.2674 9.08681 11.0694 9.16667 10.8333 9.16667ZM3.35417 7.875C3.25694 6.40278 3.70139 5.13889 4.6875 4.08333C5.67361 3.02778 6.90278 2.5 8.375 2.5C9.61111 2.5 10.6979 2.89236 11.6354 3.67708C12.5729 4.46181 13.1389 5.46528 13.3333 6.6875C12.0694 6.67361 10.9062 6.33333 9.84375 5.66667C8.78125 5 7.96528 4.09722 7.39583 2.95833C7.17361 4.06944 6.70486 5.05903 5.98958 5.92708C5.27431 6.79514 4.39583 7.44444 3.35417 7.875Z"
+                  fill="#0051D5"
+                />
+              </svg>
+            </div>
+            <p class="text-4xl font-bold mt-6">15</p>
+            <p class="text-xs text-amber-700 mt-1">Unresolved</p>
+            <a
+              href="#"
+              class="inline-block mt-5 text-brand font-medium hover:underline"
+              >View tickets</a
+            >
+          </div>
+
+          <!-- Total users -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs tracking-wider text-slate-800 uppercase">
+                Total Users
+              </h2>
+              <svg
+                width="19"
+                height="14"
+                viewBox="0 0 19 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 13.3333V11C0 10.5278 0.121528 10.0938 0.364583 9.69792C0.607639 9.30208 0.930556 9 1.33333 8.79167C2.19444 8.36111 3.06944 8.03819 3.95833 7.82292C4.84722 7.60764 5.75 7.5 6.66667 7.5C7.58333 7.5 8.48611 7.60764 9.375 7.82292C10.2639 8.03819 11.1389 8.36111 12 8.79167C12.4028 9 12.7257 9.30208 12.9688 9.69792C13.2118 10.0938 13.3333 10.5278 13.3333 11V13.3333H0ZM15 13.3333V10.8333C15 10.2222 14.8299 9.63542 14.4896 9.07292C14.1493 8.51042 13.6667 8.02778 13.0417 7.625C13.75 7.70833 14.4167 7.85069 15.0417 8.05208C15.6667 8.25347 16.25 8.5 16.7917 8.79167C17.2917 9.06944 17.6736 9.37847 17.9375 9.71875C18.2014 10.059 18.3333 10.4306 18.3333 10.8333V13.3333H15ZM6.66667 6.66667C5.75 6.66667 4.96528 6.34028 4.3125 5.6875C3.65972 5.03472 3.33333 4.25 3.33333 3.33333C3.33333 2.41667 3.65972 1.63194 4.3125 0.979167C4.96528 0.326389 5.75 0 6.66667 0C7.58333 0 8.36806 0.326389 9.02083 0.979167C9.67361 1.63194 10 2.41667 10 3.33333C10 4.25 9.67361 5.03472 9.02083 5.6875C8.36806 6.34028 7.58333 6.66667 6.66667 6.66667ZM15 3.33333C15 4.25 14.6736 5.03472 14.0208 5.6875C13.3681 6.34028 12.5833 6.66667 11.6667 6.66667C11.5139 6.66667 11.3194 6.64931 11.0833 6.61458C10.8472 6.57986 10.6528 6.54167 10.5 6.5C10.875 6.05556 11.1632 5.5625 11.3646 5.02083C11.566 4.47917 11.6667 3.91667 11.6667 3.33333C11.6667 2.75 11.566 2.1875 11.3646 1.64583C11.1632 1.10417 10.875 0.611111 10.5 0.166667C10.6944 0.0972222 10.8889 0.0520833 11.0833 0.03125C11.2778 0.0104167 11.4722 0 11.6667 0C12.5833 0 13.3681 0.326389 14.0208 0.979167C14.6736 1.63194 15 2.41667 15 3.33333ZM1.66667 11.6667H11.6667V11C11.6667 10.8472 11.6285 10.7083 11.5521 10.5833C11.4757 10.4583 11.375 10.3611 11.25 10.2917C10.5 9.91667 9.74306 9.63542 8.97917 9.44792C8.21528 9.26042 7.44444 9.16667 6.66667 9.16667C5.88889 9.16667 5.11806 9.26042 4.35417 9.44792C3.59028 9.63542 2.83333 9.91667 2.08333 10.2917C1.95833 10.3611 1.85764 10.4583 1.78125 10.5833C1.70486 10.7083 1.66667 10.8472 1.66667 11V11.6667ZM6.66667 5C7.125 5 7.51736 4.83681 7.84375 4.51042C8.17014 4.18403 8.33333 3.79167 8.33333 3.33333C8.33333 2.875 8.17014 2.48264 7.84375 2.15625C7.51736 1.82986 7.125 1.66667 6.66667 1.66667C6.20833 1.66667 5.81597 1.82986 5.48958 2.15625C5.16319 2.48264 5 2.875 5 3.33333C5 3.79167 5.16319 4.18403 5.48958 4.51042C5.81597 4.83681 6.20833 5 6.66667 5Z"
+                  fill="#45464D"
+                />
+              </svg>
+            </div>
+            <p class="text-4xl font-bold mt-6">2,842</p>
+            <p class="text-sm text-slate-700 mt-1">Across all organizations</p>
+            <p class="flex items-center gap-1 text-xs text-green-700 mt-6">
+              <svg
+                width="14"
+                height="8"
+                viewBox="0 0 14 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0.933333 8L0 7.06667L4.93333 2.1L7.6 4.76667L11.0667 1.33333H9.33333V0H13.3333V4H12V2.26667L7.6 6.66667L4.93333 4L0.933333 8Z"
+                  fill="#009842"
+                />
+              </svg>
+
+              +8.4% this month
+            </p>
+          </div>
+        </section>
+
+        <!-- Lower panels -->
+        <section class="grid gap-6 lg:grid-cols-2 mt-12">
+          <!-- Needs Your Attention -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <h2 class="font-semibold text-sm sm:text-lg xl:text-lg">
+                  Needs Your Attention
+                </h2>
+                <span
+                  class="text-xs font-medium text-red-700 bg-red-100 rounded-full px-2.5 py-0.5"
+                  >4 Action</span
+                >
+              </div>
+              <a href="#" class="text-brand font-medium text-sm hover:underline"
+                >View all</a
+              >
+            </div>
+
+            <div class="mt-6 space-y-3">
+              <!-- item 1 -->
+              <div class="flex items-center gap-4 bg-slate-50 rounded-lg p-3">
+                <span
+                  class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 grid place-items-center"
+                >
+                  <i data-lucide="building-2" class="w-5 h-5 text-brand"></i>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-sm">
+                    New NGO application from Green Earth Initiative
+                  </p>
+                  <p class="text-sm text-slate-600">Submitted 2 hours ago</p>
+                </div>
+                <a href="http://127.0.0.1:5500/pages/Green-initiative.html">
+                  <button
+                    class="bg-brand text-white font-medium text-sm px-5 py-2 rounded-lg hover:bg-blue-800"
+                  >
+                    Review
+                  </button>
+                </a>
+              </div>
+
+              <!-- item 2 -->
+              <div class="flex items-center gap-4 bg-slate-50 rounded-lg p-3">
+                <span
+                  class="w-10 h-10 shrink-0 rounded-lg bg-red-100 grid place-items-center"
+                >
+                  <i
+                    data-lucide="circle-alert"
+                    class="w-5 h-5 text-red-600"
+                  ></i>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-sm">
+                    Urgent report: Inappropriate content
+                  </p>
+                  <p class="text-sm text-slate-600">Reported 4 hours ago</p>
+                </div>
+                <button
+                  class="bg-brand text-white font-medium text-sm px-5 py-2 rounded-lg hover:bg-blue-800"
+                >
+                  Review
+                </button>
+              </div>
+
+              <!-- item 3 -->
+              <div class="flex items-center gap-4 bg-slate-50 rounded-lg p-3">
+                <span
+                  class="w-10 h-10 shrink-0 rounded-lg bg-blue-100 grid place-items-center"
+                >
+                  <i data-lucide="ticket" class="w-5 h-5 text-slate-800"></i>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-sm">
+                    Pending support ticket: Login issue
+                  </p>
+                  <p class="text-sm text-slate-600">Submitted 5 hours ago</p>
+                </div>
+                <button
+                  class="text-sm font-medium px-5 py-2 rounded-lg hover:bg-slate-200"
+                >
+                  View
+                </button>
+              </div>
+
+              <!-- item 4 -->
+              <div class="flex items-center gap-4 bg-slate-50 rounded-lg p-3">
+                <span
+                  class="w-10 h-10 shrink-0 rounded-lg bg-green-100 grid place-items-center"
+                >
+                  <i
+                    data-lucide="clipboard-check"
+                    class="w-5 h-5 text-green-700"
+                  ></i>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-sm">
+                    Organization response to information
+                  </p>
+                  <p class="text-sm text-slate-600">
+                    From Clean Water Project · 6 hours ago
+                  </p>
+                </div>
+                <button
+                  class="text-sm font-medium px-5 py-2 rounded-lg hover:bg-slate-200"
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Platform Activity -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-baseline gap-4">
+                <h2 class="font-semibold text-lg">
+                  Platform Activity (Recent)
+                </h2>
+                <span class="text-xs font-medium text-slate-600"
+                  >Real-time</span
+                >
+              </div>
+              <a href="#" class="text-brand font-medium text-sm hover:underline"
+                >View all</a
+              >
+            </div>
+
+            <ul class="mt-6 space-y-6">
+              <li class="flex items-start gap-4">
+                <span
+                  class="w-9 h-9 shrink-0 rounded-full bg-green-100 grid place-items-center"
+                >
+                  <i
+                    data-lucide="badge-check"
+                    class="w-5 h-5 text-green-700"
+                  ></i>
+                </span>
+                <div class="flex-1">
+                  <p class="font-medium text-sm">Hope Foundation approved</p>
+                  <p class="text-sm text-slate-600">by Admin User</p>
+                </div>
+                <span class="text-sm text-slate-600 whitespace-nowrap"
+                  >2 hours ago</span
+                >
+              </li>
+
+              <li class="flex items-start gap-4">
+                <span
+                  class="w-9 h-9 shrink-0 rounded-full bg-indigo-100 grid place-items-center"
+                >
+                  <i
+                    data-lucide="circle-minus"
+                    class="w-5 h-5 text-slate-600"
+                  ></i>
+                </span>
+                <div class="flex-1">
+                  <p class="font-medium text-sm">
+                    Report #R-2024-018 dismissed
+                  </p>
+                  <p class="text-sm text-slate-600">by Admin User</p>
+                </div>
+                <span class="text-sm text-slate-600 whitespace-nowrap"
+                  >4 hours ago</span
+                >
+              </li>
+
+              <li class="flex items-start gap-4">
+                <span
+                  class="w-9 h-9 shrink-0 rounded-full bg-green-100 grid place-items-center"
+                >
+                  <i
+                    data-lucide="circle-check"
+                    class="w-5 h-5 text-green-700"
+                  ></i>
+                </span>
+                <div class="flex-1">
+                  <p class="font-medium text-sm">
+                    Support ticket #S-2024-032 resolved
+                  </p>
+                  <p class="text-sm text-slate-600">by Support Team</p>
+                </div>
+                <span class="text-sm text-slate-600 whitespace-nowrap"
+                  >6 hours ago</span
+                >
+              </li>
+
+              <li class="flex items-start gap-4">
+                <span
+                  class="w-9 h-9 shrink-0 rounded-full bg-indigo-100 grid place-items-center"
+                >
+                  <i data-lucide="building" class="w-5 h-5 text-brand"></i>
+                </span>
+                <div class="flex-1">
+                  <p class="font-medium text-sm">
+                    New NGO application submitted
+                  </p>
+                  <p class="text-sm text-slate-600">by Bright Future</p>
+                </div>
+                <span class="text-sm text-slate-600 whitespace-nowrap"
+                  >1 day ago</span
+                >
+              </li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Turns the data-lucide tags into icons -->
+    <script>
+      lucide.createIcons();
+      <!-- Sidebar functionality -->
+      // Get the elements
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const openBtn = document.getElementById("openMenu");
+      const closeBtn = document.getElementById("closeMenu");
+
+      // Open the sidebar
+      function openMenu() {
+        sidebar.classList.remove("-translate-x-full");
+        overlay.classList.remove("hidden");
+
+        openBtn.setAttribute("aria-expanded", "true");
+        document.body.classList.add("overflow-hidden");
+      }
+
+      // Close the sidebar
+      function closeMenu() {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+
+        openBtn.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      // Open when the hamburger icon is clicked
+      openBtn.addEventListener("click", openMenu);
+
+      // Close when the X button is clicked
+      closeBtn.addEventListener("click", closeMenu);
+
+      // Close when the area outside the sidebar is clicked
+      overlay.addEventListener("click", closeMenu);
+
+      // Close when a navigation link is clicked on mobile
+      sidebar.querySelectorAll("nav a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth < 1024) {
+            closeMenu();
+          }
+        });
+      });
+
+      // Close when Escape is pressed
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+
+      // Ensure the sidebar works correctly when resizing the screen
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) {
+          closeMenu();
+        }
+      });
+
+      // Render the Lucide icons
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

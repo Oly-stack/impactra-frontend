@@ -24,7 +24,7 @@
           <div
             class="flex h-10 w-10 items-center justify-center rounded-full border border-blue-700 text-blue-700"
           >
-            <img src="/impactra-frontend/images/logo2.png" />
+            <img src="/images/logo2.png" />
           </div>
           <span class="text-lg font-bold">IMPACTRA</span>
         </a>
@@ -44,17 +44,24 @@
           >
         </div>
 
-        <div class="flex shrink-0 items-center gap-3">
-          <span class="hidden items-center gap-1 text-xs sm:flex">
-            <i data-lucide="circle-check" class="h-4 w-4 text-emerald-600"></i>
+        <div class="flex shrink-0 items-center gap-1 sm:gap-3">
+          <span
+            class="inline-flex items-center gap-1.5 text-[12px] text-emerald-700 bg-emerald-50 px-2 py-1.5 rounded-full border border-emerald-200/60 font-semibold whitespace-nowrap"
+          >
+            <i data-lucide="circle-check" class="h-3 w-3 text-emerald-600"></i>
             Portal Status: Ready
           </span>
-          <i data-lucide="circle-help" class="hidden h-5 w-5 sm:block"></i>
+          <button
+            type="button"
+            class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-semibold text-base shrink-0"
+          >
+            ?
+          </button>
           <button
             aria-label="User profile"
-            class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-700 text-white"
+            class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-700 text-white"
           >
-            <i data-lucide="user-round" class="h-5 w-5"></i>
+            <img src="/images/user2.png" class="w-3 h-3" />
           </button>
         </div>
       </nav>
@@ -96,13 +103,14 @@
     <main class="mx-auto max-w-7xl px-5 py-8 sm:px-8">
       <!-- PROGRESS BAR -->
       <section
-        class="mb-8 bg-indigo-50 px-5 py-6 rounded-2xl sm:rounded-none sm:px-8"
+        class="mb-8 bg-indigo-50 px-5 py-6 rounded-2xl sm:rounded-xl sm:px-8"
       >
         <div
           class="mb-6 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm"
         >
           <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded bg-indigo-100 px-2 py-1 text-[16px] font-bold"
+            <span
+              class="rounded bg-indigo-100 px-2 py-1 text-[16px] sm:text-[12px] font-bold"
               >REGISTRATION PROTOCOL</span
             >
             <span class="text-slate-600 text-[16px]"
@@ -549,7 +557,7 @@
     </main>
 
     <!-- JAVASCRIPT -->
-        
+
     <script>
       lucide.createIcons();
 
@@ -558,34 +566,39 @@
       }
 
       async function submitProfile() {
-        
-        const submitBtn = document.querySelector('button[onclick="submitProfile()"]');
+        const submitBtn = document.querySelector(
+          'button[onclick="submitProfile()"]',
+        );
         const originalText = submitBtn.innerHTML;
-        
+
         submitBtn.disabled = true;
-        submitBtn.innerHTML = 'Submitting...';
+        submitBtn.innerHTML = "Submitting...";
 
         try {
-          
-          const profileData = JSON.parse(sessionStorage.getItem('pendingUser')) || {};
-          
+          const profileData =
+            JSON.parse(sessionStorage.getItem("pendingUser")) || {};
+
           if (window.API && API.ngo && API.ngo.submitProfile) {
-             await API.ngo.submitProfile(profileData);
+            await API.ngo.submitProfile(profileData);
           } else {
-             // Fallback if API isn't set up yet
-             console.warn("API client not found or method missing. Simulating submit...");
-             await new Promise(resolve => setTimeout(resolve, 1500)); 
+            // Fallback if API isn't set up yet
+            console.warn(
+              "API client not found or method missing. Simulating submit...",
+            );
+            await new Promise((resolve) => setTimeout(resolve, 1500));
           }
 
-          // 4. Handle Success - 
+          // 4. Handle Success -
           alert("Profile submitted successfully! Awaiting admin review.");
-          window.location.href = "step3-reviewing.html"; 
-
+          window.location.href = "step3-reviewing.html";
         } catch (error) {
           // 5. Handle Errors
           console.error("Submission failed:", error);
-          alert("Failed to submit profile: " + (error.message || "Please try again later."));
-          
+          alert(
+            "Failed to submit profile: " +
+              (error.message || "Please try again later."),
+          );
+
           // Re-enable the button so they can try again
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalText;

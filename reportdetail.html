@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Impactra – Incident Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+        colors: {
+          page: "#f6f6fc",
+          ink: "#151a30",
+          muted: "#5b6078",
+          line: "#e7e8f2",
+          field: "#eceefa",
+          panel: "#f3f4fa",
+          tint: "#e8edfb",
+          brand: { DEFAULT: "#0b4fd6", dark: "#0942b3", soft: "#e9edfb" },
+          danger: { DEFAULT: "#c4231c", soft: "#fde4e4", border: "#d6362f" },
+          ok: { DEFAULT: "#0f9d58", dark: "#0b7a43", soft: "#d9f3e3" },
+        },
+      },
+    },
+  };
+</script>
+<style>
+  svg.ic { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+
+<body class="flex min-h-screen bg-page font-sans text-[14px] text-ink">
+
+<!-- Icon sprite -->
+<svg width="0" height="0" class="absolute">
+  <defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10"/><path d="M8 8h2M8 12h2M8 16h2M17 14h1M17 18h1M2 21h20"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="M12 8v4M12 15.5v.01"/></symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-support" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20a4 4 0 0 1-4 2h-2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-logo" viewBox="0 0 24 24"><circle cx="12" cy="7" r="2.5"/><circle cx="6" cy="14" r="2.5"/><circle cx="18" cy="14" r="2.5"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m21 11.5-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.6 6.7A17 17 0 0 0 2 12s3.6 6 10 6a9.7 9.7 0 0 0 4-.9M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+    <symbol id="i-gavel" viewBox="0 0 24 24"><path d="m14 13-8.5 8.5a2.1 2.1 0 0 1-3-3L11 10M16 16l6-6M8 8l6-6M9 7l8 8M21 11l-8-8"/></symbol>
+    <symbol id="i-notes" viewBox="0 0 24 24"><path d="M4 6h12M4 12h7M4 18h6M13 20l.8-3L19 12l2 2-5.2 5.2L13 20Z"/></symbol>
+  </defs>
+</svg>
+cd ~/Desktop/FE_IMPART/impactra-frontend
+<!-- ============ SIDEBAR ============ -->
+<aside class="sticky top-0 hidden h-screen w-[185px] shrink-0 flex-col border-r border-line bg-white md:flex">
+  <div class="flex h-[46px] items-center gap-2 border-b border-line px-4 font-bold tracking-wide">
+    
+      <img src="images/logo2.png" alt="Impactra logo" class="h-[26px] w-[26px] object-contain" />
+IMPACTRA
+    </span>
+    
+  </div>
+
+  <nav class="flex flex-1 flex-col gap-1.5 px-1.5 py-[18px] text-[13px]">
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-grid"/></svg>Dashboard</a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-building"/></svg>Applications</a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg bg-[#e9ecfb] px-3 py-2.5 font-semibold text-brand"><svg class="ic"><use href="#i-shield"/></svg>Reports</a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-support"/></svg>Support</a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-users"/></svg>User Management</a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-gear"/></svg>Settings</a>
+  </nav>
+
+  <div class="flex items-center gap-3.5 border-t border-line px-3 py-3.5 text-[13px]">
+    <span class="font-bold text-muted">⋮</span>
+    <a href="#" class="flex items-center gap-2 text-danger"><svg class="ic"><use href="#i-logout"/></svg>Log out</a>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="min-w-0 flex-1">
+
+  <!-- Top bar -->
+  <header class="flex h-[46px] items-center justify-between border-b border-line bg-white px-6">
+    <label class="flex h-[30px] w-[277px] items-center gap-2 rounded-lg bg-field px-3 text-[12.5px] text-muted">
+      <svg class="ic"><use href="#i-search"/></svg>
+      <input type="text" placeholder="Search administrative logs, orgs, entities..." class="flex-1 bg-transparent text-ink outline-none placeholder:text-muted" />
+    </label>
+    <div class="flex items-center gap-5">
+      <span class="relative text-[#2b3048]">
+        <svg class="ic !h-[18px] !w-[18px]"><use href="#i-bell"/></svg>
+        <span class="absolute -top-px right-0 h-[7px] w-[7px] rounded-full bg-[#e5372f]"></span>
+      </span>
+      <div class="flex items-center gap-2.5 border-l border-line pl-5 text-[13px] font-semibold">
+        <span class="h-[22px] w-[22px] rounded-full bg-gradient-to-br from-[#2d2f45] to-[#6b6f8e]"></span>
+        Eleanor V.
+      </div>
+    </div>
+  </header>
+
+  <main class="px-6 pb-10 pt-4">
+
+    <!-- Breadcrumb -->
+    <nav class="mb-1.5 flex items-center gap-1.5 text-[10.5px] text-muted">
+      <a href="reports.html" class="flex items-center gap-1 font-medium text-brand hover:underline"><svg class="ic !h-3 !w-3"><use href="#i-arrow-left"/></svg>Back to Reports</a>
+      <span>/</span>
+      <span>Incident Review</span>
+    </nav>
+
+    <!-- Title row -->
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <h1 class="text-[24px] font-bold tracking-tight">Report #R-2024-021</h1>
+        <span class="rounded-full border border-danger-border px-2 py-0.5 text-[10.5px] font-medium text-danger">High priority</span>
+      </div>
+      <div class="flex items-center gap-1.5 text-[11px] text-[#2b3048]">
+        <svg class="ic !h-3.5 !w-3.5"><use href="#i-clock"/></svg>
+        <span>Assigned to <b class="font-semibold">Admin Team Alpha</b> (SLA: 4h 12m left)</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mb-4 flex gap-6 rounded-xl bg-white px-4 shadow-sm" id="tabs">
+      <button data-tab="details" class="tab -mb-px flex h-[38px] items-center gap-1.5 border-b-2 border-brand px-2 pt-1 text-[12px] font-semibold text-brand">
+        <svg class="ic !h-3.5 !w-3.5"><use href="#i-info"/></svg>Details
+      </button>
+      <button data-tab="evidence" class="tab -mb-px flex h-[38px] items-center gap-1.5 border-b-2 border-transparent px-2 pt-1 text-[12px] font-medium text-[#2b3048] hover:text-brand">
+        <svg class="ic !h-3.5 !w-3.5"><use href="#i-paperclip"/></svg>Evidence
+        <span class="rounded-full bg-field px-1.5 py-px text-[10px] font-semibold">3</span>
+      </button>
+      <button data-tab="related" class="tab -mb-px flex h-[38px] items-center gap-1.5 border-b-2 border-transparent px-2 pt-1 text-[12px] font-medium text-[#2b3048] hover:text-brand">
+        <svg class="ic !h-3.5 !w-3.5"><use href="#i-folder"/></svg>Related Reports
+        <span class="rounded-full bg-field px-1.5 py-px text-[10px] font-semibold">1</span>
+      </button>
+      <button data-tab="audit" class="tab -mb-px flex h-[38px] items-center gap-1.5 border-b-2 border-transparent px-2 pt-1 text-[12px] font-medium text-[#2b3048] hover:text-brand">
+        <svg class="ic !h-3.5 !w-3.5"><use href="#i-history"/></svg>Audit History
+      </button>
+    </div>
+
+    <!-- Two column layout -->
+    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_258px]">
+
+      <!-- ===== LEFT COLUMN ===== -->
+      <div class="space-y-4">
+
+        <!-- Report information -->
+        <section class="rounded-xl bg-white p-5 shadow-sm">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="flex items-center gap-2 text-[13.5px] font-semibold"><svg class="ic !h-[18px] !w-[18px] text-brand"><use href="#i-gavel"/></svg>Report Information</h2>
+            <span class="text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#3a3f58]">Code of conduct · Rule 4.2</span>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <div class="mb-1.5 text-[9.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Reported NGO/Event</div>
+              <div class="flex items-center gap-2.5 rounded-lg bg-panel px-3 py-2.5">
+                <span class="grid h-[22px] w-[22px] flex-none place-items-center rounded-full bg-black text-[9px] font-semibold text-white">JD</span>
+                <div class="min-w-0 flex-1">
+                  <div class="text-[12px] font-semibold">John Doe</div>
+                  <div class="text-[10px] leading-snug text-muted">Volunteer ID: #V-<br/>89104</div>
+                </div>
+                <a href="#" class="flex items-center gap-1.5 text-[10px] font-semibold leading-tight text-brand hover:underline">
+                  <span>View<br/>profile</span><svg class="ic !h-3 !w-3"><use href="#i-external"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-1.5 text-[9.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Reported by</div>
+              <div class="flex items-center gap-2.5 rounded-lg bg-panel px-3 py-2.5">
+                <span class="grid h-[22px] w-[22px] flex-none place-items-center rounded-full bg-[#dbe5ff] text-[9px] font-semibold text-[#1c3fa6]">MA</span>
+                <div class="min-w-0 flex-1">
+                  <div class="text-[12px] font-semibold">Mary A.</div>
+                  <div class="text-[10px] leading-snug text-muted">Verified Field<br/>Volunteer</div>
+                </div>
+                <span class="rounded-full bg-[#dbe5ff] px-2.5 py-1 text-[10px] font-semibold text-[#1c3fa6]">Confidential</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-1.5 text-[9.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Category</div>
+              <div class="flex items-center gap-2 text-[12px]"><span class="h-1.5 w-1.5 rounded-full bg-danger"></span>Inappropriate behaviour</div>
+            </div>
+            <div>
+              <div class="mb-1.5 text-[9.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Date reported</div>
+              <div class="flex items-center gap-2 text-[12px]"><svg class="ic !h-3.5 !w-3.5"><use href="#i-calendar"/></svg>12 Aug 2024, 10:24 AM (UTC+1)</div>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <div class="mb-1.5 text-[9.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Incident statement</div>
+            <blockquote class="rounded-lg bg-tint px-4 py-3.5 text-[12.5px] leading-[1.7] text-[#1c2036]">
+              “This user sent inappropriate messages during the regional water distribution event and made other volunteers uncomfortable. Despite verbal reminders from the area coordinator, the behavior persisted during the group cleanup shift.”
+            </blockquote>
+          </div>
+
+          <div class="mt-4 grid gap-4 rounded-lg bg-panel px-3.5 py-3 sm:grid-cols-3">
+            <div>
+              <div class="mb-1 text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#3a3f58]">Deployment mission</div>
+              <div class="text-[12px] font-semibold">Clean Water Initiative #04</div>
+            </div>
+            <div>
+              <div class="mb-1 text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#3a3f58]">Witnesses flagged</div>
+              <div class="text-[12px] font-semibold">2 Field Volunteers</div>
+            </div>
+            <div>
+              <div class="mb-1 text-[9.5px] font-semibold uppercase tracking-[.06em] text-[#3a3f58]">Prior violations</div>
+              <div class="text-[12px] font-semibold leading-snug text-danger">1 previous warning (Jun 2024)</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Admin notes -->
+        <section class="rounded-xl bg-white p-5 shadow-sm">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="flex items-center gap-2 text-[14px] font-semibold"><svg class="ic !h-[18px] !w-[18px] text-brand"><use href="#i-notes"/></svg>Admin Notes (Internal Only)</h2>
+            <span class="flex items-center gap-1.5 text-[10.5px] text-[#2b3048]"><svg class="ic !h-3 !w-3 text-ok"><use href="#i-lock"/></svg>Confidential to Platform Admins</span>
+          </div>
+
+          <ul id="notes" class="mb-4 space-y-3">
+            <li class="flex gap-2.5">
+              <span class="mt-0.5 grid h-[18px] w-[18px] flex-none place-items-center rounded-full bg-black text-[7.5px] font-semibold text-white">AU</span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-[10.5px] font-semibold">Admin User (Lead Moderator)</span>
+                  <span class="text-[10px] text-muted">12 Aug 2024, 11:05 AM</span>
+                </div>
+                <p class="mt-0.5 text-[10.5px] leading-snug text-muted">Verified event logs against incident timestamp. Attached chat transcripts match time windows recorded by telemetry.</p>
+              </div>
+            </li>
+          </ul>
+
+          <textarea id="noteInput" rows="2" placeholder="Add internal notes about this report, investigation updates, or moderation context..."
+            class="w-full resize-none rounded-lg bg-panel px-3.5 py-3 text-[11px] text-ink outline-none placeholder:text-muted focus:ring-2 focus:ring-brand/30"></textarea>
+
+          <div class="mt-3 flex items-center justify-between">
+            <span class="flex items-center gap-1.5 text-[10.5px] text-muted"><svg class="ic !h-3.5 !w-3.5"><use href="#i-eye-off"/></svg>Not visible to reporter or reported entity</span>
+            <button id="addNote" class="h-8 rounded-md bg-brand px-4 text-[12px] font-semibold text-white hover:bg-brand-dark">Add Note</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== RIGHT COLUMN ===== -->
+      <aside class="space-y-4">
+
+        <!-- Evidence -->
+        <section class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="mb-3.5 flex items-center justify-between">
+            <h2 class="flex items-center gap-2 text-[13.5px] font-semibold"><svg class="ic !h-[18px] !w-[18px] text-brand"><use href="#i-paperclip"/></svg>Evidence</h2>
+            <a href="#" class="text-[10.5px] font-semibold text-brand hover:underline">View all (3)</a>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="flex items-center gap-2.5 rounded-lg bg-panel p-1.5 pr-3">
+              <!-- thumbnail 1 -->
+              <div class="h-[38px] w-[38px] flex-none overflow-hidden rounded-md bg-white ring-1 ring-line">
+                <div class="h-2 bg-[#2b5fd9]"></div>
+                <div class="space-y-[3px] p-1"><div class="h-[3px] rounded bg-danger-border"></div><div class="h-[3px] w-4/5 rounded bg-[#9aa5cf]"></div><div class="h-[3px] rounded bg-[#2b5fd9]"></div><div class="h-[3px] w-3/5 rounded bg-[#9aa5cf]"></div></div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="truncate text-[12px] font-semibold">Screenshot 1.png</div>
+                <div class="text-[10px] text-muted">PNG · 1.2 MB</div>
+              </div>
+              <button class="text-[#3a3f58] hover:text-brand" aria-label="Download Screenshot 1"><svg class="ic !h-3.5 !w-3.5"><use href="#i-download"/></svg></button>
+            </div>
+
+            <div class="flex items-center gap-2.5 rounded-lg bg-panel p-1.5 pr-3">
+              <!-- thumbnail 2 -->
+              <div class="grid h-[38px] w-[38px] flex-none place-items-center overflow-hidden rounded-md bg-gradient-to-br from-[#cfd3df] to-[#8f96ad]">
+                <div class="h-[30px] w-[17px] rounded-[4px] border-2 border-[#2b3048] bg-white"></div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="truncate text-[12px] font-semibold">Screenshot 2.png</div>
+                <div class="text-[10px] text-muted">PNG · 950 KB</div>
+              </div>
+              <button class="text-[#3a3f58] hover:text-brand" aria-label="Download Screenshot 2"><svg class="ic !h-3.5 !w-3.5"><use href="#i-download"/></svg></button>
+            </div>
+
+            <div class="flex items-start gap-2 rounded-lg bg-tint px-3 py-2.5 text-[10.5px] leading-snug text-[#1c2036]">
+              <svg class="ic mt-px !h-3.5 !w-3.5 text-brand"><use href="#i-shield-check"/></svg>
+              <span>Metadata confirmed: EXIF GPS matched event site.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reporter authenticity -->
+        <section class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="mb-3 text-[9.5px] font-semibold uppercase tracking-[.08em] text-[#3a3f58]">Reporter authenticity</div>
+
+          <div class="space-y-3 text-[11.5px]">
+            <div class="flex items-center justify-between gap-2">
+              <span class="leading-tight">Platform<br/>Standing</span>
+              <span class="flex items-center gap-1 text-[10.5px] font-semibold text-ok"><svg class="ic !h-3.5 !w-3.5"><use href="#i-check-circle"/></svg>High Trust (99.4%)</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Completed Missions</span><b class="font-semibold">34 deployments</b>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Prior False Reports</span><b class="font-semibold">0 reported</b>
+            </div>
+          </div>
+
+          <div class="mt-3.5 h-1.5 overflow-hidden rounded bg-field"><span class="block h-full w-[96%] rounded bg-brand"></span></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  // ---- Tabs: visual active state ----
+  const tabs = document.querySelectorAll("#tabs .tab");
+  tabs.forEach(tab => tab.addEventListener("click", () => {
+    tabs.forEach(t => {
+      t.classList.remove("border-brand", "text-brand", "font-semibold");
+      t.classList.add("border-transparent", "text-[#2b3048]", "font-medium");
+    });
+    tab.classList.remove("border-transparent", "text-[#2b3048]", "font-medium");
+    tab.classList.add("border-brand", "text-brand", "font-semibold");
+  }));
+
+  // ---- Admin notes ----
+  const input = document.getElementById("noteInput");
+  const list = document.getElementById("notes");
+  const escapeHtml = s => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  document.getElementById("addNote").addEventListener("click", () => {
+    const text = input.value.trim();
+    if (!text) return;
+    const stamp = new Date().toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true });
+    const li = document.createElement("li");
+    li.className = "flex gap-2.5";
+    li.innerHTML = `
+      <span class="mt-0.5 grid h-[18px] w-[18px] flex-none place-items-center rounded-full bg-black text-[7.5px] font-semibold text-white">AU</span>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[10.5px] font-semibold">Admin User (Lead Moderator)</span>
+          <span class="text-[10px] text-muted">${stamp}</span>
+        </div>
+        <p class="mt-0.5 text-[10.5px] leading-snug text-muted">${escapeHtml(text)}</p>
+      </div>`;
+    list.appendChild(li);
+    input.value = "";
+  });
+</script>
+</body>
+</html>
