@@ -22,13 +22,16 @@
 
   /* Read applicationId from URL */
   const urlParams = new URLSearchParams(window.location.search);
-  const APPLICATION_ID = urlParams.get("applicationId") || urlParams.get("id");
+  let APPLICATION_ID = urlParams.get("applicationId") || urlParams.get("id");
 
   if (!APPLICATION_ID) {
     console.warn("[volun.js] No applicationId in URL.");
   }
 
   let application = null;
+
+  /* Safe id lookup (handles `_id` and `id` from the backend) */
+  const idOf = (obj) => obj?._id || obj?.id || "";
 
   /* TOAST */
   function toast(message, variant = "default") {
@@ -114,6 +117,7 @@
     return portal;
   }
 
+  // returns the modal card so callers can scope their queries.
   function openModal({ title, body, footer, size = "max-w-lg" }) {
     const portal = ensureModalPortal();
     const card = $("[data-modal-card]", portal);
@@ -138,6 +142,7 @@
     $("[data-modal-close]", card)?.addEventListener("click", closeModal);
     card.querySelectorAll("[data-modal-cancel]").forEach((b) => b.addEventListener("click", closeModal));
     setTimeout(() => $("button, [href], input, select, textarea", card)?.focus(), 60);
+    return card;
   }
 
   function closeModal() {
@@ -162,15 +167,17 @@
     }
   });
 
-  const bell = $("header button");
+  // (fragile if a theme change adds another header button)
+  const bell = $$("header button").find((b) =>
+    b.querySelector('span.bg-\\[\\#F43F5E\\]')
+  );
   bell?.addEventListener("click", async () => {
-    bell.querySelector("span.bg-\\[\\#F43F5E\\]")?.remove();
+    bell.querySelector('span.bg-\\[\\#F43F5E\\]')?.remove();
     try {
-      await API.patch("/notifications/read-all", {});
-      toast("You're all caught up", "success");
-    } catch (_) {
-      toast("You're all caught up", "success");
-    }
+      
+      await API.notifications.markAllRead();
+    } catch (_) { /* non-blocking */ }
+    toast("You're all caught up", "success");
   });
 
   /* HYDRATE */
@@ -181,6 +188,7 @@
     }
 
     try {
+      
       const res = await API.applications.get(APPLICATION_ID);
       application = res?.data || res || null;
 
@@ -189,7 +197,10 @@
         return;
       }
 
-      const volunteer = application.volunteer || {};
+      // If URL didn't carry an id, adopt the one the backend returned.
+      if (!APPLICATION_ID) APPLICATION_ID = idOf(application);
+
+      const volunteer   = application.volunteer || {};
       const opportunity = application.opportunity || {};
 
       // Header — volunteer name
@@ -210,9 +221,9 @@
       const meta = byText("p", "Age:");
       if (meta) {
         const parts = [
-          application.age ? `Age: ${application.age}` : null,
-          application.gender ? `Gender: ${application.gender}` : null,
-          application.location ? `Location: ${application.location}` : null,
+          application.age      ? `Age: ${application.age}`             : null,
+          application.gender   ? `Gender: ${application.gender}`       : null,
+          application.location ? `Location: ${application.location}`   : null,
           volunteer.occupation ? `Occupation: ${volunteer.occupation}` : null,
         ].filter(Boolean);
         if (parts.length) meta.textContent = parts.join(" · ");
@@ -238,8 +249,7 @@
         ).join("");
       }
 
-      // Metrics — Verified Hours, Activities, Certificates (volunteer aggregate)
-      const metricsRes = await API.get(`/organization/applications/stats`).catch(() => null);
+      // returns org-wide stats, not per-volunteer. Nothing was done with it.
 
       // Status pill
       updateStatusPill(application.status);
@@ -254,7 +264,10 @@
   }
 
   function updateStatusPill(status) {
-    const pill = byText("span", "Pending Review") || byText("span", "Approved") || byText("span", "Not Accepted");
+    const pill =
+      byText("span", "Pending Review") ||
+      byText("span", "Approved") ||
+      byText("span", "Not Accepted");
     if (!pill) return;
     const s = (status || "pending").toLowerCase();
     if (s === "approved") {
@@ -265,6 +278,7 @@
       pill.className = "inline-flex items-center gap-1.5 rounded-full border border-[#FECDD3] bg-[#FFF1F2] px-3 py-1";
     } else {
       pill.innerHTML = `<span class="h-1.5 w-1.5 rounded-full bg-[#F59E0B]"></span><span class="text-[11px] font-semibold text-[#92400E]">Pending Review</span>`;
+      pill.className = "inline-flex items-center gap-1.5 rounded-full border border-[#FDE68A] bg-[#FFFBEB] px-3 py-1";
     }
   }
 
@@ -274,21 +288,23 @@
   const askBtn     = byText("button", "Ask a Question");
 
   approveBtn?.addEventListener("click", () => {
-    openModal({
+    const card = openModal({
       title: "Approve Application",
-      body: `
-        <p>You're about to approve this volunteer. They'll be notified and can begin logging hours.</p>
-      `,
+      body: `<p>You're about to approve this volunteer. They'll be notified and can begin logging hours.</p>`,
       footer: `
         <button data-modal-cancel class="h-10 rounded-lg bg-[#F1F5F9] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
         <button data-modal-confirm class="h-10 rounded-lg bg-[#059669] px-4 text-sm font-semibold text-white transition hover:bg-[#047857]">Yes, approve</button>
       `,
     });
 
-    $("[data-modal-confirm]")?.addEventListener("click", (ev) => {
+    // scope to modal card; use API.organization.applications.approve
+    $("[data-modal-confirm]", card)?.addEventListener("click", (ev) => {
       withBusy(ev.currentTarget, "Approving…", async () => {
         try {
-          await API.applications.approve(APPLICATION_ID, "Approved from profile view.");
+          await API.organization.applications.approve(
+            APPLICATION_ID,
+            "Approved from profile view."
+          );
           closeModal();
           setTimeout(() => {
             updateStatusPill("approved");
@@ -302,7 +318,7 @@
   });
 
   rejectBtn?.addEventListener("click", () => {
-    openModal({
+    const card = openModal({
       title: "Do Not Accept Application",
       body: `
         <label class="block">
@@ -317,11 +333,12 @@
       `,
     });
 
-    $("[data-modal-confirm]")?.addEventListener("click", (ev) => {
-      const note = $("[data-reason]")?.value.trim() || "Not a fit for this opportunity.";
+    $("[data-modal-confirm]", card)?.addEventListener("click", (ev) => {
+      const note = $("[data-reason]", card)?.value.trim() || "Not a fit for this opportunity.";
       withBusy(ev.currentTarget, "Submitting…", async () => {
         try {
-          await API.applications.reject(APPLICATION_ID, note);
+         
+          await API.organization.applications.reject(APPLICATION_ID, note);
           closeModal();
           setTimeout(() => {
             updateStatusPill("rejected");
@@ -334,18 +351,62 @@
     });
   });
 
-  /* BACK BUTTONS */
-  byText("a", "Back")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.location.href = "application.html";
+  // Uses a simple message composer that toasts on "send" (no backend route exists yet).
+  askBtn?.addEventListener("click", () => {
+    const card = openModal({
+      title: "Ask a Question",
+      body: `
+        <label class="block">
+          <span class="text-[11px] font-semibold uppercase tracking-[0.55px] text-[#64748B]">Your question</span>
+          <textarea data-question rows="4" placeholder="Ask the applicant anything — schedule, availability, experience…"
+                    class="mt-1.5 w-full resize-none rounded-lg border border-[#E2E8F0] bg-white p-3 text-sm focus:border-[#2563EB] focus:outline-none"></textarea>
+        </label>
+        <p class="mt-3 text-[12px] text-slate-500">
+          In-app messaging isn't enabled yet. For now, the applicant's email will be copied to your clipboard when you submit.
+        </p>
+      `,
+      footer: `
+        <button data-modal-cancel class="h-10 rounded-lg bg-[#F1F5F9] px-4 text-sm font-semibold transition hover:bg-slate-200">Cancel</button>
+        <button data-modal-confirm class="h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-semibold text-white transition hover:bg-[#1D4ED8]">Send</button>
+      `,
+    });
+
+    $("[data-modal-confirm]", card)?.addEventListener("click", async (ev) => {
+      const text = $("[data-question]", card)?.value.trim();
+      if (!text) { toast("Please write a question", "error"); return; }
+
+      withBusy(ev.currentTarget, "Sending…", async () => {
+        const email =
+          application?.email ||
+          application?.volunteer?.email ||
+          "";
+        if (email && navigator.clipboard?.writeText) {
+          try {
+            await navigator.clipboard.writeText(
+              `To: ${email}\n\n${text}`
+            );
+          } catch (_) { /* clipboard may be blocked */ }
+        }
+        closeModal();
+        setTimeout(() => toast("Question prepared — applicant email copied", "success"), 220);
+      });
+    });
   });
 
+  /* BACK BUTTONS */
+  const topBack = byText("a", "Back");
+  if (topBack && /^back$/i.test(topBack.textContent.trim())) {
+    topBack.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "application.html";
+    });
+  }
   byText("a", "Back to Volunteers")?.addEventListener("click", (e) => {
     e.preventDefault();
     window.location.href = "application.html";
   });
 
-  /* EXPORT SUMMARY (uses existing /applications/:id) */
+  /* EXPORT SUMMARY */
   byText("button", "Export Summary")?.addEventListener("click", (e) => {
     withBusy(e.currentTarget, "Generating…", async () => {
       try {
@@ -354,7 +415,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `application-${APPLICATION_ID}.json`;
+        a.download = `application-${APPLICATION_ID || idOf(application)}.json`;
         a.click();
         URL.revokeObjectURL(url);
         toast("Summary downloaded", "success");
@@ -366,7 +427,7 @@
 
   /* LOG OUT */
   byText("aside button", "Log out")?.addEventListener("click", () => {
-    openModal({
+    const card = openModal({
       title: "Log out?",
       body: `<p>You'll be signed out of IMPACTRA on this device.</p>`,
       footer: `
@@ -374,7 +435,7 @@
         <button data-modal-confirm class="h-10 rounded-lg bg-[#E11D48] px-4 text-sm font-semibold text-white transition hover:bg-rose-700">Log out</button>
       `,
     });
-    $("[data-modal-confirm]")?.addEventListener("click", async () => {
+    $("[data-modal-confirm]", card)?.addEventListener("click", async () => {
       try { await API.auth.logout(); } catch (_) {}
       API.tokens.clear();
       sessionStorage.clear();

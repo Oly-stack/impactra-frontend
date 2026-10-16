@@ -1,545 +1,76 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Opportunity Details | Impactra</title>
-
+  <link rel="shortcut icon" href="img/impactra-logo.jpeg" type="image/x-icon" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-      color: #1f2937;
-    }
-
-    header {
-      background: white;
-      padding: 20px 8%;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #4f46e5;
-    }
-
-    main {
-      max-width: 1050px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-bottom: 25px;
-      color: #4f46e5;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .opportunity-header {
-      background: white;
-      padding: 35px;
-      border-radius: 14px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    }
-
-    .badge {
-      display: inline-block;
-      background: #eef2ff;
-      color: #4f46e5;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    h1 {
-      margin: 20px 0 12px;
-      font-size: 32px;
-      color: #111827;
-    }
-
-    h2 {
-      font-size: 21px;
-      margin-top: 0;
-    }
-
-    p {
-      color: #64748b;
-      line-height: 1.7;
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 20px;
-      color: #475569;
-      font-size: 14px;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 25px;
-    }
-
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 14px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    }
-
-    .info-row {
-      padding: 13px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .info-row:last-child {
-      border-bottom: none;
-    }
-
-    .info-label {
-      display: block;
-      font-size: 13px;
-      color: #64748b;
-      margin-bottom: 6px;
-    }
-
-    .info-value {
-      font-weight: bold;
-      color: #111827;
-    }
-
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      text-align: center;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .primary {
-      background: #4f46e5;
-      color: white;
-    }
-
-    .primary:hover {
-      background: #4338ca;
-    }
-
-    .secondary {
-      background: #eef2ff;
-      color: #4f46e5;
-      margin-top: 12px;
-    }
-
-    .notice {
-      background: #f8fafc;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 20px;
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    @media (max-width: 768px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .opportunity-header,
-      .card {
-        padding: 22px;
-      }
-
-      h1 {
-        font-size: 25px;
-      }
-
-      main {
-        margin: 20px auto;
-      }
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f8fafc; color: #1f2937; }
+    header { background: white; padding: 20px 8%; border-bottom: 1px solid #e5e7eb; }
+    .logo { font-size: 24px; font-weight: bold; color: #4f46e5; }
+    main { max-width: 1050px; margin: 40px auto; padding: 0 20px; }
+    .back-link { display: inline-block; margin-bottom: 25px; color: #4f46e5; text-decoration: none; font-weight: bold; }
+    .opportunity-header { background: white; padding: 35px; border-radius: 14px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    .badge { display: inline-block; background: #eef2ff; color: #4f46e5; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+    h1 { margin: 20px 0 12px; font-size: 32px; color: #111827; }
+    h2 { font-size: 21px; margin-top: 0; }
+    p { color: #64748b; line-height: 1.7; }
+    .meta { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; color: #475569; font-size: 14px; }
+    .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+    .card { background: white; padding: 30px; border-radius: 14px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    .info-row { padding: 13px 0; border-bottom: 1px solid #e5e7eb; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; }
+    .info-value { font-weight: bold; color: #111827; }
+    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 8px; text-align: center; text-decoration: none; font-size: 15px; font-weight: bold; cursor: pointer; }
+    .primary { background: #4f46e5; color: white; }
+    .primary:hover { background: #4338ca; }
+    .secondary { background: #eef2ff; color: #4f46e5; margin-top: 12px; }
+    .notice { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 13px; color: #64748b; }
+    @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } .opportunity-header, .card { padding: 22px; } h1 { font-size: 25px; } main { margin: 20px auto; } }
   </style>
-  <script src="API.js" defer></script>
+  <script src="../API.js" defer></script>
+  <script src="opportunity-workflow.js" defer></script>
 </head>
-
 <body>
-
-  <header>
-    <div class="logo">Impactra</div>
-  </header>
-
+  <header><div class="logo">Impactra</div></header>
   <main>
-
-    <a href="../opportunities.html" class="back-link">
-      &larr; Back to Opportunities
-    </a>
+    <a href="opportunities-list.html" class="back-link">&larr; Back to Opportunities</a>
 
     <section class="opportunity-header">
-
-      <span class="badge" id="category">
-        Opportunity
-      </span>
-
+      <span class="badge" id="category">Opportunity</span>
       <h1 id="title">Opportunity Details</h1>
-
-      <p id="shortDescription">
-        Explore this opportunity and learn how you
-        can make a meaningful impact.
-      </p>
-
+      <p id="shortDescription">Explore this opportunity and learn how you can make a meaningful impact.</p>
       <div class="meta">
-        <span>
-          📍 <span id="location">Not specified</span>
-        </span>
-
-        <span>
-          🌐 <span id="type">Not specified</span>
-        </span>
-
-        <span>
-          📅 <span id="deadline">Not specified</span>
-        </span>
+        <span>📍 <span id="location">Not specified</span></span>
+        <span>🌐 <span id="type">Not specified</span></span>
+        <span>📅 <span id="deadline">Not specified</span></span>
       </div>
-
     </section>
 
     <div class="content-grid">
-
       <div>
-
-        <section class="card">
-          <h2>About This Opportunity</h2>
-
-          <p id="description">
-            Opportunity description will appear here.
-          </p>
-        </section>
-
-        <section class="card">
-          <h2>Requirements</h2>
-
-          <p id="requirements">
-            Requirements will appear here.
-          </p>
-        </section>
-
-        <section class="card">
-          <h2>Benefits</h2>
-
-          <p id="benefits">
-            Benefits will appear here.
-          </p>
-        </section>
-
+        <section class="card"><h2>About This Opportunity</h2><p id="description">Opportunity description will appear here.</p></section>
+        <section class="card"><h2>Requirements</h2><p id="requirements">Requirements will appear here.</p></section>
+        <section class="card"><h2>Benefits</h2><p id="benefits">Benefits will appear here.</p></section>
       </div>
-
       <aside>
-
         <section class="card">
-
           <h2>Opportunity Overview</h2>
-
-          <div class="info-row">
-            <span class="info-label">Category</span>
-            <span class="info-value" id="sideCategory">
-              Not specified
-            </span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label">Location</span>
-            <span class="info-value" id="sideLocation">
-              Not specified
-            </span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label">Start Date</span>
-            <span class="info-value" id="startDate">
-              Not specified
-            </span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label">End Date</span>
-            <span class="info-value" id="endDate">
-              Not specified
-            </span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label">
-              Application Deadline
-            </span>
-            <span class="info-value" id="sideDeadline">
-              Not specified
-            </span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label">
-              Available Slots
-            </span>
-            <span class="info-value" id="slots">
-              Not specified
-            </span>
-          </div>
-
-          <button
-            class="btn primary"
-            onclick="applyForOpportunity()"
-          >
-            Apply for Opportunity
-          </button>
-
-          <a
-            href="opportunities-list.html"
-            class="btn secondary"
-          >
-            Browse Opportunities
-          </a>
-
-          <div class="notice">
-            Please review all opportunity details
-            before submitting an application.
-          </div>
-
+          <div class="info-row"><span class="info-label">Category</span><span class="info-value" id="sideCategory">Not specified</span></div>
+          <div class="info-row"><span class="info-label">Location</span><span class="info-value" id="sideLocation">Not specified</span></div>
+          <div class="info-row"><span class="info-label">Start Date</span><span class="info-value" id="startDate">Not specified</span></div>
+          <div class="info-row"><span class="info-label">End Date</span><span class="info-value" id="endDate">Not specified</span></div>
+          <div class="info-row"><span class="info-label">Application Deadline</span><span class="info-value" id="sideDeadline">Not specified</span></div>
+          <div class="info-row"><span class="info-label">Available Slots</span><span class="info-value" id="slots">Not specified</span></div>
+          <button class="btn primary" onclick="applyForOpportunity()">Apply for Opportunity</button>
+          <a href="opportunities-list.html" class="btn secondary">Browse Opportunities</a>
+          <div class="notice">Please review all opportunity details before submitting an application.</div>
         </section>
-
       </aside>
-
     </div>
-
   </main>
-
-  <script>
-  (() => {
-    "use strict";
-
-    /* Toast */
-    function toast(message, variant = "default") {
-      let host = document.getElementById("toast-host");
-      if (!host) {
-        host = document.createElement("div");
-        host.id = "toast-host";
-        host.className =
-          "pointer-events-none fixed bottom-6 left-1/2 z-[90] flex -translate-x-1/2 flex-col items-center gap-2";
-        document.body.appendChild(host);
-      }
-      const palette = {
-        default: "bg-[#0F172A] text-white",
-        success: "bg-[#065F46] text-white",
-        error:   "bg-[#991B1B] text-white",
-        info:    "bg-[#1D4ED8] text-white",
-      };
-      const el = document.createElement("div");
-      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
-      el.textContent = message;
-      host.appendChild(el);
-      setTimeout(() => {
-        el.style.transition = "opacity .25s ease, transform .25s ease";
-        el.style.opacity = "0";
-        el.style.transform = "translateY(8px)";
-        setTimeout(() => el.remove(), 260);
-      }, 2800);
-    }
-
-    /* Rendering helpers*/
-    function setText(id, value, fallback = "Not specified") {
-      const element = document.getElementById(id);
-      if (!element) {
-        console.warn("Missing element:", id);
-        return;
-      }
-      const hasValue =
-        value !== undefined &&
-        value !== null &&
-        String(value).trim() !== "";
-      element.textContent = hasValue ? String(value) : fallback;
-    }
-
-    function formatDate(dateString) {
-      if (!dateString) return "Not specified";
-      // Accept both "2026-10-04" and full ISO strings
-      const iso = /^\d{4}-\d{2}-\d{2}$/.test(dateString)
-        ? `${dateString}T00:00:00`
-        : dateString;
-      const date = new Date(iso);
-      if (Number.isNaN(date.getTime())) return "Not specified";
-      return date.toLocaleDateString("en-NG", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-    }
-
-    /* Cache of the current opportunity (populated on load)*/
-    let currentOpportunity = null;
-
-    /* Render*/
-    function render(opportunity) {
-      setText("title", opportunity.title, "Opportunity Details");
-      setText("category", opportunity.category, "Opportunity");
-      setText("sideCategory", opportunity.category);
-
-      setText("location", opportunity.location);
-      setText("sideLocation", opportunity.location);
-
-      setText("type", opportunity.type);
-
-      setText("description", opportunity.description, "No description provided.");
-      setText("shortDescription", opportunity.description, "Explore this opportunity.");
-
-      setText("requirements", opportunity.requirements, "No requirements provided.");
-      setText("benefits", opportunity.benefits, "No benefits specified.");
-
-      setText("startDate", formatDate(opportunity.startDate));
-      setText("endDate", formatDate(opportunity.endDate));
-      setText("deadline", formatDate(opportunity.deadline));
-      setText("sideDeadline", formatDate(opportunity.deadline));
-
-      setText("slots", opportunity.slots);
-
-      // Update the document title too, if the page has one
-      if (opportunity.title) document.title = `${opportunity.title} · IMPACTRA`;
-    }
-
-    /* Load on DOM ready*/
-    document.addEventListener("DOMContentLoaded", async function () {
-      const DRAFT_KEY     = "impactraOpportunityDraft";
-      const PUBLISHED_KEY = "impactraPublishedOpportunity";
-
-      /*  1. Read from sessionStorage  */
-      let opportunity = null;
-      try {
-        const raw =
-          sessionStorage.getItem(PUBLISHED_KEY) ||
-          sessionStorage.getItem(DRAFT_KEY);
-        if (raw) opportunity = JSON.parse(raw);
-      } catch (error) {
-        console.error("[opportunity-detail] corrupt saved data:", error);
-      }
-
-      /*  2. Try to refresh from API (URL ?id=, then cached id)  */
-      const urlId = new URLSearchParams(window.location.search).get("id");
-      const apiId = urlId || opportunity?.id;
-
-      if (window.API && apiId) {
-        try {
-          const res = await API.opportunities.get(apiId);
-          const remote = res?.data || res || null;
-          if (remote) {
-            // Remote wins for fields it provides; fall back to local otherwise
-            opportunity = { ...(opportunity || {}), ...remote };
-          }
-        } catch (err) {
-          // Non-fatal — we still have the local copy
-          console.warn("[opportunity-detail] server refresh failed:", err);
-        }
-      }
-
-      /*  3. Nothing to show? Bail with a friendly message  */
-      if (!opportunity) {
-        console.warn("[opportunity-detail] no opportunity found in sessionStorage");
-        toast("No opportunity to display", "info");
-        return;
-      }
-
-      /*  4. Cache + render  */
-      currentOpportunity = opportunity;
-      render(opportunity);
-    });
-
-    /* Apply for opportunity*/
-    window.applyForOpportunity = async function () {
-      if (!currentOpportunity) {
-        toast("Nothing to apply to yet", "error");
-        return;
-      }
-
-      // Find the button (in case the HTML uses onclick="applyForOpportunity()")
-      const btn =
-        document.querySelector("[data-apply-btn]") ||
-        Array.from(document.querySelectorAll("button")).find((b) =>
-          /apply/i.test(b.textContent || "")
-        );
-
-      const original = btn ? btn.innerHTML : "";
-      if (btn) {
-        btn.disabled = true;
-        btn.classList.add("opacity-70", "cursor-not-allowed");
-        btn.textContent = "Applying…";
-      }
-
-      try {
-        // If we have an API client and an ID, submit the application for real.
-        if (window.API && currentOpportunity.id) {
-          await API.applications.create
-            ? await API.applications.create({ opportunityId: currentOpportunity.id })
-            : await API.post("/applications", { opportunityId: currentOpportunity.id });
-        } else {
-          // Fallback so the button still does something during dev
-          await new Promise((r) => setTimeout(r, 400));
-        }
-
-        toast("Application submitted — we'll be in touch", "success");
-
-        if (btn) {
-          btn.textContent = "Applied";
-          btn.classList.remove("opacity-70", "cursor-not-allowed");
-          btn.classList.add("bg-[#059669]", "text-white");
-          // Leave disabled after successful apply
-        }
-      } catch (err) {
-        // Roll back
-        if (btn) {
-          btn.disabled = false;
-          btn.classList.remove("opacity-70", "cursor-not-allowed");
-          btn.innerHTML = original;
-        }
-
-        const msg = err?.message || "Couldn't submit application — please try again";
-        toast(msg, "error");
-        console.error("[opportunity-detail] apply failed:", err);
-      }
-    };
-
-    /* Bind the Apply button if it isn't using onclick*/
-    document.addEventListener("DOMContentLoaded", () => {
-      const btn = Array.from(document.querySelectorAll("button")).find((b) =>
-        /apply/i.test(b.textContent || "")
-      );
-      if (btn && !btn.hasAttribute("onclick")) {
-        btn.addEventListener("click", window.applyForOpportunity);
-      }
-    });
-
-    /* Global 401*/
-    document.addEventListener("api:unauthorized", () => {
-      toast("Session expired — please sign in again", "error");
-      setTimeout(() => (window.location.href = "login.html"), 900);
-    });
-  })();
-</script>
-
 </body>
 </html>

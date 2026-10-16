@@ -1,19 +1,18 @@
-/* IMPACTRA — Register (NGO account creation) */
-console.log("[register.js] Script loaded");
+/* IMPACTRA — Register (NGO + Platform Admin) */
+(() => {
+  "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("[register.js] DOM ready");
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-  /*  API GUARD  */
   if (!window.API) {
-    console.error(
-      "[register.js] API client not found. Did you load ../API.js first?",
-    );
+    console.error("[register.js] API client not found.");
+    return;
   }
 
   /*  TOAST  */
   function toast(message, variant = "default") {
-    let host = document.getElementById("toast-host");
+    let host = $("#toast-host");
     if (!host) {
       host = document.createElement("div");
       host.id = "toast-host";
@@ -24,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const palette = {
       default: "bg-[#0F172A] text-white",
       success: "bg-[#065F46] text-white",
-      error: "bg-[#991B1B] text-white",
-      info: "bg-[#1D4ED8] text-white",
+      error:   "bg-[#991B1B] text-white",
+      info:    "bg-[#1D4ED8] text-white",
     };
     const el = document.createElement("div");
     el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
@@ -45,18 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function markInvalid(field, message) {
     if (!field) return;
-    field.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-    field.classList.remove("border-gray-200");
+    field.classList.add("ring-2", "ring-[#F43F5E]/60");
     field.focus();
     toast(message, "error");
   }
-
   function clearInvalid(field) {
     if (!field) return;
-    field.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-    field.classList.add("border-gray-200");
+    field.classList.remove("ring-2", "ring-[#F43F5E]/60");
   }
-
   function pwStrength(pw) {
     let s = 0;
     if (pw.length >= 8) s++;
@@ -68,152 +63,124 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /*  ELEMENTS  */
-  const registerForm = document.getElementById("registerForm");
-  const fullNameEl = document.getElementById("fullName");
-  const emailEl = document.getElementById("email");
-  const phoneEl = document.getElementById("phone");
-  const passwordInput = document.getElementById("password");
-  const confirmPasswordInput = document.getElementById("confirmPassword");
-  const togglePassword = document.getElementById("togglePassword");
-  const toggleConfirmPassword = document.getElementById(
-    "toggleConfirmPassword",
-  );
+  const registerForm = $("#registerForm");
+  if (!registerForm) { console.error("[register.js] #registerForm missing"); return; }
 
-  if (!registerForm) {
-    console.error("[register.js] #registerForm not found in DOM!");
-    return;
-  }
-  if (!fullNameEl || !emailEl || !passwordInput || !confirmPasswordInput) {
-    console.error("[register.js] Missing required input fields", {
-      fullNameEl,
-      emailEl,
-      passwordInput,
-      confirmPasswordInput,
+  const fullNameEl = $("#fullName");
+  const emailEl    = $("#email");
+  const phoneEl    = $("#phone");
+  const passwordEl = $("#password");
+  const confirmEl  = $("#confirmPassword");
+  const submitBtn  = $("#submitBtn");
+  const adminNotice = $("#adminNotice");
+
+  /*  ROLE CARDS  */
+  const roleCards = $$("[data-role]");
+  let selectedRole = "organization";
+
+  function selectRole(role) {
+    selectedRole = role;
+    roleCards.forEach((card) => {
+      const active = card.dataset.role === role;
+      const check  = card.querySelector("[data-role-check]");
+      const iconBg = card.querySelector("div > div");
+
+      card.classList.toggle("border-[#0051d5]", active);
+      card.classList.toggle("bg-[#f0f2ff]",    active);
+      card.classList.toggle("border-gray-200", !active);
+      card.classList.toggle("bg-white",        !active);
+      card.classList.toggle("hover:border-gray-300", !active);
+
+      if (check) check.classList.toggle("hidden", !active);
+      if (iconBg) {
+        iconBg.classList.toggle("bg-[#0051d5]", active);
+        iconBg.classList.toggle("bg-gray-200",  !active);
+      }
     });
-    return;
+
+    // Admin notice
+    if (adminNotice) adminNotice.classList.toggle("hidden", role !== "platform_admin");
   }
 
-  console.log("[register.js] All fields found, attaching listeners");
+  roleCards.forEach((card) => {
+    card.addEventListener("click", () => selectRole(card.dataset.role));
+  });
+  selectRole("organization"); // default
 
-  /*  PASSWORD VISIBILITY TOGGLES  */
-  if (togglePassword && passwordInput) {
-    togglePassword.addEventListener("click", () => {
-      const isHidden = passwordInput.getAttribute("type") === "password";
-      passwordInput.setAttribute("type", isHidden ? "text" : "password");
-    });
-  }
-  if (toggleConfirmPassword && confirmPasswordInput) {
-    toggleConfirmPassword.addEventListener("click", () => {
-      const isHidden = confirmPasswordInput.getAttribute("type") === "password";
-      confirmPasswordInput.setAttribute("type", isHidden ? "text" : "password");
-    });
-  }
+  /*  PASSWORD VISIBILITY  */
+  $("#togglePassword")?.addEventListener("click", () => {
+    const hidden = passwordEl.getAttribute("type") === "password";
+    passwordEl.setAttribute("type", hidden ? "text" : "password");
+  });
+  $("#toggleConfirmPassword")?.addEventListener("click", () => {
+    const hidden = confirmEl.getAttribute("type") === "password";
+    confirmEl.setAttribute("type", hidden ? "text" : "password");
+  });
 
   /*  CLEAR ERRORS ON INPUT  */
-  [fullNameEl, emailEl, phoneEl, passwordInput, confirmPasswordInput]
-    .filter(Boolean)
-    .forEach((el) => {
-      el.addEventListener("input", () => clearInvalid(el));
-    });
+  [fullNameEl, emailEl, phoneEl, passwordEl, confirmEl].filter(Boolean).forEach((el) => {
+    el.addEventListener("input", () => clearInvalid(el));
+  });
 
   /*  SUBMIT  */
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("[register.js] Form submitted");
 
     const fullName = fullNameEl.value.trim();
-    const email = emailEl.value.trim();
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
+    const email    = emailEl.value.trim();
+    const password = passwordEl.value;
+    const confirm  = confirmEl.value;
 
-    /* Validate full name */
-    if (!fullName) {
-      markInvalid(fullNameEl, "Please enter your full name");
-      return;
-    }
+    if (!fullName) { markInvalid(fullNameEl, "Please enter your full name"); return; }
+    if (!email || !EMAIL_RE.test(email)) { markInvalid(emailEl, "Please enter a valid email address"); return; }
+    if (!password || password.length < 8) { markInvalid(passwordEl, "Password must be at least 8 characters"); return; }
+    if (pwStrength(password) < 3) { markInvalid(passwordEl, "Password is too weak — add uppercase, numbers or symbols"); return; }
+    if (password !== confirm) { markInvalid(confirmEl, "Passwords do not match"); return; }
 
-    /* Validate email */
-    if (!email || !EMAIL_RE.test(email)) {
-      markInvalid(emailEl, "Please enter a valid email address");
-      return;
-    }
-
-    /* Validate password */
-    if (!password || password.length < 8) {
-      markInvalid(passwordInput, "Password must be at least 8 characters");
-      return;
-    }
-    if (pwStrength(password) < 3) {
-      markInvalid(
-        passwordInput,
-        "Password is too weak — add uppercase, numbers or symbols",
-      );
-      return;
-    }
-
-    /* Confirm password */
-    if (password !== confirmPassword) {
-      markInvalid(confirmPasswordInput, "Passwords do not match");
-      return;
-    }
-
-    /* Build payload */
     const payload = {
       name: fullName,
       email,
       password,
-      accountType: "organization",
+      accountType: selectedRole, // "organization" | "platform_admin"
     };
 
-    /* Busy state */
-    const submitBtn = registerForm.querySelector('button[type="submit"]');
-    const original = submitBtn ? submitBtn.innerHTML : "";
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Creating account…";
-    }
+    const original = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Creating account…";
 
     try {
-      if (!window.API) {
-        throw new Error("System error. Please refresh the page.");
-      }
+      await API.auth.register(payload);
 
-      console.log("[register.js] Calling API.auth.register with", {
-        ...payload,
-        password: "***",
-      });
-      await window.API.auth.register(payload);
-      console.log("[register.js] Signup success");
-
-      sessionStorage.setItem(
-        "pendingUser",
-        JSON.stringify({ fullName, email, accountType: "organization" }),
-      );
+      // Persist what verify-email needs to know about this signup
+      sessionStorage.setItem("pendingUser", JSON.stringify({
+        fullName,
+        email,
+        accountType: selectedRole,
+      }));
+      sessionStorage.setItem("impactra_signup_email", email);
+      sessionStorage.setItem("impactra_signup_role", selectedRole);
 
       toast("Account created — check your email to verify", "success");
       setTimeout(() => {
-        window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
+        const q = new URLSearchParams({
+          email,
+          signup: "1",              // tells verify-email to try auto-login
+          role: selectedRole,       // lets verify-email route correctly
+        });
+        window.location.href = `verify-email.html?${q.toString()}`;
       }, 700);
     } catch (err) {
       console.error("[register.js] Signup failed:", err);
-
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = original;
-      }
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = original;
 
       const msg = err?.message || "Couldn't create account — please try again";
       const lower = msg.toLowerCase();
-
-      if (lower.includes("email")) {
-        markInvalid(emailEl, msg);
-      } else if (lower.includes("password")) {
-        markInvalid(passwordInput, msg);
-      } else {
-        toast(msg, "error");
-      }
+      if (lower.includes("email"))        markInvalid(emailEl, msg);
+      else if (lower.includes("password")) markInvalid(passwordEl, msg);
+      else if (lower.includes("accounttype") || lower.includes("account type") || lower.includes("role")) {
+        toast("Platform Admin signup isn't enabled on this server yet.", "error");
+      } else toast(msg, "error");
     }
   });
-
-  console.log("[register.js] Submit listener attached ✓");
-});
+})();
