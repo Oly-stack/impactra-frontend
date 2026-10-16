@@ -3,572 +3,309 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Impactra — Opportunity Published</title>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Tailwind configuration -->
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-            },
-            colors: {
-              brand: "#0b4fd6",
-              surface: "#f3f4fb",
-              active: "#dfe5fb",
-            },
-            boxShadow: {
-              card: "0 2px 8px rgba(15, 23, 42, 0.04)",
-            },
-          },
-        },
-      };
-    </script>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-
+    <meta name="theme-color" content="#2563eb" />
+    <title>Publication status | Impactra</title>
+    <link rel="icon" href="../img/impactra-logo.jpeg" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500;600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="../assets/fonts/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="published.css" />
+    <link rel="stylesheet" href="opportunities.css" />
+    <script src="../API.js" defer></script>
+    <script src="opportunity-workflow.js" defer></script>
   </head>
-
-  <body class="min-h-screen bg-[#f8f8fc] font-sans text-slate-900">
-    <div class="flex min-h-screen">
-      <!-- SIDEBAR -->
-      <aside
-        id="sidebar"
-        class="fixed inset-y-0 left-0 z-40 flex h-screen w-[256px] -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0"
+  <body data-opportunity-page="success">
+    <a class="skip-link" href="#mainContent">Skip to content</a>
+    <aside
+      class="workspace-sidebar"
+      id="workspaceSidebar"
+      aria-label="Workspace navigation"
+    >
+      <a href="../Dashboard.html" class="brand"
+        ><img src="../images/logo2.png" alt="" width="28" height="28" /><span
+          >IMPACTRA</span
+        ></a
+      ><button
+        type="button"
+        class="icon-button sidebar-close"
+        id="closeMenu"
+        aria-label="Close navigation"
       >
-        <!-- Logo -->
-        <div class="flex h-16 items-center justify-between px-5">
-          <a href="../Dashboard.html" class="flex items-center gap-3">
-            <div
-              class="grid h-8 w-8 place-items-center rounded-full border border-blue-600 text-blue-700"
-            >
-              <span class="material-symbols-outlined text-[20px]">
-                groups
-              </span>
-            </div>
-
-            <span class="font-bold tracking-tight">IMPACTRA</span>
-          </a>
-
-          <button
-            id="closeSidebar"
-            type="button"
-            aria-label="Close menu"
-            class="text-slate-600 lg:hidden"
-          >
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-5 text-sm">
-          <p
-            class="mb-4 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500"
-          >
-            Operations
-          </p>
-
-          <a href="../Dashboard.html" class="sidebar-link">
-            <span class="material-symbols-outlined">grid_view</span>
-            Dashboard
-          </a>
-
-          <a
-            href="opportunities-list.html"
-            class="sidebar-link sidebar-link-active"
-          >
-            <span class="material-symbols-outlined">campaign</span>
-            Opportunities
-          </a>
-
-          <a href="../application.html" class="sidebar-link">
-            <span class="material-symbols-outlined">assignment</span>
-            Applications
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">groups</span>
-            Volunteers
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">event</span>
-            Activities
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">monitoring</span>
-            Impact
-          </a>
-
-          <a href="Certificate.html" class="sidebar-link">
-            <span class="material-symbols-outlined">workspace_premium</span>
-            Certificates
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">mail</span>
-            Messages
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">shield</span>
-            Report
-          </a>
-
-          <a href="../settings.html" class="sidebar-link">
-            <span class="material-symbols-outlined">settings</span>
-            Settings
-          </a>
-        </nav>
-
-        <!-- Logout -->
-        <div class="border-t border-slate-200 p-4">
-          <a
-            href="http://127.0.0.1:5500/pages/login.html"
-            class="flex items-center gap-3 text-sm font-medium text-red-600"
-          >
-            <span class="material-symbols-outlined">logout</span>
-            Log out
-          </a>
-        </div>
-      </aside>
-
-      <!-- MOBILE OVERLAY -->
-      <div
-        id="sidebarOverlay"
-        class="fixed inset-0 z-30 hidden bg-black/40 lg:hidden"
-      ></div>
-
-      <!-- MAIN CONTENT -->
-      <div class="flex min-w-0 flex-1 flex-col">
-        <!-- TOP BAR -->
-        <header
-          class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8"
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 6 12 12M6 18 18 6" />
+        </svg>
+      </button>
+      <nav class="nav-links" aria-label="Main">
+        <p class="nav-label">OPERATIONS</p>
+        <a href="../Dashboard.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+          ><span>Dashboard</span></a
+        ><a
+          href="opportunities-list.html"
+          class="nav-item active"
+          aria-current="page"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+          ><span>Opportunities</span></a
+        ><a href="../application.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"
+            /></svg
+          ><span>Applications</span></a
+        ><a href="../volunteer-profile.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+            />
+            <circle cx="9" cy="7" r="4" /></svg
+          ><span>Volunteers</span></a
+        ><a href="../contribution.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3v18h18M7 14l4-4 4 3 6-8" /></svg
+          ><span>Activities</span></a
+        ><a href="../impact.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m13 2-9 12h7l-1 8 10-12h-7z" /></svg
+          ><span>Impact</span></a
+        ><a href="Certificate.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="6" />
+            <path d="m8 13-1 9 5-3 5 3-1-9" /></svg
+          ><span>Certificates</span></a
+        ><button
+          type="button"
+          class="nav-item unavailable-nav"
+          data-unavailable="Messaging"
         >
-          <!-- Mobile menu and breadcrumb -->
-          <div class="flex min-w-0 items-center gap-3">
-            <button
-              id="openSidebar"
-              type="button"
-              aria-label="Open menu"
-              class="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-slate-700 hover:bg-slate-100 lg:hidden"
-            >
-              <span class="material-symbols-outlined">menu</span>
-            </button>
-
-            <nav
-              aria-label="Breadcrumb"
-              class="flex min-w-0 items-center gap-2 text-sm"
-            >
-              <a
-                href="opportunities-list.html"
-                class="hidden text-slate-500 hover:text-slate-900 sm:block"
-              >
-                Opportunities
-              </a>
-
-              <span class="hidden text-slate-400 sm:block">/</span>
-
-              <a
-                href="create-opportunity.html"
-                class="hidden text-slate-500 hover:text-slate-900 sm:block"
-              >
-                Create Opportunity
-              </a>
-
-              <span class="hidden text-slate-400 sm:block">/</span>
-
-              <span class="truncate font-semibold">Published</span>
-            </nav>
-          </div>
-
-          <!-- Search and profile -->
-          <div class="flex shrink-0 items-center gap-3 sm:gap-5">
-            <!-- Search -->
-            <div
-              class="hidden w-[280px] items-center gap-2 rounded-lg bg-[#eef0fb] px-3 py-2.5 md:flex lg:w-[320px]"
-            >
-              <span
-                class="material-symbols-outlined text-[20px] text-slate-600"
-              >
-                search
-              </span>
-
-              <input
-                type="search"
-                placeholder="Search opportunities, volunteers..."
-                class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-500"
-              />
-
-              <span
-                class="rounded bg-active px-1.5 py-0.5 text-[10px] text-slate-500"
-              >
-                ⌘K
-              </span>
-            </div>
-
-            <!-- Notifications -->
-            <button
-              type="button"
-              aria-label="Notifications"
-              class="relative text-slate-600"
-            >
-              <span class="material-symbols-outlined">notifications</span>
-
-              <span
-                class="absolute right-0 top-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600"
-              ></span>
-            </button>
-
-            <!-- User -->
-            <div class="flex items-center gap-2.5">
-              <img
-                src="https://i.pravatar.cc/80?img=47"
-                alt="Toyin"
-                class="h-9 w-9 rounded-full object-cover"
-              />
-
-              <div class="hidden leading-tight sm:block">
-                <p class="text-sm font-semibold">Toyin</p>
-                <p class="text-[11px] text-slate-500">NGO</p>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <!-- PAGE CONTENT -->
-        <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-          <div class="mx-auto max-w-[1120px]">
-            <!-- Breadcrumb and reference -->
-            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-              <nav
-                aria-label="Page breadcrumb"
-                class="flex flex-wrap items-center gap-2 text-sm text-slate-500"
-              >
-                <a href="opportunities-list.html" class="hover:text-brand">
-                  Opportunities
-                </a>
-
-                <span>/</span>
-
-                <a href="create-opportunity.html" class="hover:text-brand">
-                  Create Opportunity
-                </a>
-
-                <span>/</span>
-
-                <span class="font-semibold text-slate-800">Published</span>
-              </nav>
-
-              <span
-                id="referenceNumber"
-                class="rounded-full bg-[#e4e9fa] px-3 py-1.5 text-[10px] font-semibold tracking-wide text-slate-600"
-              >
-                REFERENCE: #OPP-2026-8841
-              </span>
-            </div>
-
-            <!-- SUCCESS CARD -->
-            <section
-              class="mx-auto max-w-[800px] rounded-2xl bg-white px-4 py-8 shadow-card sm:px-8 sm:py-10 lg:px-10"
-            >
-              <!-- Success icon -->
-              <div class="flex justify-center">
-                <div
-                  class="grid h-14 w-14 place-items-center rounded-full bg-[#76f29b]"
-                >
-                  <span
-                    class="material-symbols-outlined text-[34px] font-bold text-green-950"
-                  >
-                    check
-                  </span>
-                </div>
-              </div>
-
-              <!-- Success heading -->
-              <div class="mt-6 text-center">
-                <h1
-                  class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
-                >
-                  Opportunity Published
-                </h1>
-
-                <p
-                  class="mx-auto mt-2 max-w-[540px] text-sm leading-6 text-slate-600 sm:text-base"
-                >
-                  Your opportunity is now live. Volunteers can view it and
-                  apply. Applications and questions from volunteers will appear
-                  in Applications.
-                </p>
-              </div>
-
-              <!-- OPPORTUNITY SUMMARY -->
-              <div class="mt-6 rounded-2xl bg-[#f0f2ff] p-4 sm:p-6">
-                <!-- Title and status -->
-                <div
-                  class="flex flex-col gap-4 border-b border-slate-200/80 pb-5 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div class="flex min-w-0 items-center gap-3">
-                    <div
-                      class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#dce6ff] text-brand"
-                    >
-                      <span class="material-symbols-outlined text-[25px]">
-                        volunteer_activism
-                      </span>
-                    </div>
-
-                    <div class="min-w-0">
-                      <h2
-                        id="opportunityTitle"
-                        class="break-words text-lg font-bold text-slate-900 sm:text-xl"
-                      >
-                        Food Relief Distribution
-                      </h2>
-
-                      <p
-                        id="organizationName"
-                        class="mt-1 text-xs leading-5 text-slate-600 sm:text-sm"
-                      >
-                        Lagos Metro Humanitarian Initiative · Relief Cluster IV
-                      </p>
-                    </div>
-                  </div>
-
-                  <span
-                    class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-white px-3 py-2 text-[10px] font-bold tracking-wide text-emerald-700 sm:text-[11px]"
-                  >
-                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                    ACTIVE · ACCEPTING APPLICATIONS
-                  </span>
-                </div>
-
-                <!-- Details grid -->
-                <div
-                  class="grid grid-cols-1 gap-5 border-b border-slate-200/80 py-5 sm:grid-cols-2 xl:grid-cols-4"
-                >
-                  <!-- Category -->
-                  <div class="flex items-start gap-3">
-                    <span
-                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
-                    >
-                      category
-                    </span>
-
-                    <div class="min-w-0">
-                      <p
-                        class="text-[10px] font-bold tracking-wider text-slate-600"
-                      >
-                        CATEGORY
-                      </p>
-
-                      <p
-                        id="opportunityCategory"
-                        class="mt-1 break-words text-sm font-semibold text-slate-800"
-                      >
-                        Community Support
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Schedule -->
-                  <div class="flex items-start gap-3">
-                    <span
-                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
-                    >
-                      calendar_month
-                    </span>
-
-                    <div class="min-w-0">
-                      <p
-                        class="text-[10px] font-bold tracking-wider text-slate-600"
-                      >
-                        SCHEDULE
-                      </p>
-
-                      <p
-                        id="opportunityDate"
-                        class="mt-1 text-sm font-semibold text-slate-800"
-                      >
-                        Sat, Oct 14, 2026
-                      </p>
-
-                      <p
-                        id="opportunityTime"
-                        class="mt-1 text-xs text-slate-600"
-                      >
-                        09:00 AM – 01:00 PM
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Deployment area -->
-                  <div class="flex items-start gap-3">
-                    <span
-                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
-                    >
-                      location_on
-                    </span>
-
-                    <div class="min-w-0">
-                      <p
-                        class="text-[10px] font-bold tracking-wider text-slate-600"
-                      >
-                        DEPLOYMENT AREA
-                      </p>
-
-                      <p
-                        id="opportunityVenue"
-                        class="mt-1 break-words text-sm font-semibold text-slate-800"
-                      >
-                        Surulere Hall
-                      </p>
-
-                      <p
-                        id="opportunityRegion"
-                        class="mt-1 text-xs text-slate-600"
-                      >
-                        Lagos Mainland
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Staffing -->
-                  <div class="flex items-start gap-3">
-                    <span
-                      class="material-symbols-outlined mt-0.5 text-[20px] text-brand"
-                    >
-                      groups
-                    </span>
-
-                    <div class="min-w-0">
-                      <p
-                        class="text-[10px] font-bold tracking-wider text-slate-600"
-                      >
-                        STAFFING TARGET
-                      </p>
-
-                      <p
-                        id="opportunityStaffing"
-                        class="mt-1 text-sm font-semibold text-slate-800"
-                      >
-                        10 Volunteers
-                      </p>
-
-                      <p class="mt-1 text-xs font-medium text-blue-700">
-                        <span id="confirmedCount">0</span> /
-                        <span id="staffingTarget">10</span> Confirmed
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Scheduled shift phases -->
-                <div
-                  class="flex flex-col gap-4 pt-5 sm:flex-row sm:items-start"
-                >
-                  <div class="flex shrink-0 items-center gap-2 sm:w-[160px]">
-                    <span
-                      class="material-symbols-outlined text-[20px] text-slate-600"
-                    >
-                      show_chart
-                    </span>
-
-                    <p
-                      class="text-[10px] font-bold leading-4 tracking-wider text-slate-600"
-                    >
-                      SCHEDULED SHIFT PHASES:
-                    </p>
-                  </div>
-
-                  <div id="shiftPhases" class="flex flex-1 flex-wrap gap-2">
-                    <span class="shift-tag">1. Briefing &amp; Safety</span>
-
-                    <span class="shift-tag">2. Parcel Packing</span>
-
-                    <span class="shift-tag">3. Distribution</span>
-
-                    <span class="shift-tag">4. Debrief &amp; Audit</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- ACTION BUTTONS -->
-              <div
-                class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center"
-              >
-                <!-- View opportunity -->
-                <a
-                  id="viewOpportunityBtn"
-                  href="opportunities-list.html"
-                  class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
-                >
-                  View Opportunity
-
-                  <span class="material-symbols-outlined text-[19px]">
-                    arrow_forward
-                  </span>
-                </a>
-
-                <!-- Share opportunity -->
-                <button
-                  id="shareOpportunityBtn"
-                  type="button"
-                  class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-transparent bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-                >
-                  <span class="material-symbols-outlined text-[19px]">
-                    share
-                  </span>
-
-                  Share Opportunity
-                </button>
-
-                <!-- Create another -->
-                <a
-                  href="create-opportunity.html"
-                  class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#eef0fb] px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#e0e6fb]"
-                >
-                  <span class="material-symbols-outlined text-[19px]">
-                    add_circle_outline
-                  </span>
-
-                  Create Another Opportunity
-                </a>
-              </div>
-
-              <!-- Back link -->
-              <div class="mt-5 text-center">
-                <a
-                  href="opportunities-list.html"
-                  class="inline-flex items-center gap-2 text-sm text-slate-600 transition hover:text-brand"
-                >
-                  <span class="material-symbols-outlined text-[18px]">
-                    arrow_back
-                  </span>
-
-                  Back to Opportunities
-                </a>
-              </div>
-            </section>
-          </div>
-        </main>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"
+            /></svg
+          ><span>Messages</span></button
+        ><a href="../report.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6M12 7h.01" /></svg
+          ><span>Report</span></a
+        ><a href="../settings.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 3 2 3-1 1-3 3-1 2-3-2-2 1-3-2-3-3 1-3-2z"
+            /></svg
+          ><span>Settings</span></a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="nav-item logout-button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
+            /></svg
+          ><span>Log out</span>
+        </button>
       </div>
+    </aside>
+    <button
+      type="button"
+      class="drawer-overlay"
+      id="drawerOverlay"
+      aria-label="Close navigation"
+      hidden
+    ></button>
+    <div class="workspace" id="workspace">
+      <header class="workspace-header">
+        <button
+          type="button"
+          class="icon-button mobile-menu"
+          id="openMenu"
+          aria-label="Open navigation"
+          aria-controls="workspaceSidebar"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg></button
+        ><span class="header-page-label">Opportunities</span>
+        <form
+          class="header-search"
+          action="opportunities-list.html"
+          role="search"
+        >
+          <button type="submit" aria-label="Search opportunities">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m16 16 5 5" />
+            </svg></button
+          ><label class="sr-only" for="workspaceSearch"
+            >Search opportunities</label
+          ><input
+            type="search"
+            id="workspaceSearch"
+            name="q"
+            placeholder="Search opportunities, volunteers..."
+          /><kbd aria-hidden="true">⌘K</kbd>
+        </form>
+        <div class="header-account">
+          <button
+            type="button"
+            class="notification-link"
+            data-unavailable="Notifications"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+              />
+            </svg></button
+          ><a
+            href="../settings.html"
+            class="account-link"
+            aria-label="Account settings"
+            ><span class="avatar" id="accountInitial" aria-hidden="true">N</span
+            ><img
+              id="accountAvatar"
+              class="account-avatar"
+              alt=""
+              width="32"
+              height="32"
+              hidden
+            /><span class="account-name" id="accountName">My account</span></a
+          >
+        </div>
+      </header>
+      <main class="page-content" id="mainContent" tabindex="-1">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="../Dashboard.html">Dashboard</a
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" /></svg
+          ><a href="opportunities-list.html">Opportunities</a
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" /></svg
+          ><span aria-current="page">Publication status</span>
+        </nav>
+        <div
+          class="flow-status"
+          id="flowStatus"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="success-layout">
+          <section class="panel success-card">
+            <div class="success-intro">
+              <div
+                class="success-medallion unconfirmed"
+                id="successIcon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 11v6M12 7h.01" />
+                </svg>
+              </div>
+              <span class="success-label" id="successLabel"
+                >PUBLICATION STATUS</span
+              >
+              <h1 id="successHeading">Checking your publication</h1>
+              <p id="successMessage">
+                Please wait while we confirm your opportunity.
+              </p>
+            </div>
+            <div id="publishedSummary" hidden>
+              <div class="published-summary">
+                <div class="summary-top">
+                  <span class="stat-icon"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true">
+                      <rect x="3" y="5" width="18" height="16" rx="2" />
+                      <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+                  ></span>
+                  <div>
+                    <p class="eyebrow">YOUR OPPORTUNITY</p>
+                    <h2 id="opportunityTitle"></h2>
+                  </div>
+                  <span class="status-badge" data-status="active"
+                    >Published</span
+                  >
+                </div>
+                <div class="summary-fields">
+                  <div>
+                    <span class="info-label">Category</span
+                    ><span class="info-value" id="opportunityCategory"></span>
+                  </div>
+                  <div>
+                    <span class="info-label">Location</span
+                    ><span class="info-value" id="opportunityLocation"></span>
+                  </div>
+                </div>
+              </div>
+              <section class="success-next">
+                <h2>What happens next</h2>
+                <div class="next-grid">
+                  <div class="next-item">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m5 12 4 4L19 6" />
+                    </svg>
+                    <div>
+                      <h3>Connect with volunteers</h3>
+                      <p>
+                        Volunteers can discover your opportunity and view its
+                        details.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="next-item">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m5 12 4 4L19 6" />
+                    </svg>
+                    <div>
+                      <h3>Review applications</h3>
+                      <p>
+                        Manage volunteer applications from your organisation
+                        workspace.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <div class="success-buttons">
+                <a
+                  class="btn btn-primary"
+                  id="viewOpportunity"
+                  href="opportunities-list.html"
+                  >View opportunity
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14m-5-5 5 5-5 5" /></svg></a
+                ><a class="btn btn-soft" href="opportunities-list.html"
+                  >Back to opportunities</a
+                >
+              </div>
+              <div class="success-footer">
+                <a href="create-opportunities-step-1.html"
+                  >Create another opportunity</a
+                ><a href="../Dashboard.html">Go to dashboard</a>
+              </div>
+            </div>
+            <div class="success-error-actions" id="successErrorActions" hidden>
+              <a
+                class="btn btn-secondary btn-wide"
+                href="create-opportunities-steps-3.html"
+                >Return to your draft</a
+              >
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
-
-    <!-- JavaScript -->
-    <script src="published.js"></script>
+    <div id="toast-host" aria-live="polite"></div>
   </body>
 </html>

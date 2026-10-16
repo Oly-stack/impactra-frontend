@@ -3,857 +3,396 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Impactra – Create Opportunity</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: { sans: ["Inter", "sans-serif"] },
-            colors: { brand: "#0b4fd6", surface: "#f3f4fb", active: "#dfe5fb" },
-          },
-        },
-      };
-    </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <meta name="theme-color" content="#2563eb" />
+    <title>Create opportunity | Impactra</title>
+    <link rel="icon" href="../img/impactra-logo.jpeg" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400;500&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="../assets/fonts/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="opportunities.css" />
+    <script src="../API.js" defer></script>
+    <script src="opportunity-workflow.js" defer></script>
   </head>
-
-  <body class="font-sans bg-[#f8f8fc] text-slate-900 min-h-screen flex">
-    <!-- SIDEBAR (drawer on mobile, sticky on desktop) -->
+  <body data-opportunity-page="basic">
+    <a class="skip-link" href="#mainContent">Skip to content</a>
     <aside
-      id="sidebar"
-      class="sidebar fixed lg:sticky top-0 left-0 z-40 w-[256px] shrink-0 h-screen bg-white border-r border-slate-200 flex flex-col -translate-x-full lg:translate-x-0"
+      class="workspace-sidebar"
+      id="workspaceSidebar"
+      aria-label="Workspace navigation"
     >
-      <div class="h-16 flex items-center justify-between px-5">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-8 h-8 rounded-full border border-blue-600 grid place-items-center text-blue-700"
-          >
-            <span class="material-symbols-outlined text-[18px]">groups</span>
-          </div>
-          <span class="font-bold tracking-tight">IMPACTRA</span>
-        </div>
-        <button
-          id="closeSidebar"
+      <a href="../Dashboard.html" class="brand"
+        ><img src="../images/logo2.png" alt="" width="28" height="28" /><span
+          >IMPACTRA</span
+        ></a
+      ><button
+        type="button"
+        class="icon-button sidebar-close"
+        id="closeMenu"
+        aria-label="Close navigation"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 6 12 12M6 18 18 6" />
+        </svg>
+      </button>
+      <nav class="nav-links" aria-label="Main">
+        <p class="nav-label">OPERATIONS</p>
+        <a href="../Dashboard.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+          ><span>Dashboard</span></a
+        ><a
+          href="opportunities-list.html"
+          class="nav-item active"
+          aria-current="page"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+          ><span>Opportunities</span></a
+        ><a href="../application.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"
+            /></svg
+          ><span>Applications</span></a
+        ><a href="../volunteer-profile.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+            />
+            <circle cx="9" cy="7" r="4" /></svg
+          ><span>Volunteers</span></a
+        ><a href="../contribution.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3v18h18M7 14l4-4 4 3 6-8" /></svg
+          ><span>Activities</span></a
+        ><a href="../impact.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m13 2-9 12h7l-1 8 10-12h-7z" /></svg
+          ><span>Impact</span></a
+        ><a href="Certificate.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="6" />
+            <path d="m8 13-1 9 5-3 5 3-1-9" /></svg
+          ><span>Certificates</span></a
+        ><button
           type="button"
-          aria-label="Close menu"
-          class="lg:hidden text-slate-600 hover:text-slate-900"
+          class="nav-item unavailable-nav"
+          data-unavailable="Messaging"
         >
-          <span class="material-symbols-outlined">close</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"
+            /></svg
+          ><span>Messages</span></button
+        ><a href="../report.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6M12 7h.01" /></svg
+          ><span>Report</span></a
+        ><a href="../settings.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 3 2 3-1 1-3 3-1 2-3-2-2 1-3-2-3-3 1-3-2z"
+            /></svg
+          ><span>Settings</span></a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="nav-item logout-button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
+            /></svg
+          ><span>Log out</span>
         </button>
       </div>
-
-      <nav
-        class="flex-1 overflow-y-auto px-3 space-y-1 text-base text-slate-600"
-      >
-        <a
-          href="/Dashboard.html"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
-        >
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 17 17"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0.708984 8.20898L2.37565 6.54232M2.37565 6.54232L8.20898 0.708984L14.0423 6.54232M2.37565 6.54232V14.8757C2.37565 15.3359 2.74875 15.709 3.20898 15.709H5.70898M14.0423 6.54232L15.709 8.20898M14.0423 6.54232V14.8757C14.0423 15.3359 13.6692 15.709 13.209 15.709H10.709M5.70898 15.709C6.16922 15.709 6.54232 15.3359 6.54232 14.8757V11.5423C6.54232 11.0821 6.91541 10.709 7.37565 10.709H9.04232C9.50255 10.709 9.87565 11.0821 9.87565 11.5423V14.8757C9.87565 15.3359 10.2487 15.709 10.709 15.709M5.70898 15.709H10.709"
-              stroke="#94A3B8"
-              stroke-width="1.41667"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Dashboard
-        </a>
-        <a
-          href="http://127.0.0.1:5500/pages/create-opportunities-step-1.html"
-          class="flex items-center gap-3 px-3 py-2.5 bg-[#e8effe] text-blue-700 rounded-lg hover:bg-slate-50"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.5 9.99979L9.16667 11.6665L12.5 8.33312M17.1817 4.98646C14.5468 5.12639 11.9639 4.2153 10 2.45312C8.03606 4.2153 5.45325 5.12639 2.81834 4.98646C2.60628 5.80739 2.49931 6.65192 2.5 7.49979C2.5 12.159 5.68667 16.0748 10 17.1848C14.3133 16.0748 17.5 12.1598 17.5 7.49979C17.5 6.63146 17.3892 5.78979 17.1817 4.98646L7.5 9.99979"
-              stroke=" #0051D5"
-              stroke-width="1.41667"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Opportunities
-        </a>
-        <a
-          href=""
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
-        >
-          <svg
-            width="14"
-            height="17"
-            viewBox="0 0 14 17"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4.04232 8.20898H9.04232M4.04232 11.5423H9.04232M10.709 15.709H2.37565C1.45518 15.709 0.708984 14.9628 0.708984 14.0423V2.37565C0.708984 1.45518 1.45518 0.708984 2.37565 0.708984H7.03065C7.25165 0.709032 7.46357 0.79686 7.61982 0.953151L12.1315 5.46482C12.2878 5.62106 12.3756 5.83299 12.3757 6.05398V14.0423C12.3757 14.9628 11.6295 15.709 10.709 15.709L4.04232 8.20898"
-              stroke="#94A3B8"
-              stroke-width="1.41667"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Applications
-        </a>
-        <a
-          href="#"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
-        >
-          <img src="/images/volunteer2.png" class="w-5 h-5" />
-          Volunteers
-        </a>
-        <a
-          href="#"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
-        >
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 17 17"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4.87565 4.04232V0.708984M11.5423 4.04232V0.708984M4.04232 7.37565H12.3757M2.37565 15.709H14.0423C14.9628 15.709 15.709 14.9628 15.709 14.0423V4.04232C15.709 3.12184 14.9628 2.37565 14.0423 2.37565H2.37565C1.45518 2.37565 0.708984 3.12184 0.708984 4.04232V14.0423C0.708984 14.9628 1.45518 15.709 2.37565 15.709L4.87565 4.04232"
-              stroke="#94A3B8"
-              stroke-width="1.41667"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Activities
-        </a>
-        <a
-          href="#"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10.8333 5.83398H17.5M17.5 5.83398V12.5007M17.5 5.83398L10.8333 12.5007L7.5 9.16732L2.5 14.1673"
-              stroke="#94A3B8"
-              stroke-width="1.41667"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Impact
-        </a>
-        <a
-          href="Certificate.html"
-          class="flex items-center gap-3 px-3 py-2.5 font-semibold"
-        >
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 17 17"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5.72986 8.22986L7.39652 9.89652L10.7299 6.56319M4.75902 2.14402C5.35678 2.09631 5.92426 1.86127 6.38069 1.47236C7.4461 0.563902 9.01361 0.563902 10.079 1.47236C10.5355 1.86127 11.1029 2.09631 11.7007 2.14402C13.0963 2.25506 14.2047 3.36337 14.3157 4.75902C14.3634 5.35678 14.5984 5.92426 14.9874 6.38069C15.8958 7.4461 15.8958 9.01361 14.9874 10.079C14.5984 10.5355 14.3634 11.1029 14.3157 11.7007C14.2047 13.0963 13.0963 14.2047 11.7007 14.3157C11.1029 14.3634 10.5355 14.5984 10.079 14.9874C9.01361 15.8958 7.4461 15.8958 6.38069 14.9874C5.92426 14.5984 5.35678 14.3634 4.75902 14.3157C3.36337 14.2047 2.25506 13.0963 2.14402 11.7007C2.09631 11.1029 1.86127 10.5355 1.47236 10.079C0.563902 9.01361 0.563902 7.4461 1.47236 6.38069C1.86127 5.92426 2.09631 5.35678 2.14402 4.75902C2.25506 3.36337 3.36337 2.25506 4.75902 2.14402L5.72986 8.22986"
-              stroke="#94A3B8 "
-              stroke-width="1.58333"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Certificates
-        </a>
-        <a
-          href="../settings.html"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8.60417 3.5975C8.95917 2.13417 11.0408 2.13417 11.3958 3.5975C11.5039 4.04338 11.8184 4.41085 12.2422 4.58645C12.6661 4.76206 13.1483 4.72467 13.54 4.48583C14.8258 3.7025 16.2983 5.17417 15.515 6.46083C15.2765 6.85238 15.2392 7.33423 15.4146 7.75782C15.59 8.1814 15.957 8.49583 16.4025 8.60417C17.8658 8.95917 17.8658 11.0408 16.4025 11.3958C15.9566 11.5039 15.5891 11.8184 15.4135 12.2422C15.2379 12.6661 15.2753 13.1483 15.5142 13.54C16.2975 14.8258 14.8258 16.2983 13.5392 15.515C13.1476 15.2765 12.6658 15.2392 12.2422 15.4146C11.8186 15.59 11.5042 15.957 11.3958 16.4025C11.0408 17.8658 8.95917 17.8658 8.60417 16.4025C8.49613 15.9566 8.18164 15.5891 7.75779 15.4135C7.33394 15.2379 6.85172 15.2753 6.46 15.5142C5.17417 16.2975 3.70167 14.8258 4.485 13.5392C4.72349 13.1476 4.76079 12.6658 4.58539 12.2422C4.41 11.8186 4.04298 11.5042 3.5975 11.3958C2.13417 11.0408 2.13417 8.95917 3.5975 8.60417C4.04338 8.49613 4.41085 8.18164 4.58645 7.75779C4.76206 7.33394 4.72467 6.85172 4.48583 6.46C3.7025 5.17417 5.17417 3.70167 6.46083 4.485C7.29083 4.99167 8.37417 4.54333 8.60417 3.5975V3.5975"
-              stroke="#94A3B8"
-              stroke-width="1.41667"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M7.5 10C7.5 11.3798 8.62021 12.5 10 12.5C11.3798 12.5 12.5 11.3798 12.5 10C12.5 8.62021 11.3798 7.5 10 7.5C8.62021 7.5 7.5 8.62021 7.5 10V10"
-              stroke="#94A3B8"
-              stroke-width="1.41667"
-            />
-          </svg>
-          Settings
-        </a>
-      </nav>
-
-      <div
-        class="border-t border-slate-200 p-4 flex items-center gap-4 text-red-600"
-      >
-        <span class="material-symbols-outlined text-slate-500">more_vert</span>
-        <a href="#" class="flex items-center gap-2 font-medium">
-          <span class="material-symbols-outlined">logout</span> Log out
-        </a>
-      </div>
     </aside>
-
-    <!-- Backdrop behind mobile drawer -->
-    <!-- Backdrop behind mobile drawer -->
-    <div
-      id="sidebarOverlay"
-      class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden"
-    ></div>
-    <!-- MAIN -->
-    <div class="flex-1 min-w-0 flex flex-col">
-      <!-- TOP BAR -->
-      <header
-        class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 lg:px-8 sticky top-0 z-20"
-      >
-        <div class="flex items-center gap-3 min-w-0">
+    <button
+      type="button"
+      class="drawer-overlay"
+      id="drawerOverlay"
+      aria-label="Close navigation"
+      hidden
+    ></button>
+    <div class="workspace" id="workspace">
+      <header class="workspace-header">
+        <button
+          type="button"
+          class="icon-button mobile-menu"
+          id="openMenu"
+          aria-label="Open navigation"
+          aria-controls="workspaceSidebar"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg></button
+        ><span class="header-page-label">Create Opportunity</span>
+        <form
+          class="header-search"
+          action="opportunities-list.html"
+          role="search"
+        >
+          <button type="submit" aria-label="Search opportunities">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m16 16 5 5" />
+            </svg></button
+          ><label class="sr-only" for="workspaceSearch"
+            >Search opportunities</label
+          ><input
+            type="search"
+            id="workspaceSearch"
+            name="q"
+            placeholder="Search opportunities, volunteers..."
+          /><kbd aria-hidden="true">⌘K</kbd>
+        </form>
+        <div class="header-account">
           <button
-            id="openSidebar"
             type="button"
-            aria-label="Open menu"
-            class="lg:hidden shrink-0 w-10 h-10 grid place-items-center rounded-lg text-slate-700 hover:bg-slate-100"
+            class="notification-link"
+            data-unavailable="Notifications"
+            aria-label="Notifications"
           >
-            <span class="material-symbols-outlined">menu</span>
-          </button>
-          <nav
-            class="flex items-center gap-2 text-sm sm:text-base truncate"
-            aria-label="Breadcrumb"
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+              />
+            </svg></button
+          ><a
+            href="../settings.html"
+            class="account-link"
+            aria-label="Account settings"
+            ><span class="avatar" id="accountInitial" aria-hidden="true">N</span
+            ><img
+              id="accountAvatar"
+              class="account-avatar"
+              alt=""
+              width="32"
+              height="32"
+              hidden
+            /><span class="account-name" id="accountName">My account</span></a
           >
-            <a href="#" class="text-slate-600 hover:text-slate-900"
-              >Opportunities</a
-            >
-            <span class="text-slate-500">/</span>
-            <span class="font-medium truncate">Create Opportunity</span>
-          </nav>
-        </div>
-
-        <div class="flex items-center gap-4 shrink-0">
-          <div
-            class="hidden md:flex items-center gap-2 bg-[#eef0fb] rounded-lg px-3 py-2.5 w-[300px] lg:w-[340px]"
-          >
-            <span class="material-symbols-outlined text-slate-700 text-[20px]"
-              >search</span
-            >
-            <input
-              type="text"
-              placeholder="Search opportunities, volunteers..."
-              class="bg-transparent outline-none flex-1 min-w-0 text-sm text-slate-700 placeholder:text-slate-500"
-            />
-            <span
-              class="text-[11px] text-slate-500 bg-active rounded px-1.5 py-0.5"
-              >⌘K</span
-            >
-          </div>
-
-          <button class="relative text-slate-600" aria-label="Notifications">
-            <span class="material-symbols-outlined">notifications</span>
-            <span
-              class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full"
-            ></span>
-          </button>
-
-          <div class="flex items-center gap-2.5">
-            <img
-              src="https://i.pravatar.cc/80?img=47"
-              alt="Toyin"
-              class="w-9 h-9 rounded-full object-cover"
-            />
-            <div class="hidden sm:block leading-tight">
-              <p class="text-sm font-semibold">Toyin</p>
-              <p class="text-[11px] text-slate-500 tracking-wide">NGO</p>
-            </div>
-          </div>
         </div>
       </header>
-
-      <main class="p-4 sm:p-6 lg:px-8 lg:py-8 max-w-[1440px] w-full">
-        <!-- Title row -->
-        <div class="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">
-              Create New Opportunity
-            </h1>
-            <p class="mt-1 text-slate-600">
-              Add details and volunteer needs for your upcoming event
-            </p>
-          </div>
-          <button
-            type="button"
-            class="flex items-center gap-2 px-8 py-2.5 font-semibold tracking-wide text-white bg-brand rounded-lg hover:bg-blue-800"
-          >
-            NEXT
-            <span class="material-symbols-outlined text-[20px]"
-              >arrow_forward</span
-            >
-          </button>
-        </div>
-
-        <!-- Stepper -->
-        <!-- Stepper -->
-        <section class="mt-6">
-          <!-- MOBILE VIEW -->
-          <div
-            class="sm:hidden bg-white rounded-2xl border border-slate-200 p-5 shadow-sm"
-          >
-            <!-- Step heading -->
-            <div class="flex items-start gap-3">
-              <div
-                class="w-12 h-12 shrink-0 rounded-full bg-brand text-white flex items-center justify-center font-bold text-lg"
-              >
-                1
-              </div>
-
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center flex-wrap gap-2">
-                  <h2 class="text-xl font-bold text-slate-900">
-                    Basic Information
-                  </h2>
-
-                  <span
-                    class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1"
-                  >
-                    In Progress
-                  </span>
-                </div>
-
-                <p class="text-sm text-slate-500 mt-1">
-                  Opportunity details, category and location
-                </p>
-              </div>
-            </div>
-
-            <!-- Progress bar -->
-            <div class="mt-6">
-              <div class="flex items-center justify-between text-sm mb-2">
-                <span class="font-medium text-slate-700">Step 1 of 3</span>
-                <span class="text-slate-500">Basic Details</span>
-              </div>
-
-              <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                <div class="h-full w-1/3 bg-brand rounded-full"></div>
-              </div>
-            </div>
-
-            <!-- Remaining steps -->
-            <div class="mt-6 space-y-4">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 shrink-0 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-semibold"
-                >
-                  2
-                </div>
-
-                <div>
-                  <p class="font-semibold text-slate-700">
-                    Details &amp; Schedule
-                  </p>
-
-                  <p class="text-sm text-slate-500">
-                    Volunteer shifts and required skills
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 shrink-0 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-semibold"
-                >
-                  3
-                </div>
-
-                <div>
-                  <p class="font-semibold text-slate-700">
-                    Review &amp; Publish
-                  </p>
-
-                  <p class="text-sm text-slate-500">
-                    Check your details before publishing
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- DESKTOP VIEW -->
-          <div
-            class="hidden sm:block bg-white rounded-xl shadow-card px-4 sm:px-6 py-5"
-          >
-            <ol class="flex items-center gap-3 sm:gap-4">
-              <!-- Step 1 -->
-              <li class="flex items-center gap-3 shrink-0">
-                <span
-                  class="w-9 h-9 rounded-full bg-brand text-white font-semibold grid place-items-center"
-                >
-                  1
-                </span>
-
-                <div class="leading-tight">
-                  <p class="text-sm font-medium text-brand">
-                    Basic Information
-                  </p>
-
-                  <p
-                    class="text-[11px] font-medium tracking-wider text-slate-700"
-                  >
-                    DETAILS
-                  </p>
-                </div>
-              </li>
-
-              <!-- Connector -->
-              <span class="flex-1 h-0.5 bg-active relative">
-                <span
-                  class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-brand"
-                ></span>
-              </span>
-
-              <!-- Step 2 -->
-              <li class="flex items-center gap-3 shrink-0">
-                <span
-                  class="w-9 h-9 rounded-full bg-active text-slate-600 font-medium grid place-items-center"
-                >
-                  2
-                </span>
-
-                <div class="leading-tight">
-                  <p class="text-sm font-medium text-slate-600">
-                    Details &amp; Schedule
-                  </p>
-
-                  <p
-                    class="text-[11px] font-medium tracking-wider text-slate-500"
-                  >
-                    SHIFTS &amp; SKILLS
-                  </p>
-                </div>
-              </li>
-
-              <!-- Connector -->
-              <span class="flex-1 h-0.5 bg-active"></span>
-
-              <!-- Step 3 -->
-              <li class="flex items-center gap-3 shrink-0">
-                <span
-                  class="w-9 h-9 rounded-full bg-active text-slate-600 font-medium grid place-items-center"
-                >
-                  3
-                </span>
-
-                <div class="leading-tight">
-                  <p class="text-sm font-medium text-slate-500">
-                    Review &amp; Publish
-                  </p>
-
-                  <p
-                    class="text-[11px] font-medium tracking-wider text-slate-400"
-                  >
-                    PUBLISH EVENTS
-                  </p>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </section>
-
-        <!-- GRID -->
+      <main class="page-content" id="mainContent" tabindex="-1">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="../Dashboard.html">Dashboard</a
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" /></svg
+          ><a href="opportunities-list.html">Opportunities</a
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" /></svg
+          ><span aria-current="page">Create opportunity</span>
+        </nav>
         <div
-          class="mt-6 grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6 items-start"
-        >
-          <!-- FORM CARD -->
-          <section class="bg-white rounded-xl shadow-card p-5 sm:p-8">
-            <!-- Opportunity name -->
-            <div class="flex items-center justify-between gap-3">
-              <label for="oppName" class="font-medium"
-                >Opportunity Name <span class="text-red-600">*</span></label
-              >
-              <span id="nameCount" class="text-sm text-slate-600"
-                >0 / 80 characters</span
-              >
-            </div>
-            <div class="field mt-3">
-              <span class="material-symbols-outlined text-slate-500"
-                >edit_note</span
-              >
-              <input
-                id="oppName"
-                type="text"
-                maxlength="80"
-                value="Food Relief Distribution"
-                class="flex-1 min-w-0 bg-transparent outline-none"
-              />
-            </div>
-            <p class="mt-2 text-sm text-slate-600">
-              A concise, inspiring title attracts higher commitment from
-              prospective volunteers.
+          class="flow-status"
+          id="flowStatus"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <section class="panel form-panel">
+          <p class="eyebrow">STEP 1 OF 3 · OPPORTUNITY</p>
+          <ol class="stepper" aria-label="Creation progress">
+            <li class="current" aria-current="step">1. Basic information</li>
+            <li class="">2. Schedule &amp; tasks</li>
+            <li class="">3. Review &amp; publish</li>
+          </ol>
+          <div class="form-heading">
+            <h1>Create an opportunity</h1>
+            <p>
+              Share your mission and connect with volunteers ready to make an
+              impact.
             </p>
-
-            <!-- Category -->
-            <p class="font-medium mt-6">
-              Category <span class="text-red-600">*</span>
-            </p>
-            <div id="categories" class="mt-3 flex flex-wrap gap-3">
-              <button
-                type="button"
-                data-cat="Community Support"
-                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
-              >
-                <span class="material-symbols-outlined">diversity_3</span>
-                <span class="text-sm">Community<br />Support</span>
-              </button>
-              <button
-                type="button"
-                data-cat="Education"
-                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
-              >
-                <span class="material-symbols-outlined">school</span>
-                <span class="text-sm">Education</span>
-              </button>
-              <button
-                type="button"
-                data-cat="Healthcare"
-                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
-              >
-                <span class="material-symbols-outlined">health_and_safety</span>
-                <span class="text-sm">Healthcare</span>
-              </button>
-              <button
-                type="button"
-                data-cat="Skills Training"
-                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
-              >
-                <span class="material-symbols-outlined">psychology</span>
-                <span class="text-sm">Skills Training</span>
-              </button>
-              <button
-                type="button"
-                data-cat="Environment"
-                class="chip bg-[#eef0fb] flex px-4 py-2 rounded-xl flex-col"
-              >
-                <span class="material-symbols-outlined">eco</span>
-                <span class="text-sm">Environment</span>
-              </button>
-            </div>
-
-            <!-- Short description -->
-            <div class="flex items-center justify-between gap-3 mt-6">
-              <label for="oppDesc" class="font-medium"
-                >Short Description <span class="text-red-600">*</span></label
-              >
-              <span id="descCount" class="text-sm text-slate-600"
-                >0 / 300 words</span
-              >
-            </div>
-            <textarea
-              id="oppDesc"
-              placeholder="Help us pack and distribute essential food items, grains, and nutrition packs to over 250 vulnerable families in Surulere. Volunteers work in collaborative shifts to organise inventory, verify recipient vouchers, and distribute care packages."
-              rows="4"
-              class="field mt-3 bg-[#eef0fb] w-full text-[15px] p-2 rounded-xl leading-relaxed outline-none resize-none block"
-            ></textarea>
-
-            <!-- Location type -->
-            <h3 class="flex items-center gap-2 text-lg font-semibold mt-8">
-              <span class="material-symbols-outlined text-brand"
-                >location_on</span
-              >
-              Location type
-            </h3>
-
-            <label
-              class="mt-4 flex items-start gap-3 bg-surface rounded-lg p-4 cursor-pointer"
-            >
-              <input
-                type="radio"
-                name="locType"
-                checked
-                class="mt-1 w-4 h-4 accent-blue-700"
-              />
-              <span class="leading-snug">
-                <span class="block font-medium">In-person Venue</span>
-                <span class="block text-sm text-slate-600 mt-0.5"
-                  >Requires physical attendance at<br class="hidden sm:block" />
-                  designated site</span
-                >
-              </span>
-            </label>
-
-            <!-- Venue + Hub -->
-            <div class="mt-6 grid sm:grid-cols-[1.4fr_1fr] gap-x-6 gap-y-5">
-              <div>
-                <label for="venue" class="font-medium"
-                  >Venue / Address <span class="text-red-600">*</span></label
-                >
-                <div class="field bg-[#eef0fb] rounded-xl p-2 mt-3">
-                  <span class="material-symbols-outlined text-slate-500"
-                    >apartment</span
-                  >
-                  <input
-                    id="venue"
-                    type="text"
-                    placeholder="Surulere Community Hall, 14 Bishop Street, Lagos"
-                    class="flex-1 min-w-0 bg-transparent outline-none"
-                  />
-                </div>
-              </div>
-              <div>
-                <label for="hub" class="font-medium"
-                  >Hub / Region <span class="text-red-600">*</span></label
-                >
-                <div class="field mt-3 relative">
-                  <select
-                    id="hub"
-                    class="flex-1 min-w-0 bg-transparent outline-none appearance-none pr-6"
-                  >
-                    <option>Surulere, Lagos</option>
-                    <option>Ikeja, Lagos</option>
-                    <option>Yaba, Lagos</option>
-                    <option>Lekki, Lagos</option>
-                  </select>
-                  <span
-                    class="material-symbols-outlined text-slate-500 absolute right-3 pointer-events-none"
-                    >expand_more</span
-                  >
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- RIGHT COLUMN -->
-          <div class="space-y-6 xl:sticky xl:top-24">
-            <!-- Preview -->
-            <section class="bg-white rounded-xl shadow-card p-5">
-              <h2 class="flex items-center gap-2 font-semibold text-lg">
-                <span class="material-symbols-outlined text-brand"
-                  >visibility</span
-                >
-                Schedule Card Preview
-              </h2>
-
-              <div class="mt-4 rounded-xl overflow-hidden shadow-card">
-                <div class="relative h-[145px]">
-                  <img
-                    src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=70"
-                    alt="Volunteers packing food"
-                    class="w-full h-full object-cover"
-                  />
-                  <span
-                    id="pvCategory"
-                    class="absolute left-3 bottom-3 bg-white text-brand text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm"
-                  >
-                    Community Support
-                  </span>
-                </div>
-
-                <div class="p-4">
-                  <h3 id="pvTitle" class="font-semibold text-lg">
-                    Food Relief Distribution
-                  </h3>
-                  <p
-                    id="pvDesc"
-                    class="mt-2 text-sm text-slate-600 line-clamp-2"
-                  >
-                    Help us pack and distribute essential food items, grains,
-                    and nutrition packs
-                  </p>
-
-                  <p class="mt-4 flex items-center gap-2 text-sm">
-                    <span
-                      class="material-symbols-outlined text-brand text-[18px]"
-                      >location_on</span
-                    >
-                    <span id="pvVenue" class="truncate"
-                      >Surulere Community Hall, 14 Bishop Street, Lagos</span
-                    >
-                  </p>
-                  <p class="mt-2 flex items-center gap-2 text-sm font-medium">
-                    <span
-                      class="material-symbols-outlined text-brand text-[18px]"
-                      >apartment</span
-                    >
-                    <span id="pvHub">Surulere, Lagos</span>
-                  </p>
-
-                  <div class="mt-4 flex items-center justify-between text-sm">
-                    <span class="text-slate-700">Headcount Target</span>
-                    <span class="font-semibold text-brand">10 Volunteers</span>
-                  </div>
-                  <div class="mt-2 h-2 rounded-full bg-active overflow-hidden">
-                    <div class="h-full w-[20%] bg-brand rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-
-              <p
-                class="mt-5 text-center text-xs text-slate-600 leading-relaxed"
-              >
-                Real-time approximation of how this listing<br />displays across
-                volunteer mobile apps.
+          </div>
+          <form id="opportunityForm" novalidate>
+            <section class="form-section">
+              <h2>Opportunity details</h2>
+              <p class="section-intro">
+                Tell volunteers what this opportunity is about.
               </p>
-            </section>
-
-            <!-- Help card -->
-            <section
-              class="bg-[#e9ecfb] rounded-xl p-5 flex items-center justify-between gap-3"
-            >
-              <div class="leading-snug">
-                <p class="font-semibold">Need specialized assistance?</p>
-                <p class="text-sm text-slate-700">
-                  Contact IMPACTRA Dispatch Desk
+              <div class="field">
+                <label class="field-label" for="title"
+                  >Opportunity title
+                  <span class="required" aria-hidden="true">*</span></label
+                ><input
+                  class="form-input"
+                  id="title"
+                  name="title"
+                  type="text"
+                  maxlength="120"
+                  placeholder="e.g. Community food relief drive"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label class="field-label" for="category"
+                  >Category
+                  <span class="required" aria-hidden="true">*</span></label
+                ><select
+                  class="form-input"
+                  id="category"
+                  name="category"
+                  required
+                >
+                  <option value="">Select an option</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label" for="description"
+                  >Description
+                  <span class="required" aria-hidden="true">*</span></label
+                ><textarea
+                  class="form-input"
+                  id="description"
+                  name="description"
+                  maxlength="1000"
+                  placeholder="Describe the opportunity, its purpose and the impact volunteers will make..."
+                  aria-describedby="descriptionCount"
+                  required
+                ></textarea>
+                <p class="field-counter" id="descriptionCount">
+                  0 / 1,000 characters
                 </p>
               </div>
-              <span
-                class="w-10 h-10 bg-white rounded-lg grid place-items-center shadow-sm shrink-0"
-              >
-                <span class="material-symbols-outlined text-slate-800"
-                  >support_agent</span
-                >
-              </span>
             </section>
-          </div>
-        </div>
+            <section class="form-section">
+              <h2>Location &amp; capacity</h2>
+              <p class="section-intro">
+                Let volunteers know where to join and how many people you need.
+              </p>
+              <fieldset class="location-options">
+                <legend class="field-label">
+                  Location type
+                  <span class="required" aria-hidden="true">*</span>
+                </legend>
+                <div class="radio-row">
+                  <label class="radio-option"
+                    ><input
+                      type="radio"
+                      name="locationType"
+                      value="in_person"
+                      checked
+                    />In-person</label
+                  ><label class="radio-option"
+                    ><input
+                      type="radio"
+                      name="locationType"
+                      value="remote"
+                    />Remote</label
+                  ><label class="radio-option"
+                    ><input
+                      type="radio"
+                      name="locationType"
+                      value="hybrid"
+                    />Hybrid</label
+                  >
+                </div>
+              </fieldset>
+              <div class="field-grid" id="venueFields">
+                <div class="field">
+                  <label class="field-label" for="venueAddress"
+                    >Venue address
+                    <span class="required" aria-hidden="true">*</span></label
+                  ><input
+                    class="form-input"
+                    id="venueAddress"
+                    name="venueAddress"
+                    type="text"
+                    placeholder="e.g. 12 Freedom Way, Lekki"
+                    maxlength="300"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label" for="hubRegion"
+                    >Hub region
+                    <span class="required" aria-hidden="true">*</span></label
+                  ><input
+                    class="form-input"
+                    id="hubRegion"
+                    name="hubRegion"
+                    type="text"
+                    placeholder="e.g. Lagos, Nigeria"
+                    maxlength="120"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="volunteerCapacity"
+                  >Volunteer capacity
+                  <span class="required" aria-hidden="true">*</span></label
+                ><input
+                  class="form-input"
+                  id="volunteerCapacity"
+                  name="volunteerCapacity"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="e.g. 25"
+                  required
+                  aria-describedby="volunteerCapacityHelp"
+                />
+                <p class="field-help" id="volunteerCapacityHelp">
+                  The number of volunteer places available.
+                </p>
+              </div>
+            </section>
+            <section class="form-section">
+              <h2>
+                Cover image <span class="required" aria-hidden="true">*</span>
+              </h2>
+              <p class="section-intro">
+                Add an image that helps volunteers recognise your opportunity.
+              </p>
+              <label class="upload-zone" id="uploadZone" for="coverImage"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 16V3m-5 5 5-5 5 5M3 16v4a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-4"
+                  /></svg
+                ><strong>Click to upload or drag and drop</strong
+                ><span>PNG, JPG or WebP · Maximum 5 MB</span
+                ><input
+                  class="sr-only"
+                  type="file"
+                  id="coverImage"
+                  name="coverImage"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label="Upload cover image"
+              /></label>
+              <div class="cover-preview" id="coverPreviewWrap" hidden>
+                <img id="coverPreview" alt="Opportunity cover preview" /><span
+                  id="coverFilename"
+                ></span
+                ><button type="button" id="removeCover">Remove</button>
+              </div>
+            </section>
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="saveDraftButton"
+              >
+                Save draft</button
+              ><button type="submit" class="btn btn-primary">
+                Continue
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h14m-5-5 5 5-5 5" />
+                </svg>
+              </button>
+            </div>
+          </form>
+        </section>
       </main>
     </div>
-
-    <script>
-      /* ---------- Sidebar drawer ---------- */
-      /* ---------- Sidebar drawer ---------- */
-
-      const sidebar = document.getElementById("sidebar");
-      const overlay = document.getElementById("sidebarOverlay");
-      const openBtn = document.getElementById("openSidebar");
-      const closeBtn = document.getElementById("closeSidebar");
-
-      const openSidebar = () => {
-        sidebar.classList.remove("-translate-x-full");
-        overlay.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
-      };
-
-      const closeSidebar = () => {
-        sidebar.classList.add("-translate-x-full");
-        overlay.classList.add("hidden");
-        document.body.style.overflow = "";
-      };
-
-      openBtn.addEventListener("click", openSidebar);
-      closeBtn.addEventListener("click", closeSidebar);
-      overlay.addEventListener("click", closeSidebar);
-
-      // Close the sidebar when a navigation link is clicked
-      sidebar.querySelectorAll("nav a").forEach((link) => {
-        link.addEventListener("click", () => {
-          if (window.innerWidth < 1024) {
-            closeSidebar();
-          }
-        });
-      });
-
-      // Close with Escape
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeSidebar();
-        }
-      });
-
-      // Keep the sidebar visible on desktop
-      window.addEventListener("resize", () => {
-        if (window.innerWidth >= 1024) {
-          sidebar.classList.remove("-translate-x-full");
-          overlay.classList.add("hidden");
-          document.body.style.overflow = "";
-        } else {
-          sidebar.classList.add("-translate-x-full");
-          overlay.classList.add("hidden");
-          document.body.style.overflow = "";
-        }
-      });
-      /* ---------- Live form -> preview ---------- */
-      const $ = (id) => document.getElementById(id);
-
-      const name = $("oppName"),
-        desc = $("oppDesc"),
-        venue = $("venue"),
-        hub = $("hub");
-
-      const syncName = () => {
-        $("nameCount").textContent = `${name.value.length} / 80 characters`;
-        $("pvTitle").textContent = name.value || "Untitled opportunity";
-      };
-      const syncDesc = () => {
-        const words = desc.value.trim()
-          ? desc.value.trim().split(/\s+/).length
-          : 0;
-        $("descCount").textContent = `${words} / 300 words`;
-        $("pvDesc").textContent = desc.value;
-      };
-      const syncVenue = () => {
-        $("pvVenue").textContent = venue.value;
-      };
-      const syncHub = () => {
-        $("pvHub").textContent = hub.value;
-      };
-
-      name.addEventListener("input", syncName);
-      desc.addEventListener("input", syncDesc);
-      venue.addEventListener("input", syncVenue);
-      hub.addEventListener("change", syncHub);
-      syncName();
-      syncDesc();
-      syncVenue();
-      syncHub();
-
-      /* ---------- Category chips ---------- */
-      document.querySelectorAll("#categories .chip").forEach((chip) => {
-        chip.addEventListener("click", () => {
-          document
-            .querySelectorAll("#categories .chip")
-            .forEach((c) => c.classList.remove("chip-active"));
-          chip.classList.add("chip-active");
-          $("pvCategory").textContent = chip.dataset.cat;
-        });
-      });
-      document.querySelectorAll(".chip").forEach((button) => {
-        button.addEventListener("click", () => {
-          // Remove the active style from all buttons
-          document.querySelectorAll(".chip").forEach((btn) => {
-            btn.classList.remove("bg-blue-600", "text-white");
-            btn.classList.add("text-slate-700");
-          });
-
-          // Apply the active style to the clicked button
-          button.classList.remove("text-slate-700");
-          button.classList.add("bg-blue-600", "text-white");
-        });
-      });
-    </script>
+    <div id="toast-host" aria-live="polite"></div>
   </body>
 </html>
