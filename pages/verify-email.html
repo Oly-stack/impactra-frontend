@@ -34,7 +34,7 @@
     </p>
 
     <!-- OTP Input Form -->
-    <form id="otpForm" action="step1-profile.html" method="GET">
+    <form id="otpForm" action="login.html">
       <div class="flex justify-center gap-2 sm:gap-3 mb-8" id="otpInputs">
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" autofocus required />
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
@@ -122,7 +122,6 @@
   const inputs = Array.from(document.querySelectorAll(".otp-box"));
 
   inputs.forEach((input, index) => {
-    // Keep only digits and auto-advance
     input.addEventListener("input", () => {
       input.value = input.value.replace(/[^0-9]/g, "");
       if (input.value && index < inputs.length - 1) {
@@ -130,20 +129,17 @@
       }
     });
 
-    // Backspace moves to the previous box when empty
     input.addEventListener("keydown", (e) => {
       if (e.key === "Backspace" && !input.value && index > 0) {
         inputs[index - 1].focus();
       }
     });
 
-    // Arrow keys for quick navigation
     input.addEventListener("keydown", (e) => {
       if (e.key === "ArrowLeft" && index > 0)  inputs[index - 1].focus();
       if (e.key === "ArrowRight" && index < inputs.length - 1) inputs[index + 1].focus();
     });
 
-    // Paste a full 6-digit code
     input.addEventListener("paste", (e) => {
       e.preventDefault();
       const pasted = ((e.clipboardData || window.clipboardData).getData("text") || "")
@@ -177,7 +173,7 @@
   const submitBtn = form?.querySelector('button[type="submit"]');
 
   form?.addEventListener("submit", async (e) => {
-    e.preventDefault(); // stop the default GET navigation to step1-profile.html
+    e.preventDefault();
 
     if (!displayEmail) {
       toast("We don't know which email to verify. Start over.", "error");
@@ -188,7 +184,6 @@
 
     if (code.length !== 6) {
       toast("Please enter all 6 digits", "error");
-      // Focus the first empty box
       const firstEmpty = inputs.find((i) => !i.value);
       firstEmpty?.focus();
       return;
@@ -201,32 +196,30 @@
 
     try {
       if (window.API) {
+        // Correct endpoint: /auth/verify-email with { email, code }
         await API.post("/auth/verify-email", { email: displayEmail, code });
       } else {
         await new Promise((r) => setTimeout(r, 500)); // dev fallback
       }
 
-      // Clear any pending-registration stash
+      // Mark the email as verified in sessionStorage
       try {
         const raw = sessionStorage.getItem("pendingUser");
         if (raw) {
           const user = JSON.parse(raw);
-          // Keep the email for step1, drop nothing else
           sessionStorage.setItem("pendingUser", JSON.stringify({
-            email: user.email,
-            fullName: user.fullName,
-            accountType: user.accountType,
+            ...user,
             verifiedAt: new Date().toISOString(),
           }));
         }
       } catch (_) { /* ignore */ }
 
-      toast("Email verified — let's finish your profile", "success");
+      toast("Email verified! Please log in to continue.", "success");
 
-      // Where to next?
+      // Redirect to login, NOT step1-profile (no token yet)
       setTimeout(() => {
-        window.location.href = `step1-profile.html?email=${encodeURIComponent(displayEmail)}`;
-      }, 600);
+        window.location.href = `login.html?email=${encodeURIComponent(displayEmail)}&verified=true`;
+      }, 1200);
 
     } catch (err) {
       submitBtn.disabled = false;
@@ -236,7 +229,6 @@
 
       const msg = err?.message || "Invalid or expired code";
 
-      // If the code is wrong, highlight the OTP boxes
       const lower = msg.toLowerCase();
       if (lower.includes("code") || lower.includes("invalid") || lower.includes("expired")) {
         inputs.forEach((i) => {
@@ -251,7 +243,7 @@
     }
   });
 
-  // RESEND CODE  
+  /*  RESEND CODE  */
   const resendBtn = document.getElementById("resendBtn");
   let   resendCooldown = 0;
 
@@ -269,7 +261,11 @@
 
     try {
       if (window.API) {
-        await API.post("/auth/resend-verification", { email: displayEmail });
+        // Correct endpoint: /auth/resend-email with { email, purpose }
+        await API.post("/auth/resend-email", {
+          email: displayEmail,
+          purpose: "email_verification",
+        });
       } else {
         await new Promise((r) => setTimeout(r, 500));
       }
@@ -280,8 +276,8 @@
 
       toast("A new code is on its way", "success");
 
-      // 30-second cooldown
-      resendCooldown = 30;
+      // 60-second cooldown (backend enforces this)
+      resendCooldown = 60;
       const tick = () => {
         if (resendCooldown <= 0) {
           resendBtn.disabled = false;
@@ -309,7 +305,6 @@
     setTimeout(() => (window.location.href = "login.html"), 900);
   });
 
- 
   // Focus first OTP box on load
   inputs[0]?.focus();
 })();

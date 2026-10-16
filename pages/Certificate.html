@@ -12,7 +12,7 @@
     />
     <link
       rel="shortcut icon"
-      href="/impactra-frontend/images/logo.png"
+      href="../img/impactra-logo.jpeg"
       type="image/x-icon"
     />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,6 +40,8 @@
         height: auto;
       }
     </style>
+    <script src="../API.js" defer></script>
+    <script src="certificate.js" defer></script>
   </head>
 
   <body class="bg-[#f8f9fc] text-[#0f172a] font-sans antialiased">
@@ -56,9 +58,9 @@
     >
       <div class="flex items-center gap-2.5 px-6 h-20 shrink-0">
         <img
-          src="../images/logo2.png"
+          src="../img/impactra-logo.jpeg"
           alt="IMPACTRA"
-          class="h-9 w-auto object-contain"
+          class="h-9 w-auto object-contain rounded-lg"
         />
         <span class="font-extrabold text-xl tracking-tight text-slate-900"
           >IMPACTRA</span
@@ -75,7 +77,7 @@
         class="flex-1 overflow-y-auto px-3 space-y-1 text-base text-slate-600"
       >
         <a
-          href="http://127.0.0.1:5500/Dashboard.html"
+          href="../Dashboard.html"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <svg
@@ -93,11 +95,10 @@
               stroke-linejoin="round"
             />
           </svg>
-
           Dashboard
         </a>
         <a
-          href="#"
+          href="opportunities-list.html"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <svg
@@ -115,11 +116,10 @@
               stroke-linejoin="round"
             />
           </svg>
-
           Opportunities
         </a>
         <a
-          href="http://127.0.0.1:5500/application.html"
+          href="../application.html"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <svg
@@ -137,18 +137,17 @@
               stroke-linejoin="round"
             />
           </svg>
-
           Applications
         </a>
         <a
-          href="http://127.0.0.1:5500/volunteer-profile.html"
+          href="#"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <img src="/images/volunteer2.png" class="w-5 h-5" />
           Volunteers
         </a>
         <a
-          href="http://127.0.0.1:5500/contribution.html"
+          href="#"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <svg
@@ -166,11 +165,10 @@
               stroke-linejoin="round"
             />
           </svg>
-
           Activities
         </a>
         <a
-          href="http://127.0.0.1:5500/impact.html"
+          href="#"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <svg
@@ -188,11 +186,10 @@
               stroke-linejoin="round"
             />
           </svg>
-
           Impact
         </a>
         <a
-          href=""
+          href="Certificate.html"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#e8effe] text-blue-700 font-semibold"
         >
           <svg
@@ -210,11 +207,10 @@
               stroke-linejoin="round"
             />
           </svg>
-
           Certificates
         </a>
         <a
-          href="http://127.0.0.1:5500/settings.html#"
+          href="../settings.html"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50"
         >
           <svg
@@ -237,14 +233,13 @@
               stroke-width="1.41667"
             />
           </svg>
-
           Settings
         </a>
       </nav>
 
       <div class="border-t border-slate-100 p-4">
         <a
-          href="http://127.0.0.1:5500/pages/login.html"
+          href="#"
           class="flex items-center gap-3 px-3 py-2.5 text-base text-red-500 hover:bg-red-50 rounded-lg"
         >
           <svg
@@ -335,41 +330,13 @@
         </button>
 
         <div class="flex items-center gap-3 pl-3 sm:border-l border-slate-200">
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <rect
-              width="32"
-              height="32"
-              rx="16"
-              fill="url(#pattern0_644_735)"
-            />
-            <defs>
-              <pattern
-                id="pattern0_644_735"
-                patternContentUnits="objectBoundingBox"
-                width="1"
-                height="1"
-              >
-                <use xlink:href="#image0_644_735" transform="scale(0.015625)" />
-              </pattern>
-              <image
-                id="image0_644_735"
-                width="64"
-                height="64"
-                preserveAspectRatio="none"
-                xlink:href="data:image/jpeg;base64,/9j/2wBDAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNH/2wBDAQgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNH/wgARCABAAEADASIAAhEBAxEB/8QAHAAAAgMAAwEAAAAAAAAAAAAABgcDBAUAAQII/8QAGAEAAwEBAAAAAAAAAAAAAAAAAAECAwT/2gAMAwEAAhADEAAAAHT3amh4y7Ivn504tAHkxswTRgOXLnLkS2hCSwZyfWzHWjGG4LEWkQb81RPt5Ibq4RCG1ojULvwIYPBAOJdKQeyVTzt3M0ipfMnoIY9HQzr/xAAzEAACAQMDAwEECQUBAAAAAAABAgMABBEFEiEGEzFBIjJxkQcUJDNSYXKBsRUjQpLBYv/aAAgBAQABPwD+nv6Sj5ULKXJ9tavrd1hUkg+1Ws9d6Hpk7Ww7lzMpw4ixhT8TWmdUaVq2xI5DFMxIEUmAT8CODViADelgCBG2Qa05LSbv2faXDd1CMeA3OKu9Iuria9WGLcLYuZDn0Wo7mCSSaNJVZ4sdxQeVz4zSnO7n1r6Q9ZfS+nZ3jJWWWQQoa0DSodRZ57riEHCjONxq86c05tHuZbMpFd26GZApwSI+TSdQ9zSraWKaVZpgNzKByBkNR1K/iuGjg1HM2dx2oD+54q91bVLaSfaYCZtwkPaX28+c1pOorLqVzOiR/aXVRtaonkEku4+DnFfS6hn6WglU8RXiH/YEVpY059MslaV92PcXGD+ZJ9aR9Oi+1juKs1jMjc8ZRD5X/tWAuF0q099I2yA59w81Y6rpP1Oe2EfbvsZ77sSGwfUAVBcaAhY6pPHKT6r3Bg10vfajcanJAzAJE5bG3le2an1u0tjmfUII8/jcA11L1F0rPZXlpeX4nWZdpW39s1pIjiFyLffJEkmVWTAfafXjgGpntm6dt0v2nVLmft5VgZSpBJHwOKlSxZFXTRHIu77nODhfG5XPJqbRbu3fv3NqkccjRsQVyxJxuJb/AJXTVrZnUieyh4kBBAI4J9DWmW7WnUHUYUEYgkkU/rGaVolsopuTNI7BmJ/xFBw4wDzkV09JbJeCO4XKSEKSDgiuq5Fht7G3XOY5d6/xUn37t6YyRQ6hjn6d0q3ZyZ4d0Z+C7cEmumNU263N33iii2ylZW4HJ/OpZJ83k5aQO9uyM+feABrcVhjH/nPzq3fCE/mD8qt/aaQDzjcvxFahfTX0PdlOWVAv+tWyLJM+7xtNdNWcGrw3NpMzB0t5ZICGx/d81OjZIJPmpZfs84PrE/8AFSHj9uKicBBWnygOjn1Qg1PIgjcr6qagnKRzSD0U/wAV0xqP1HUbSUthQ6hv0+tXJsxqE7s6SQmV8Lu28ZqbQdROmzujHvGBisRXHtEeCSak0y8iZo5o9rjggkcUumXH4kxVrYyxgAyDyaaxJUgynGCPFR2KKm3exFWenWqEcfM1HpdizE/VFfJ8kE1//8QAIREAAgIDAAEFAQAAAAAAAAAAAQIAAxEhQTEEEiJRYXH/2gAIAQIBAT8A1GKopZvELqQtnAZ7w+17FrI1LkYV5PDKkY1HAJUn+xagU/BqVZ7LFFlTKeiejrKVBO5lnxz9E5gIHmC1MYJ5K7kXO49ysqqM5E//xAAgEQACAwACAgMBAAAAAAAAAAABAgADEQQxIUESEyJx/9oACAEDAQE/ADsrQ2MFEZPgWQkddxVxR+gY7adnFdfszOxOWyl89gRbCviPK3NdisPRnLsD2l/WRAG/oGTy3UNb71Hpdsi1MrFvE//Z"
-              />
-            </defs>
-          </svg>
-
+          <img
+            src="../img/Profile.png"
+            alt="User"
+            class="w-8 h-8 rounded-full object-cover"
+          />
           <div class="hidden sm:block leading-tight">
-            <p class="text-sm font-bold text-slate-900">Toyin</p>
+            <p class="text-sm font-bold text-slate-900">Loading…</p>
             <p class="text-sm text-slate-500">NGO</p>
           </div>
         </div>
@@ -411,7 +378,7 @@
                   id="title"
                   maxlength="100"
                   type="text"
-                  placeholder="Certificate of Participation"
+                  value="Certificate of Participation"
                   class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-[#97969b] focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
@@ -429,7 +396,7 @@
                   id="org"
                   maxlength="100"
                   type="text"
-                  placeholder="Hope Community Initiatives"
+                  value="Hope Community Initiatives"
                   class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-[#97969b] focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
@@ -447,9 +414,10 @@
                   id="msg"
                   maxlength="200"
                   rows="3"
-                  placeholder="In recognition of dedicated service and verified impact. Total verified volunteering: {hours} Hours."
                   class="mt-1.5 text-[#97969b] w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
-                ></textarea>
+                >
+In recognition of dedicated service and verified impact. Total verified volunteering: {hours} Hours.</textarea
+                >
                 <p class="flex items-start gap-2 text-sm text-blue-700 mt-2">
                   <svg
                     class="w-4 h-4 mt-0.5 shrink-0"
@@ -488,7 +456,7 @@
                   <input
                     id="activityLabel"
                     type="text"
-                    placeholder="Volunteering Activity"
+                    value="Volunteering Activity"
                     class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <p class="text-xs sm:text-sm text-slate-400 mt-1.5">
@@ -504,7 +472,7 @@
                   <input
                     id="skillsLabel"
                     type="text"
-                    placeholder="Skills Validated"
+                    value="Skills Validated"
                     class="mt-1.5 w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <p class="text-xs sm:text-sm text-slate-400 mt-1.5">
@@ -525,14 +493,12 @@
               </p>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-                <!-- Primary -->
                 <div
                   class="bg-[#f8f9fc] border border-slate-200 rounded-xl p-4"
                 >
                   <h3 class="text-sm font-bold text-slate-900">
                     Primary Signatory
                   </h3>
-
                   <label class="block text-xs sm:text-sm text-slate-600 mt-3"
                     >Name</label
                   >
@@ -542,7 +508,6 @@
                     value="Amara Eze"
                     class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
-
                   <label class="block text-xs sm:text-sm text-slate-600 mt-3"
                     >Role</label
                   >
@@ -552,7 +517,6 @@
                     value="Field Director"
                     class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
-
                   <label class="block text-xs sm:text-sm text-slate-600 mt-3"
                     >Signature</label
                   >
@@ -606,14 +570,12 @@
                   </button>
                 </div>
 
-                <!-- Secondary -->
                 <div
                   class="bg-[#f8f9fc] border border-slate-200 rounded-xl p-4"
                 >
                   <h3 class="text-sm font-bold text-slate-900">
                     Secondary Signatory
                   </h3>
-
                   <label class="block text-xs sm:text-sm text-slate-600 mt-3"
                     >Name</label
                   >
@@ -623,7 +585,6 @@
                     value="Toyin Balogun"
                     class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
-
                   <label class="block text-xs sm:text-sm text-slate-600 mt-3"
                     >Role</label
                   >
@@ -633,7 +594,6 @@
                     value="Executive Secretary"
                     class="mt-1 w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
-
                   <label class="block text-xs sm:text-sm text-slate-600 mt-3"
                     >Signature</label
                   >
@@ -820,97 +780,5 @@
         </div>
       </main>
     </div>
-
-    <script>
-      const $ = (id) => document.getElementById(id);
-
-      // Mobile sidebar
-      const sidebar = $("sidebar"),
-        overlay = $("overlay");
-      const toggleMenu = (open) => {
-        sidebar.classList.toggle("-translate-x-full", !open);
-        overlay.classList.toggle("hidden", !open);
-      };
-      $("menuBtn").addEventListener("click", () => toggleMenu(true));
-      overlay.addEventListener("click", () => toggleMenu(false));
-
-      // Escape text, then style the {hours} variable
-      const escapeHtml = (s) =>
-        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      function render() {
-        $("titleCount").textContent = $("title").value.length + "/100";
-        $("orgCount").textContent = $("org").value.length + "/100";
-        $("msgCount").textContent = $("msg").value.length + "/200";
-
-        $("pTitle").textContent = $("title").value;
-        $("pOrg").textContent = $("org").value;
-
-        let msg = escapeHtml($("msg").value)
-          .replace(/\{volunteer_name\}/g, "Chinyere Okafor")
-          .replace(/\{activity\}/g, escapeHtml($("activityLabel").value))
-          .replace(/\{date\}/g, new Date().toLocaleDateString())
-          .replace(
-            /\{hours\}/g,
-            '<span class="font-semibold text-blue-700">4.0</span>',
-          );
-        $("pMsg").innerHTML = msg;
-
-        $("pRole1").textContent = $("role1").value;
-        $("pRole2").textContent = $("role2").value;
-
-        // Signature text shows only if no image is uploaded
-        [1, 2].forEach((n) => {
-          const hasImg = !$("sigImg" + n).classList.contains("hidden");
-          $("sigText" + n).textContent = $("name" + n).value;
-          if (!hasImg) {
-            $("pSig" + n).textContent = $("name" + n).value;
-          }
-        });
-      }
-
-      [
-        "title",
-        "org",
-        "msg",
-        "activityLabel",
-        "skillsLabel",
-        "name1",
-        "role1",
-        "name2",
-        "role2",
-      ].forEach((id) => $(id).addEventListener("input", render));
-
-      // Signature upload / remove
-      document.querySelectorAll("[data-upload]").forEach((btn) => {
-        const n = btn.dataset.upload;
-        btn.addEventListener("click", () => $("file" + n).click());
-        $("file" + n).addEventListener("change", (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          const url = URL.createObjectURL(file);
-          $("sigImg" + n).src = url;
-          $("sigImg" + n).classList.remove("hidden");
-          $("sigText" + n).classList.add("hidden");
-          $("pSig" + n).innerHTML =
-            '<img src="' +
-            url +
-            '" class="max-h-10 object-contain" alt="Signature" />';
-        });
-      });
-
-      document.querySelectorAll("[data-clear]").forEach((btn) => {
-        const n = btn.dataset.clear;
-        btn.addEventListener("click", () => {
-          $("sigImg" + n).classList.add("hidden");
-          $("sigImg" + n).removeAttribute("src");
-          $("sigText" + n).classList.remove("hidden");
-          $("file" + n).value = "";
-          render();
-        });
-      });
-
-      render();
-    </script>
   </body>
 </html>

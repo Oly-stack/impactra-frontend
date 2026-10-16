@@ -1,14 +1,17 @@
-/* IMPACTRA — Register*/
-document.addEventListener("DOMContentLoaded", () => {
-  "use strict";
+/* IMPACTRA — Register (NGO account creation) */
+console.log("[register.js] Script loaded");
 
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("[register.js] DOM ready");
+
+  /*  API GUARD  */
   if (!window.API) {
     console.error(
-      "[register.js] API client not found. Did you load api.js first?",
+      "[register.js] API client not found. Did you load ../API.js first?",
     );
   }
 
-  /* Small toast helper */
+  /*  TOAST  */
   function toast(message, variant = "default") {
     let host = document.getElementById("toast-host");
     if (!host) {
@@ -37,81 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2800);
   }
 
-  /* 1. Password Visibility Toggles*/
-  const togglePassword = document.getElementById("togglePassword");
-  const passwordInput = document.getElementById("password");
-
-  if (togglePassword && passwordInput) {
-    togglePassword.addEventListener("click", () => {
-      const type =
-        passwordInput.getAttribute("type") === "password" ? "text" : "password";
-      passwordInput.setAttribute("type", type);
-      togglePassword.setAttribute("aria-pressed", String(type === "text"));
-      togglePassword.setAttribute(
-        "aria-label",
-        type === "text" ? "Hide password" : "Show password",
-      );
-    });
-  }
-
-  const toggleConfirmPassword = document.getElementById(
-    "toggleConfirmPassword",
-  );
-  const confirmPasswordInput = document.getElementById("confirmPassword");
-
-  if (toggleConfirmPassword && confirmPasswordInput) {
-    toggleConfirmPassword.addEventListener("click", () => {
-      const type =
-        confirmPasswordInput.getAttribute("type") === "password"
-          ? "text"
-          : "password";
-      confirmPasswordInput.setAttribute("type", type);
-      toggleConfirmPassword.setAttribute(
-        "aria-pressed",
-        String(type === "text"),
-      );
-      toggleConfirmPassword.setAttribute(
-        "aria-label",
-        type === "text" ? "Hide password" : "Show password",
-      );
-    });
-  }
-
-  /* 2. Account Type Selection*/
-  let selectedAccountType = "organization";
-  const ngoCard = document.getElementById("ngoCard");
-  const volunteerCard = document.getElementById("volunteerCard");
-  const ngoSelectedBadge = document.getElementById("ngoSelected");
-
-  const ACTIVE_CARD_CLASSES =
-    "account-card text-left rounded-2xl border-2 border-[#0051d5] bg-[#f0f2ff] p-5 shadow-sm cursor-pointer transition-all";
-  const INACTIVE_CARD_CLASSES =
-    "account-card text-left rounded-2xl border border-gray-200 bg-white p-5 shadow-sm cursor-pointer transition-all hover:border-gray-300";
-
-  if (ngoCard && volunteerCard) {
-    ngoCard.addEventListener("click", () => {
-      selectedAccountType = "organization";
-      ngoCard.className = ACTIVE_CARD_CLASSES;
-      volunteerCard.className = INACTIVE_CARD_CLASSES;
-      if (ngoSelectedBadge) ngoSelectedBadge.style.display = "flex";
-      ngoCard.setAttribute("aria-pressed", "true");
-      volunteerCard.setAttribute("aria-pressed", "false");
-    });
-
-    volunteerCard.addEventListener("click", () => {
-      selectedAccountType = "volunteer";
-      volunteerCard.className = ACTIVE_CARD_CLASSES;
-      ngoCard.className = INACTIVE_CARD_CLASSES;
-      if (ngoSelectedBadge) ngoSelectedBadge.style.display = "none";
-      volunteerCard.setAttribute("aria-pressed", "true");
-      ngoCard.setAttribute("aria-pressed", "false");
-    });
-  }
-
-  /* 3. Validation helpers*/
+  /*  VALIDATION HELPERS  */
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function markInvalid(field, message) {
+    if (!field) return;
     field.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
     field.classList.remove("border-gray-200");
     field.focus();
@@ -119,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function clearInvalid(field) {
+    if (!field) return;
     field.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
     field.classList.add("border-gray-200");
   }
@@ -133,144 +67,153 @@ document.addEventListener("DOMContentLoaded", () => {
     return s;
   }
 
-  /* 4. Form Submission*/
+  /*  ELEMENTS  */
   const registerForm = document.getElementById("registerForm");
+  const fullNameEl = document.getElementById("fullName");
+  const emailEl = document.getElementById("email");
+  const phoneEl = document.getElementById("phone");
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const togglePassword = document.getElementById("togglePassword");
+  const toggleConfirmPassword = document.getElementById(
+    "toggleConfirmPassword",
+  );
 
-  if (registerForm) {
-    // Clear error styling on input
-    ["Name", "email", "password", "confirmPassword"].forEach(
-      (id) => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener("input", () => clearInvalid(el));
-      },
-    );
+  if (!registerForm) {
+    console.error("[register.js] #registerForm not found in DOM!");
+    return;
+  }
+  if (!fullNameEl || !emailEl || !passwordInput || !confirmPasswordInput) {
+    console.error("[register.js] Missing required input fields", {
+      fullNameEl,
+      emailEl,
+      passwordInput,
+      confirmPasswordInput,
+    });
+    return;
+  }
 
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  console.log("[register.js] All fields found, attaching listeners");
 
-      const fullNameEl = document.getElementById("fullName");
-      const emailEl = document.getElementById("email");
-      
-
-      const fullName = fullNameEl?.value.trim() || "";
-      const email = emailEl?.value.trim() || "";
-     
-      const password = passwordInput?.value || "";
-      const confirmPassword = confirmPasswordInput?.value || "";
-
-      //  Validate full name
-      if (!fullName) {
-        markInvalid(fullNameEl, "Please enter your full name");
-        return;
-      }
-
-      //  Validate email
-      if (!email || !EMAIL_RE.test(email)) {
-        markInvalid(emailEl, "Please enter a valid email address");
-        return;
-      }
-
-     
-
-      //  Validate password
-      if (!password || password.length < 8) {
-        markInvalid(passwordInput, "Password must be at least 8 characters");
-        return;
-      }
-      if (pwStrength(password) < 3) {
-        markInvalid(
-          passwordInput,
-          "Password is too weak — add uppercase, numbers or symbols",
-        );
-        return;
-      }
-
-      //  Confirm password
-      if (password !== confirmPassword) {
-        markInvalid(confirmPasswordInput, "Passwords do not match");
-        return;
-      }
-
-      //  Build payload for the API
-      const payload = {
-        name: fullName,
-        email,
-       
-        password,
-        accountType: selectedAccountType, 
-      };
-
-      //  Submit
-      const submitBtn = registerForm.querySelector('button[type="submit"]');
-      const original = submitBtn ? submitBtn.innerHTML : "";
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Creating account…";
-      }
-
-      try {
-        // If the API client is missing, fall back to the old behavior
-        if (!window.API) {
-          sessionStorage.setItem(
-            "pendingUser",
-            JSON.stringify({
-              fullName,
-              email,
-              phone: payload.phone,
-              accountType: selectedAccountType,
-            }),
-          );
-          window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
-          return;
-        }
-
-        const res = await window.API.auth.register(payload);
-
-        try {
-          if (res?.accessToken || res?.token) {
-            API.tokens.set({
-              accessToken: res.accessToken || res.token,
-              refreshToken: res.refreshToken,
-            });
-          }
-        } catch (_) {}
-
-        sessionStorage.setItem(
-          "pendingUser",
-          JSON.stringify({
-            fullName,
-            email,
-            phone: payload.phone,
-            accountType: selectedAccountType,
-          }),
-        );
-
-        toast("Account created — check your email to verify", "success");
-        setTimeout(() => {
-          window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
-        }, 700);
-      } catch (err) {
-        // Roll back the button and show the server's message
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = original;
-        }
-
-        const msg =
-          err?.message || "Couldn't create account — please try again";
-
-        // Highlight the relevant field 
-        const lower = msg.toLowerCase();
-        if (lower.includes("email")) {
-          markInvalid(emailEl, msg);
-        } else if (lower.includes("phone")) {
-          markInvalid(phoneEl, msg);
-        } else if (lower.includes("password")) {
-          markInvalid(passwordInput, msg);
-        } else {
-          toast(msg, "error");
-        }
-      }
+  /*  PASSWORD VISIBILITY TOGGLES  */
+  if (togglePassword && passwordInput) {
+    togglePassword.addEventListener("click", () => {
+      const isHidden = passwordInput.getAttribute("type") === "password";
+      passwordInput.setAttribute("type", isHidden ? "text" : "password");
     });
   }
+  if (toggleConfirmPassword && confirmPasswordInput) {
+    toggleConfirmPassword.addEventListener("click", () => {
+      const isHidden = confirmPasswordInput.getAttribute("type") === "password";
+      confirmPasswordInput.setAttribute("type", isHidden ? "text" : "password");
+    });
+  }
+
+  /*  CLEAR ERRORS ON INPUT  */
+  [fullNameEl, emailEl, phoneEl, passwordInput, confirmPasswordInput]
+    .filter(Boolean)
+    .forEach((el) => {
+      el.addEventListener("input", () => clearInvalid(el));
+    });
+
+  /*  SUBMIT  */
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    console.log("[register.js] Form submitted");
+
+    const fullName = fullNameEl.value.trim();
+    const email = emailEl.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    /* Validate full name */
+    if (!fullName) {
+      markInvalid(fullNameEl, "Please enter your full name");
+      return;
+    }
+
+    /* Validate email */
+    if (!email || !EMAIL_RE.test(email)) {
+      markInvalid(emailEl, "Please enter a valid email address");
+      return;
+    }
+
+    /* Validate password */
+    if (!password || password.length < 8) {
+      markInvalid(passwordInput, "Password must be at least 8 characters");
+      return;
+    }
+    if (pwStrength(password) < 3) {
+      markInvalid(
+        passwordInput,
+        "Password is too weak — add uppercase, numbers or symbols",
+      );
+      return;
+    }
+
+    /* Confirm password */
+    if (password !== confirmPassword) {
+      markInvalid(confirmPasswordInput, "Passwords do not match");
+      return;
+    }
+
+    /* Build payload */
+    const payload = {
+      name: fullName,
+      email,
+      password,
+      accountType: "organization",
+    };
+
+    /* Busy state */
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    const original = submitBtn ? submitBtn.innerHTML : "";
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Creating account…";
+    }
+
+    try {
+      if (!window.API) {
+        throw new Error("System error. Please refresh the page.");
+      }
+
+      console.log("[register.js] Calling API.auth.register with", {
+        ...payload,
+        password: "***",
+      });
+      await window.API.auth.register(payload);
+      console.log("[register.js] Signup success");
+
+      sessionStorage.setItem(
+        "pendingUser",
+        JSON.stringify({ fullName, email, accountType: "organization" }),
+      );
+
+      toast("Account created — check your email to verify", "success");
+      setTimeout(() => {
+        window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
+      }, 700);
+    } catch (err) {
+      console.error("[register.js] Signup failed:", err);
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = original;
+      }
+
+      const msg = err?.message || "Couldn't create account — please try again";
+      const lower = msg.toLowerCase();
+
+      if (lower.includes("email")) {
+        markInvalid(emailEl, msg);
+      } else if (lower.includes("password")) {
+        markInvalid(passwordInput, msg);
+      } else {
+        toast(msg, "error");
+      }
+    }
+  });
+
+  console.log("[register.js] Submit listener attached ✓");
 });
