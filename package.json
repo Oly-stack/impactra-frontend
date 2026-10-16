@@ -1,0 +1,10 @@
+{
+  "name": "impactra-frontend",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/opportunities.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

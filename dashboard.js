@@ -144,7 +144,7 @@
               </span>
             </td>
             <td style="text-align: right;">
-              <a href="opportunity-details.html?id=${opp._id}" class="manage-link">Manage →</a>
+              ${opp._id || opp.id ? `<a href="pages/opportunity-details.html?id=${encodeURIComponent(opp._id || opp.id)}" class="manage-link">Manage →</a>` : "<span>No details available</span>"}
             </td>
           </tr>`;
       }).join("");
