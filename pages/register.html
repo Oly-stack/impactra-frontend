@@ -120,61 +120,25 @@
             Must contain at least 8 characters, one number, and a symbol.
           </p>
 
-          <!-- Choose account type -->
+          <!-- Account type — informational only, no choice to make -->
           <h2 class="text-sm font-semibold text-[#172235] mb-3">
-            Choose your account type
+            Your account type
           </h2>
 
-          <div class="grid grid-cols-2 gap-3 mb-6">
-            <!-- NGO / Organization -->
-            <button
-              type="button"
-              data-role="organization"
-              class="account-card text-left rounded-2xl border-2 border-[#0051d5] bg-[#f0f2ff] p-4 shadow-sm transition-all"
-            >
-              <div class="flex items-center justify-between">
-                <div class="w-9 h-9 rounded-xl bg-[#0051d5] flex items-center justify-center">
-                  <img src="../images/page.png" alt="" class="w-4 h-4" />
-                </div>
-                <span
-                  data-role-check
-                  class="bg-[#0051d5] flex items-center gap-1 text-white text-[10px] font-semibold rounded-full px-2 py-0.5"
-                >
-                  <img src="../images/tick.png" class="w-2.5 h-2" />
-                  SELECTED
-                </span>
+          <div class="rounded-2xl border-2 border-[#0051d5] bg-[#f0f2ff] p-4 shadow-sm mb-6">
+            <div class="flex items-center justify-between">
+              <div class="w-9 h-9 rounded-xl bg-[#0051d5] flex items-center justify-center">
+                <img src="../images/page.png" alt="" class="w-4 h-4" />
               </div>
-              <h3 class="font-bold text-sm text-[#172235] mt-3">Organization</h3>
-              <p class="text-[11px] text-gray-600 mt-1 leading-relaxed">
-                Create opportunities, manage volunteers, track impact.
-              </p>
-            </button>
-
-            <!-- Platform Admin -->
-            <button
-              type="button"
-              data-role="platform_admin"
-              class="account-card text-left rounded-2xl border-2 border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-gray-300"
-            >
-              <div class="flex items-center justify-between">
-                <div class="w-9 h-9 rounded-xl bg-gray-200 flex items-center justify-center">
-                  <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/>
-                  </svg>
-                </div>
-                <span
-                  data-role-check
-                  class="hidden bg-[#0051d5] flex items-center gap-1 text-white text-[10px] font-semibold rounded-full px-2 py-0.5"
-                >
-                  <img src="../images/tick.png" class="w-2.5 h-2" />
-                  SELECTED
-                </span>
-              </div>
-              <h3 class="font-bold text-sm text-[#172235] mt-3">Platform Admin</h3>
-              <p class="text-[11px] text-gray-600 mt-1 leading-relaxed">
-                Review NGO registrations, moderate reports, manage the platform.
-              </p>
-            </button>
+              <span class="bg-[#0051d5] flex items-center gap-1 text-white text-[10px] font-semibold rounded-full px-2 py-0.5">
+                <img src="../images/tick.png" class="w-2.5 h-2" />
+                ORGANIZATION
+              </span>
+            </div>
+            <h3 class="font-bold text-sm text-[#172235] mt-3">NGO / Organization</h3>
+            <p class="text-[11px] text-gray-600 mt-1 leading-relaxed">
+              Create opportunities, manage volunteers, and track your organization's impact.
+            </p>
           </div>
 
           <!-- Submit -->

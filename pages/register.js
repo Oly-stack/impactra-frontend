@@ -1,9 +1,8 @@
-/* IMPACTRA — Register (NGO + Platform Admin) */
+/* IMPACTRA — Register (NGO / Organization only) */
 (() => {
   "use strict";
 
   const $  = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
   if (!window.API) {
     console.error("[register.js] API client not found.");
@@ -39,7 +38,7 @@
     }, 2800);
   }
 
-  /*  VALIDATION HELPERS  */
+  /*  VALIDATION  */
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function markInvalid(field, message) {
@@ -72,40 +71,6 @@
   const passwordEl = $("#password");
   const confirmEl  = $("#confirmPassword");
   const submitBtn  = $("#submitBtn");
-  const adminNotice = $("#adminNotice");
-
-  /*  ROLE CARDS  */
-  const roleCards = $$("[data-role]");
-  let selectedRole = "organization";
-
-  function selectRole(role) {
-    selectedRole = role;
-    roleCards.forEach((card) => {
-      const active = card.dataset.role === role;
-      const check  = card.querySelector("[data-role-check]");
-      const iconBg = card.querySelector("div > div");
-
-      card.classList.toggle("border-[#0051d5]", active);
-      card.classList.toggle("bg-[#f0f2ff]",    active);
-      card.classList.toggle("border-gray-200", !active);
-      card.classList.toggle("bg-white",        !active);
-      card.classList.toggle("hover:border-gray-300", !active);
-
-      if (check) check.classList.toggle("hidden", !active);
-      if (iconBg) {
-        iconBg.classList.toggle("bg-[#0051d5]", active);
-        iconBg.classList.toggle("bg-gray-200",  !active);
-      }
-    });
-
-    // Admin notice
-    if (adminNotice) adminNotice.classList.toggle("hidden", role !== "platform_admin");
-  }
-
-  roleCards.forEach((card) => {
-    card.addEventListener("click", () => selectRole(card.dataset.role));
-  });
-  selectRole("organization"); // default
 
   /*  PASSWORD VISIBILITY  */
   $("#togglePassword")?.addEventListener("click", () => {
@@ -141,7 +106,7 @@
       name: fullName,
       email,
       password,
-      accountType: selectedRole, // "organization" | "platform_admin"
+      accountType: "organization",
     };
 
     const original = submitBtn.innerHTML;
@@ -155,18 +120,13 @@
       sessionStorage.setItem("pendingUser", JSON.stringify({
         fullName,
         email,
-        accountType: selectedRole,
+        accountType: "organization",
       }));
       sessionStorage.setItem("impactra_signup_email", email);
-      sessionStorage.setItem("impactra_signup_role", selectedRole);
 
       toast("Account created — check your email to verify", "success");
       setTimeout(() => {
-        const q = new URLSearchParams({
-          email,
-          signup: "1",              // tells verify-email to try auto-login
-          role: selectedRole,       // lets verify-email route correctly
-        });
+        const q = new URLSearchParams({ email, signup: "1" });
         window.location.href = `verify-email.html?${q.toString()}`;
       }, 700);
     } catch (err) {
@@ -178,9 +138,7 @@
       const lower = msg.toLowerCase();
       if (lower.includes("email"))        markInvalid(emailEl, msg);
       else if (lower.includes("password")) markInvalid(passwordEl, msg);
-      else if (lower.includes("accounttype") || lower.includes("account type") || lower.includes("role")) {
-        toast("Platform Admin signup isn't enabled on this server yet.", "error");
-      } else toast(msg, "error");
+      else toast(msg, "error");
     }
   });
 })();

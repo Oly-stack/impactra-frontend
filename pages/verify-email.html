@@ -64,7 +64,7 @@
 (() => {
   "use strict";
 
-  /*  GUARDS*/
+  /*  GUARDS  */
   if (!window.API) {
     console.error("[verify-email] API client not found. Load ../API.js first.");
     return;
@@ -81,7 +81,7 @@
     return;
   }
 
-  /* TOAST*/
+  /*  TOAST  */
   function toast(message, variant = "default") {
     let host = document.getElementById("toast-host");
     if (!host) {
@@ -110,24 +110,19 @@
     }, 2800);
   }
 
-  /* 
-CONTEXT: email + role (from URL, then sessionStorage)*/
-  const urlParams = new URLSearchParams(window.location.search);
+  /*  CONTEXT: email only (signup is always NGO now)  */
+  const urlParams  = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get("email");
-  const roleParam  = urlParams.get("role");     // set by register.js after signup
-
-  const emailSpan = document.getElementById("userEmail");
+  const emailSpan  = document.getElementById("userEmail");
 
   let displayEmail = emailParam;
-  let signupRole   = roleParam;
 
-  if (!displayEmail || !signupRole) {
+  if (!displayEmail) {
     try {
       const raw = sessionStorage.getItem("pendingUser");
       if (raw) {
         const pending = JSON.parse(raw);
-        if (!displayEmail && pending?.email)           displayEmail = pending.email;
-        if (!signupRole && pending?.accountType)       signupRole = pending.accountType;
+        if (pending?.email) displayEmail = pending.email;
       }
     } catch (err) {
       console.warn("[verify-email] couldn't parse pendingUser:", err);
@@ -136,23 +131,22 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
 
   if (emailSpan) emailSpan.textContent = displayEmail || "your email address";
 
-  /* CLEANUP HELPER */
+  /*  CLEANUP  */
   function clearSignupState() {
     try {
       sessionStorage.removeItem("pendingUser");
       sessionStorage.removeItem("impactra_signup_email");
-      sessionStorage.removeItem("impactra_signup_role");
     } catch (_) { /* ignore */ }
   }
 
-  /*  ROUTING HELPER*/
+  /*  ROUTING HELPER  */
   function destinationFor(role) {
     return role === "platform_admin"
       ? "../welcome-back.html"
       : "../Dashboard.html";
   }
 
-  /* OTP INPUTS*/
+  /*  OTP INPUTS  */
   const inputs = Array.from(document.querySelectorAll(".otp-box"));
 
   inputs.forEach((input, index) => {
@@ -190,17 +184,15 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
   function getCode() {
     return inputs.map((i) => i.value.trim()).join("");
   }
-
   function setOtpLoading(loading) {
     inputs.forEach((i) => (i.disabled = loading));
   }
-
   function clearOtp() {
     inputs.forEach((i) => (i.value = ""));
     inputs[0]?.focus();
   }
 
-  /* VERIFY EMAIL*/
+  /*  VERIFY EMAIL  */
   const form      = document.getElementById("otpForm");
   const submitBtn = form?.querySelector('button[type="submit"]');
 
@@ -225,7 +217,6 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
     setOtpLoading(true);
 
     try {
-      // Backend should return { token, user } on success.
       const res = await API.post("/auth/verify-email", {
         email: displayEmail,
         code,
@@ -247,8 +238,8 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
         clearSignupState();
         toast("Welcome to IMPACTRA — redirecting…", "success");
 
-        const role = user?.role || signupRole;
-        const dest = destinationFor(role);
+        // Route by the role the backend returned. Signups are NGO-only
+        const dest = destinationFor(user?.role);
         setTimeout(() => (window.location.href = dest), 900);
         return;
       }
@@ -264,15 +255,12 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
     } catch (err) {
       console.error("[verify-email] verification failed:", err);
 
-      // Re-enable UI
       submitBtn.disabled = false;
       submitBtn.innerHTML = original;
       setOtpLoading(false);
       clearOtp();
 
       const msg = err?.message || "Invalid or expired code";
-
-      // Visual highlight on OTP boxes when the code is the problem
       const lower = msg.toLowerCase();
       if (lower.includes("code") || lower.includes("invalid") || lower.includes("expired")) {
         inputs.forEach((i) => {
@@ -287,7 +275,7 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
     }
   });
 
-  /* RESEND CODE*/
+  /*  RESEND CODE  */
   const resendBtn = document.getElementById("resendBtn");
   let resendCooldown = 0;
 
@@ -314,7 +302,6 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
       resendBtn.textContent = "Code sent!";
       toast("A new code is on its way", "success");
 
-      // 60-second cooldown
       resendCooldown = 60;
       const tick = () => {
         if (resendCooldown <= 0) {
@@ -337,13 +324,13 @@ CONTEXT: email + role (from URL, then sessionStorage)*/
     }
   });
 
-  /* GLOBAL 401*/
+  /*  GLOBAL 401  */
   document.addEventListener("api:unauthorized", () => {
     toast("Session expired — please sign in again", "error");
     setTimeout(() => (window.location.href = "login.html"), 900);
   });
 
-  /* FOCUS FIRST OTP BOX */
+  /*  FOCUS FIRST OTP BOX  */
   inputs[0]?.focus();
 })();
 </script>
