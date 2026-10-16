@@ -1,152 +1,380 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Review Opportunity | Impactra</title>
-<style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f8fafc;
-  color: #1f2937;
-}
-
-header {
-  padding: 20px 8%;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-main {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 30px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px #0000000d;
-}
-
-.steps {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 25px 0;
-  color: #64748b;
-  font-size: 14px;
-}
-
-.active {
-  color: #4f46e5;
-  font-weight: bold;
-}
-
-section {
-  padding: 20px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-h2 { font-size: 20px; }
-
-.detail {
-  margin: 14px 0;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
-.detail strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.actions {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  margin-top: 30px;
-}
-
-button {
-  padding: 14px 22px;
-  border: 0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.back {
-  background: #e5e7eb;
-  color: #1f2937;
-}
-
-.publish {
-  background: #4f46e5;
-  color: white;
-}
-
-.publish:hover { background: #4338ca; }
-
-.notice {
-  color: #64748b;
-  line-height: 1.6;
-}
-
-@media (max-width: 600px) {
-  main {
-    margin: 15px;
-    padding: 20px;
-  }
-
-  .steps { font-size: 12px; }
-}
-</style>
-<link rel="stylesheet" href="opportunities.css">
-  <script src="../API.js" defer></script>
-  <script src="opportunities.js" defer></script>
-</head>
-
-<body data-opportunity-page="review">
-
-<header><strong>Impactra</strong></header>
-
-<main>
-  <p id="flowStatus" class="flow-status" role="status" aria-live="polite" hidden></p>
-  <h1>Review Your Opportunity</h1>
-
-  <p class="notice">
-    Check your information before publishing.
-  </p>
-
-  <div class="steps">
-    <span>1. Basic Information</span>
-    <span>2. Details</span>
-    <span class="active">3. Review</span>
-  </div>
-
-  <section>
-    <h2>Basic Information</h2>
-    <div id="basicInfo"></div>
-  </section>
-
-  <section>
-    <h2>Opportunity Details</h2>
-    <div id="extraInfo"></div>
-  </section>
-
-  <a class="back-link" href="create-opportunities-step-1.html">Edit Basic Information</a>
-  <div class="actions">
-    <button class="back" data-back-to="create-opportunities-step-2.html">
-      Back to Details
-    </button>
-
-    <button class="publish" id="publishButton">
-      Publish Opportunity
-    </button>
-  </div>
-</main>
-
-  <noscript><p>Please enable JavaScript to use the opportunity screens.</p></noscript>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <title>Review opportunity | Impactra</title>
+    <link rel="icon" href="../img/impactra-logo.jpeg" />
+    <link
+      rel="preload"
+      href="../assets/fonts/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="opportunities.css" />
+    <script src="../API.js" defer></script>
+    <script src="opportunity-workflow.js" defer></script>
+  </head>
+  <body data-opportunity-page="review">
+    <a class="skip-link" href="#mainContent">Skip to content</a>
+    <aside
+      class="workspace-sidebar"
+      id="workspaceSidebar"
+      aria-label="Workspace navigation"
+    >
+      <a href="../Dashboard.html" class="brand"
+        ><img src="../images/logo2.png" alt="" width="28" height="28" /><span
+          >IMPACTRA</span
+        ></a
+      ><button
+        type="button"
+        class="icon-button sidebar-close"
+        id="closeMenu"
+        aria-label="Close navigation"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 6 12 12M6 18 18 6" />
+        </svg>
+      </button>
+      <nav class="nav-links" aria-label="Main">
+        <p class="nav-label">OPERATIONS</p>
+        <a href="../Dashboard.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+          ><span>Dashboard</span></a
+        ><a
+          href="opportunities-list.html"
+          class="nav-item active"
+          aria-current="page"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+          ><span>Opportunities</span></a
+        ><a href="../application.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"
+            /></svg
+          ><span>Applications</span></a
+        ><a href="../volunteer-profile.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+            />
+            <circle cx="9" cy="7" r="4" /></svg
+          ><span>Volunteers</span></a
+        ><a href="../contribution.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3v18h18M7 14l4-4 4 3 6-8" /></svg
+          ><span>Activities</span></a
+        ><a href="../impact.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m13 2-9 12h7l-1 8 10-12h-7z" /></svg
+          ><span>Impact</span></a
+        ><a href="Certificate.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="6" />
+            <path d="m8 13-1 9 5-3 5 3-1-9" /></svg
+          ><span>Certificates</span></a
+        ><button
+          type="button"
+          class="nav-item unavailable-nav"
+          data-unavailable="Messaging"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"
+            /></svg
+          ><span>Messages</span></button
+        ><a href="../report.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6M12 7h.01" /></svg
+          ><span>Report</span></a
+        ><a href="../settings.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 3 2 3-1 1-3 3-1 2-3-2-2 1-3-2-3-3 1-3-2z"
+            /></svg
+          ><span>Settings</span></a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="nav-item logout-button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
+            /></svg
+          ><span>Log out</span>
+        </button>
+      </div>
+    </aside>
+    <button
+      type="button"
+      class="drawer-overlay"
+      id="drawerOverlay"
+      aria-label="Close navigation"
+      hidden
+    ></button>
+    <div class="workspace" id="workspace">
+      <header class="workspace-header">
+        <button
+          type="button"
+          class="icon-button mobile-menu"
+          id="openMenu"
+          aria-label="Open navigation"
+          aria-controls="workspaceSidebar"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg></button
+        ><span class="header-page-label">Create Opportunity</span>
+        <form
+          class="header-search"
+          action="opportunities-list.html"
+          role="search"
+        >
+          <button type="submit" aria-label="Search opportunities">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m16 16 5 5" />
+            </svg></button
+          ><label class="sr-only" for="workspaceSearch"
+            >Search opportunities</label
+          ><input
+            type="search"
+            id="workspaceSearch"
+            name="q"
+            placeholder="Search opportunities, volunteers..."
+          /><kbd aria-hidden="true">⌘K</kbd>
+        </form>
+        <div class="header-account">
+          <button
+            type="button"
+            class="notification-link"
+            data-unavailable="Notifications"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+              />
+            </svg></button
+          ><a
+            href="../settings.html"
+            class="account-link"
+            aria-label="Account settings"
+            ><span class="avatar" id="accountInitial" aria-hidden="true">N</span
+            ><img
+              id="accountAvatar"
+              class="account-avatar"
+              alt=""
+              width="32"
+              height="32"
+              hidden
+            /><span class="account-name" id="accountName">My account</span></a
+          >
+        </div>
+      </header>
+      <main class="page-content review-page" id="mainContent" tabindex="-1">
+        <div
+          class="flow-status"
+          id="flowStatus"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="page-heading reference-heading">
+          <div>
+            <h1>Create New Opportunity</h1>
+            <p>
+              Review and verify all mission parameters before publishing to the
+              volunteer network.
+            </p>
+          </div>
+        </div>
+        <section class="panel workflow-progress">
+          <ol class="review-stepper" aria-label="Creation progress">
+            <li class="complete">
+              <span class="step-circle"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m5 12 4 4L19 6" /></svg
+              ></span>
+              <div>
+                <span class="step-kicker">STEP 1</span
+                ><span class="step-name">Basic Information</span>
+              </div>
+            </li>
+            <li class="complete">
+              <span class="step-circle"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m5 12 4 4L19 6" /></svg
+              ></span>
+              <div>
+                <span class="step-kicker">STEP 2</span
+                ><span class="step-name">Details &amp; Schedule</span>
+              </div>
+            </li>
+            <li class="current" aria-current="step">
+              <span class="step-circle">3</span>
+              <div>
+                <span class="step-kicker">STEP 3</span
+                ><span class="step-name">Review &amp; Publish</span>
+              </div>
+            </li>
+          </ol>
+        </section>
+        <div class="panel publish-bar">
+          <button type="button" class="btn btn-quiet" id="saveReviewDraft">
+            Save as Draft</button
+          ><button type="button" class="btn btn-primary" id="publishButton">
+            Publish Opportunity
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-5-5 5 5-5 5" />
+            </svg>
+          </button>
+        </div>
+        <div class="review-grid">
+          <section class="panel reference-basic">
+            <div class="review-section-heading">
+              <span class="review-section-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 11v6M12 7h.01" /></svg
+              ></span>
+              <div>
+                <h2>1. Basic Information</h2>
+                <p>Core identity, mission scope, and venue</p>
+              </div>
+              <a
+                class="review-edit"
+                href="create-opportunities-step-1.html"
+                aria-label="Edit basic information"
+                >↗ Edit</a
+              >
+            </div>
+            <dl class="review-cells basic-cells" id="basicInfo">
+              <div class="review-cell">
+                <dt>Opportunity title</dt>
+                <dd id="reviewTitle">Not specified</dd>
+              </div>
+              <div class="review-cell">
+                <dt>Category</dt>
+                <dd id="reviewCategory">Not specified</dd>
+              </div>
+              <div class="review-cell span-full">
+                <dt>Short description</dt>
+                <dd id="reviewDescription">Not specified</dd>
+              </div>
+              <div class="review-cell span-full">
+                <dt>Location &amp; delivery model</dt>
+                <dd id="reviewLocation">Not specified</dd>
+              </div>
+            </dl>
+          </section>
+          <section class="panel reference-schedule">
+            <div class="review-section-heading">
+              <span class="review-section-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+              ></span>
+              <div>
+                <h2>2. Schedule &amp; Eligibility</h2>
+                <p>Shift commitment, age threshold, and physical demands</p>
+              </div>
+              <a
+                class="review-edit"
+                href="create-opportunities-step-2.html"
+                aria-label="Edit schedule and eligibility"
+                >↗ Edit</a
+              >
+            </div>
+            <dl class="review-cells schedule-cells" id="extraInfo">
+              <div class="review-cell">
+                <dt>Shift date</dt>
+                <dd id="reviewDate">Not specified</dd>
+              </div>
+              <div class="review-cell">
+                <dt>Time window</dt>
+                <dd id="reviewTime">Not specified</dd>
+              </div>
+              <div class="review-cell credit-cell">
+                <dt>Service credit</dt>
+                <dd id="reviewCredit">Not specified</dd>
+              </div>
+              <div class="review-cell">
+                <dt>Minimum age</dt>
+                <dd id="reviewAge">Not specified</dd>
+              </div>
+              <div class="review-cell">
+                <dt>Experience level</dt>
+                <dd id="reviewExperience">Not specified</dd>
+              </div>
+              <div class="review-cell">
+                <dt>Physical demands</dt>
+                <dd id="reviewDemands">Not specified</dd>
+              </div>
+            </dl>
+            <p class="additional-shifts" id="additionalShifts" hidden></p>
+          </section>
+          <section class="panel reference-tasks">
+            <div class="review-section-heading">
+              <span class="review-section-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3v18h18M7 14l4-4 4 3 6-8" /></svg
+              ></span>
+              <div>
+                <h2>3. Volunteer Milestone Tasks</h2>
+                <p>The tasks volunteers will complete during their service</p>
+              </div>
+              <a
+                class="review-edit"
+                href="create-opportunities-step-2.html"
+                aria-label="Edit volunteer tasks"
+                >↗ Edit</a
+              >
+            </div>
+            <ol class="milestone-list" id="reviewTasks"></ol>
+          </section>
+          <section
+            class="panel opportunity-preview"
+            aria-label="Opportunity card preview"
+          >
+            <p class="preview-caption">Opportunity preview</p>
+            <div class="preview-image">
+              <img id="reviewCover" alt="Opportunity cover" hidden />
+              <div class="preview-shade"></div>
+              <div class="preview-overlay">
+                <span class="preview-category" id="previewCategory"></span
+                ><span id="previewDuration"></span>
+              </div>
+            </div>
+            <div class="preview-content">
+              <div class="preview-org-row">
+                <span id="previewOrganisation">Your organisation</span
+                ><span class="preview-spots" id="previewSpots"></span>
+              </div>
+              <h2 id="previewTitle">Your opportunity</h2>
+              <p id="previewDescription"></p>
+              <div class="preview-location">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
+                  <circle cx="12" cy="10" r="2.5" /></svg
+                ><span id="previewLocation"></span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div id="toast-host" aria-live="polite"></div>
+  </body>
 </html>

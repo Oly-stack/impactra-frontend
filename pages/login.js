@@ -1,15 +1,29 @@
 /* IMPACTRA — Login (Two-step OTP flow) */
-console.log("[login.js] Script loaded");
-
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
   "use strict";
-  console.log("[login.js] DOM ready");
 
+  const DEBUG = false; // flip to true for verbose logging
+  const log = (...args) => DEBUG && console.log("[login.js]", ...args);
+  const warn = (...args) => console.warn("[login.js]", ...args);
+
+  /*  API GUARD  */
   if (!window.API) {
     console.error("[login.js] API client not found. Load ../API.js first.");
+    return;
   }
 
-  /* ---------- TOAST ---------- */
+  // If the user already has a valid token,send them straight to the right dashboard.
+  if (API.tokens.isAuthenticated) {
+    let existing = null;
+    try { existing = JSON.parse(sessionStorage.getItem("impactra_user") || "null"); } catch (_) {}
+    const dest = existing?.role === "platform_admin"
+      ? "../welcome-back.html"
+      : "../Dashboard.html";
+    window.location.replace(dest);
+    return;
+  }
+
+  /*  TOAST  */
   function toast(message, variant = "default") {
     let host = document.getElementById("toast-host");
     if (!host) {
@@ -26,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     const el = document.createElement("div");
     el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+    el.setAttribute("role", "status");
     el.textContent = message;
     host.appendChild(el);
     setTimeout(() => {
@@ -36,24 +51,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2800);
   }
 
-  /* ---------- VALIDATION HELPERS ---------- */
+  /*  VALIDATION HELPERS  */
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Inline styles guarantee the error ring shows up regardless of which
 
   function markInvalid(field, message) {
     if (!field) return;
-    field.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-    field.classList.remove("border-gray-200");
+    field.style.boxShadow = "0 0 0 2px rgba(244,63,94,.55)";
+    field.style.borderColor = "#F43F5E";
     field.focus();
     toast(message, "error");
   }
-
   function clearInvalid(field) {
     if (!field) return;
-    field.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-    field.classList.add("border-gray-200");
+    field.style.boxShadow = "";
+    field.style.borderColor = "";
   }
 
-  /* ---------- ELEMENTS ---------- */
+  /*  ELEMENTS  */
   const loginForm = document.getElementById("loginForm");
   if (!loginForm) {
     console.error("[login.js] #loginForm not found");
@@ -78,7 +94,20 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentEmail = "";
   let resendCooldown = 0;
 
-  /* ---------- TOGGLE PASSWORD ---------- */
+  /*  URL CONTEXT (?email=...&verified=true)  */
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlEmail = urlParams.get("email");
+  const justVerified = urlParams.get("verified") === "true";
+
+  if (urlEmail && emailInput) {
+    emailInput.value = urlEmail;
+    if (rememberBox) rememberBox.checked = true;
+  }
+  if (justVerified) {
+    toast("Email verified — please sign in.", "success");
+  }
+
+  /*  TOGGLE PASSWORD  */
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
       const isHidden = passwordInput.getAttribute("type") === "password";
@@ -87,39 +116,47 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------- REMEMBER ME ---------- */
-  if (emailInput && rememberBox) {
+  /*  REMEMBER ME  */
+  if (emailInput && rememberBox && !urlEmail) {
     try {
       const saved = localStorage.getItem(REMEMBER_KEY);
       if (saved) {
         emailInput.value = saved;
         rememberBox.checked = true;
       }
-    } catch (_) {}
+    } catch (_) { /* ignore */ }
   }
 
-  /* ---------- CLEAR INVALID ON INPUT ---------- */
+  /*  CLEAR INVALID ON INPUT  */
   [emailInput, passwordInput].forEach((el) => {
     if (!el) return;
     el.addEventListener("input", () => clearInvalid(el));
   });
 
-  /* ---------- OTP INPUT AUTO-TAB ---------- */
+  /*  OTP INPUT AUTO-TAB  */
   otpInputs.forEach((input, index) => {
     input.addEventListener("input", () => {
       input.value = input.value.replace(/[^0-9]/g, "");
       if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus();
     });
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace" && !input.value && index > 0) otpInputs[index - 1].focus();
-      if (e.key === "ArrowLeft" && index > 0) otpInputs[index - 1].focus();
-      if (e.key === "ArrowRight" && index < otpInputs.length - 1) otpInputs[index + 1].focus();
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        otpInputs[index - 1].focus();
+      } else if (e.key === "ArrowLeft" && index > 0) {
+        otpInputs[index - 1].focus();
+      } else if (e.key === "ArrowRight" && index < otpInputs.length - 1) {
+        otpInputs[index + 1].focus();
+      }
     });
     input.addEventListener("paste", (e) => {
       e.preventDefault();
-      const pasted = (e.clipboardData.getData("text") || "").replace(/[^0-9]/g, "").trim();
+      const pasted = (e.clipboardData?.getData("text") || "")
+        .replace(/[^0-9]/g, "")
+        .trim();
       if (pasted.length === 6) {
-        pasted.split("").forEach((char, i) => { if (otpInputs[i]) otpInputs[i].value = char; });
+        pasted.split("").forEach((char, i) => {
+          if (otpInputs[i]) otpInputs[i].value = char;
+        });
         otpInputs[otpInputs.length - 1].focus();
       }
     });
@@ -128,40 +165,38 @@ document.addEventListener("DOMContentLoaded", () => {
   function getOtpCode() {
     return otpInputs.map((i) => i.value.trim()).join("");
   }
-
   function setOtpLoading(loading) {
     otpInputs.forEach((i) => (i.disabled = loading));
   }
-
   function clearOtp() {
     otpInputs.forEach((i) => (i.value = ""));
     otpInputs[0]?.focus();
   }
 
-  /* ---------- STEP TRANSITIONS ---------- */
+  /*  STEP TRANSITIONS  */
   function showOtpStep(email) {
     currentEmail = email;
-    otpEmailDisplay.textContent = email;
-    credentialsStep.classList.add("hidden");
-    otpStep.classList.remove("hidden");
-    submitBtnText.textContent = "Verify OTP";
-    submitBtnArrow.classList.add("hidden");
+    if (otpEmailDisplay) otpEmailDisplay.textContent = email;
+    credentialsStep?.classList.add("hidden");
+    otpStep?.classList.remove("hidden");
+    if (submitBtnText) submitBtnText.textContent = "Verify OTP";
+    submitBtnArrow?.classList.add("hidden");
     clearOtp();
     setTimeout(() => otpInputs[0]?.focus(), 100);
   }
 
   function showCredentialsStep() {
-    otpStep.classList.add("hidden");
-    credentialsStep.classList.remove("hidden");
-    submitBtnText.textContent = "Log in";
-    submitBtnArrow.classList.remove("hidden");
+    otpStep?.classList.add("hidden");
+    credentialsStep?.classList.remove("hidden");
+    if (submitBtnText) submitBtnText.textContent = "Log in";
+    submitBtnArrow?.classList.remove("hidden");
     clearInvalid(passwordInput);
     clearOtp();
   }
 
   backToLogin?.addEventListener("click", showCredentialsStep);
 
-  /* ---------- RESEND OTP ---------- */
+  /*  RESEND OTP  */
   resendOtpBtn?.addEventListener("click", async () => {
     if (resendCooldown > 0) return;
     if (!currentEmail) {
@@ -174,9 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resendOtpBtn.textContent = "Sending…";
 
     try {
-      if (window.API) {
-        await API.auth.resendEmail(currentEmail, "login");
-      }
+      await API.auth.resendEmail(currentEmail, "login");
       toast("A new login code is on its way", "success");
 
       resendCooldown = 60;
@@ -194,16 +227,16 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       resendOtpBtn.disabled = false;
       resendOtpBtn.textContent = originalText;
-      toast(err.message || "Couldn't resend code", "error");
+      toast(err?.message || "Couldn't resend code", "error");
     }
   });
 
-  /* ---------- SUBMIT (Two-step) ---------- */
+  /*  SUBMIT (Two-step)  */
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("[login.js] Form submitted");
+    log("form submitted");
 
-    /* =============== STEP 1: Email + Password =============== */
+    /* STEP 1: Email + Password */
     if (!credentialsStep.classList.contains("hidden")) {
       const email = emailInput?.value.trim() || "";
       const password = passwordInput?.value || "";
@@ -217,41 +250,52 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const originalText = submitBtnText.textContent;
+      const originalText = submitBtnText?.textContent || "Log in";
       submitBtn.disabled = true;
-      submitBtnText.textContent = "Signing in…";
+      if (submitBtnText) submitBtnText.textContent = "Signing in…";
 
       try {
-        if (!window.API) throw new Error("API not loaded");
-
-        console.log("[login.js] Step 1: calling /auth/login");
+        log("step 1 → /auth/login");
         const res = await API.auth.login(email, password);
-        console.log("[login.js] Login step 1 response:", res);
+        log("step 1 response", res);
 
         /* Remember me */
         try {
           if (rememberBox?.checked) localStorage.setItem(REMEMBER_KEY, email);
           else localStorage.removeItem(REMEMBER_KEY);
-        } catch (_) {}
+        } catch (_) { /* ignore */ }
 
-        /* If backend requires OTP */
+        /* Branch A: backend wants an OTP */
         if (res?.requiresOTP) {
           toast("OTP sent to your email", "info");
           showOtpStep(email);
-        } else if (res?.token) {
-          // Fallback — some backends return a token directly
-          API.tokens.set({ accessToken: res.token, refreshToken: res.refreshToken });
-          sessionStorage.setItem("impactra_user", JSON.stringify(res.user || {}));
+          return;
+        }
+
+        /* Branch B: backend returned a token directly */
+        const token = res?.token || res?.accessToken;
+        if (token) {
+          API.tokens.set({
+            accessToken: token,
+            refreshToken: res.refreshToken,
+          });
+          try {
+            sessionStorage.setItem("impactra_user", JSON.stringify(res.user || {}));
+          } catch (_) { /* ignore */ }
+
           toast("Signed in — redirecting…", "success");
           const dest = res?.user?.role === "platform_admin"
-            ? "admin-dashboard.html"
+            ? "../welcome-back.html"
             : "../Dashboard.html";
           setTimeout(() => (window.location.href = dest), 600);
-        } else {
-          toast("Unexpected response from server", "error");
+          return;
         }
+
+        /* Branch C: unexpected */
+        toast("Unexpected response from server", "error");
+
       } catch (err) {
-        console.error("[login.js] Step 1 error:", err);
+        warn("step 1 error", err);
         const msg = err?.message || "Couldn't sign in — please try again";
         const lower = msg.toLowerCase();
         if (lower.includes("email")) markInvalid(emailInput, msg);
@@ -259,14 +303,16 @@ document.addEventListener("DOMContentLoaded", () => {
         else toast(msg, "error");
       } finally {
         submitBtn.disabled = false;
+        // Only reset button text if we're still on step 1 (i.e. not
+       
         if (!credentialsStep.classList.contains("hidden")) {
-          submitBtnText.textContent = originalText;
+          if (submitBtnText) submitBtnText.textContent = originalText;
         }
       }
       return;
     }
 
-    /* =============== STEP 2: Verify OTP =============== */
+    /* STEP 2: Verify OTP */
     const code = getOtpCode();
     if (code.length !== 6) {
       toast("Please enter all 6 digits", "error");
@@ -274,16 +320,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     submitBtn.disabled = true;
-    submitBtnText.textContent = "Verifying…";
+    if (submitBtnText) submitBtnText.textContent = "Verifying…";
     setOtpLoading(true);
 
     try {
-      console.log("[login.js] Step 2: calling /auth/verify-login with", { email: currentEmail, code: "***" });
+      log("step 2 → /auth/verify-login");
       const res = await API.auth.verifyLogin(currentEmail, code);
-      console.log("[login.js] Verify-login response:", res);
+      log("step 2 response", res);
 
-      /* Token saving is handled inside API.auth.verifyLogin now,
-         but keep this as a belt-and-braces fallback. */
+      // API.auth.verifyLogin persists the token itself
       const token = res?.token || res?.accessToken;
       if (token && !API.tokens.access) {
         API.tokens.set({
@@ -296,25 +341,27 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const user = res?.user || res?.data?.user;
         if (user) sessionStorage.setItem("impactra_user", JSON.stringify(user));
-      } catch (_) {}
+      } catch (_) { /* ignore */ }
 
       toast("Signed in — redirecting…", "success");
 
       /* Role-based routing */
       const userRole = res?.user?.role || res?.data?.user?.role;
-      let destination = "../Dashboard.html";
-      if (userRole === "platform_admin") destination = "admin-dashboard.html";
+      const destination = userRole === "platform_admin"
+        ? "../welcome-back.html"
+        : "../Dashboard.html";
 
       setTimeout(() => (window.location.href = destination), 600);
+
     } catch (err) {
-      console.error("[login.js] Step 2 error:", err);
+      warn("step 2 error", err);
       submitBtn.disabled = false;
-      submitBtnText.textContent = "Verify OTP";
+      if (submitBtnText) submitBtnText.textContent = "Verify OTP";
       setOtpLoading(false);
       clearOtp();
       toast(err?.message || "Invalid or expired code", "error");
     }
   });
 
-  console.log("[login.js] Submit listener attached ✓");
-});
+  log("submit listener attached ✓");
+})();

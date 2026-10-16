@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Impactra – Reports</title>
+<title>Reports | IMPACTRA Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet" />
 <script src="https://cdn.tailwindcss.com"></script>
@@ -28,14 +28,26 @@
   };
 </script>
 <style>
-  /* Shared icon styling for the SVG sprite */
   svg.ic { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .sidebar-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 </style>
+<script src="API.js" defer></script>
+<script src="admin.js" defer></script>
 </head>
 
 <body class="flex min-h-screen bg-page font-sans text-[14px] text-ink">
 
-<!-- Icon sprite -->
+<!--  ICON SPRITE  -->
 <svg width="0" height="0" class="absolute">
   <defs>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
@@ -59,77 +71,103 @@
     <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
     <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
     <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3a9 9 0 0 1 9 9" opacity=".35"/></symbol>
-    <symbol id="i-logo" viewBox="0 0 24 24"><circle cx="12" cy="7" r="2.5"/><circle cx="6" cy="14" r="2.5"/><circle cx="18" cy="14" r="2.5"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
   </defs>
 </svg>
 
-<!-- ============ SIDEBAR ============ -->
-<aside class="sticky top-0 hidden h-screen w-[185px] shrink-0 flex-col border-r border-line bg-white md:flex">
+<!--  MOBILE OVERLAY  -->
+<div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-black/40 z-30 md:hidden"></div>
+
+<!--  SIDEBAR  -->
+<aside
+  id="sidebar"
+  class="fixed md:sticky top-0 left-0 z-40 h-screen w-[240px] md:w-[185px] shrink-0 flex flex-col border-r border-line bg-white -translate-x-full md:translate-x-0 transition-transform duration-300"
+>
   <div class="flex h-[46px] items-center gap-2 border-b border-line px-4 font-bold tracking-wide">
-    <img src="images/logo2.png" alt="Impactra logo" class="h-[26px] w-[26px] object-contain" />
-IMPACTRA
-    </span>
-    
+    <img src="../images/logo2.png" alt="Impactra logo" class="h-[26px] w-[26px] object-contain" />
+    IMPACTRA
   </div>
 
-  <nav class="flex flex-1 flex-col gap-1.5 px-1.5 py-[18px] text-[13px]">
-    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-grid"/></svg>Overview</a>
-    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-building"/></svg>Applications</a>
-    <a href="#" class="flex items-center gap-2.5 rounded-lg bg-[#e9ecfb] px-3 py-2.5 font-semibold text-brand"><svg class="ic"><use href="#i-shield"/></svg>Reports</a>
-    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-support"/></svg>Support</a>
-    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-users"/></svg>User Management</a>
-    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]"><svg class="ic"><use href="#i-gear"/></svg>Settings</a>
+  <nav class="flex flex-1 flex-col gap-1.5 px-1.5 py-[18px] text-[13px] overflow-y-auto">
+    <a href="welcome-back.html" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]">
+      <svg class="ic"><use href="#i-grid"/></svg>Dashboard
+    </a>
+    <a href="Organisation.html" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]">
+      <svg class="ic"><use href="#i-building"/></svg>Applications
+    </a>
+    <a href="report.html" class="flex items-center gap-2.5 rounded-lg bg-[#e9ecfb] px-3 py-2.5 font-semibold text-brand">
+      <svg class="ic"><use href="#i-shield"/></svg>Reports
+    </a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]">
+      <svg class="ic"><use href="#i-support"/></svg>Support
+    </a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]">
+      <svg class="ic"><use href="#i-users"/></svg>User Management
+    </a>
+    <a href="#" class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#2b3048] hover:bg-[#f3f4fb]">
+      <svg class="ic"><use href="#i-gear"/></svg>Settings
+    </a>
   </nav>
 
   <div class="flex items-center gap-3.5 border-t border-line px-3 py-3.5 text-[13px]">
     <span class="font-bold text-muted">⋮</span>
-    <a href="#" class="flex items-center gap-2 text-danger"><svg class="ic"><use href="#i-logout"/></svg>Log out</a>
+    <button id="logoutBtn" type="button" class="flex items-center gap-2 text-danger hover:opacity-80">
+      <svg class="ic"><use href="#i-logout"/></svg>Log out
+    </button>
   </div>
 </aside>
 
-<!-- ============ MAIN ============ -->
-<div class="min-w-0 flex-1">
+<!--  MAIN  -->
+<div class="min-w-0 flex-1 flex flex-col">
 
   <!-- Top bar -->
-  <header class="flex h-[46px] items-center justify-between border-b border-line bg-white px-6">
-    <label class="flex h-[30px] w-[277px] items-center gap-2 rounded-lg bg-field px-3 text-[12.5px] text-muted">
-      <svg class="ic"><use href="#i-search"/></svg>
-      <input type="text" placeholder="Search administrative logs, orgs, entities..." class="flex-1 bg-transparent text-ink outline-none placeholder:text-muted" />
-    </label>
-    <div class="flex items-center gap-5">
-      <span class="relative text-[#2b3048]">
+  <header class="flex h-[46px] items-center justify-between border-b border-line bg-white px-3 sm:px-6 gap-3">
+    <div class="flex items-center gap-2 flex-1 min-w-0">
+      <button id="openSidebar" type="button" class="md:hidden grid h-8 w-8 place-items-center rounded-lg text-[#2b3048] hover:bg-field" aria-label="Open menu">
+        <svg class="ic !h-[18px] !w-[18px]"><use href="#i-menu"/></svg>
+      </button>
+      <label class="flex h-[30px] w-full max-w-[277px] items-center gap-2 rounded-lg bg-field px-3 text-[12.5px] text-muted">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input type="text" placeholder="Search administrative logs, orgs, entities..." class="flex-1 bg-transparent text-ink outline-none placeholder:text-muted" />
+      </label>
+    </div>
+    <div class="flex items-center gap-3 sm:gap-5 shrink-0">
+      <button id="bellBtn" type="button" class="relative text-[#2b3048]" aria-label="Notifications">
         <svg class="ic !h-[18px] !w-[18px]"><use href="#i-bell"/></svg>
         <span class="absolute -top-px right-0 h-[7px] w-[7px] rounded-full bg-[#e5372f]"></span>
-      </span>
-      <div class="flex items-center gap-2.5 border-l border-line pl-5 text-[13px] font-semibold">
-        <span class="h-[22px] w-[22px] rounded-full bg-gradient-to-br from-[#2d2f45] to-[#6b6f8e]"></span>
-        Eleanor V.
+      </button>
+      <div class="flex items-center gap-2.5 md:border-l border-line md:pl-5 text-[13px] font-semibold">
+        <span data-user-initials class="grid h-[22px] w-[22px] place-items-center rounded-full bg-gradient-to-br from-[#2d2f45] to-[#6b6f8e] text-white text-[10px]">AU</span>
+        <span data-user-name class="hidden sm:inline">Admin</span>
       </div>
     </div>
   </header>
 
-  <main class="px-6 pb-10 pt-5">
+  <main class="px-4 sm:px-6 pb-10 pt-5">
 
     <!-- Page heading -->
-    <div class="mb-[18px] flex items-start justify-between">
+    <div class="mb-[18px] flex items-start justify-between gap-3 flex-wrap">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight">Reports</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl font-bold tracking-tight">Reports</h1>
+          <span id="demoBadge" class="hidden rounded-md bg-[#fef3c7] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#92400e]">Demo data</span>
+        </div>
         <p class="mt-1 text-[13px] text-muted">Review reported content, users, and organizations requiring administrative compliance.</p>
       </div>
-      <button class="flex h-9 items-center gap-2 rounded-lg bg-field px-4 text-[13px] font-semibold hover:bg-[#e0e3f6]">
+      <button id="exportBtn" type="button" class="flex h-9 items-center gap-2 rounded-lg bg-field px-4 text-[13px] font-semibold hover:bg-[#e0e3f6]">
         <svg class="ic"><use href="#i-download"/></svg>Export
       </button>
     </div>
 
     <!-- Stat cards -->
-    <section class="mb-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <section class="mb-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       <div class="min-h-[122px] rounded-xl bg-white px-5 py-[18px] shadow-sm">
         <div class="flex items-start justify-between">
           <div class="text-[10.5px] font-semibold uppercase leading-[1.5] tracking-[.06em] text-[#3a3f58]">Unresolved<br/>Incidents</div>
           <span class="grid h-7 w-7 place-items-center rounded-lg bg-danger-soft text-danger"><svg class="ic"><use href="#i-flag"/></svg></span>
         </div>
-        <div class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">8</div>
-        <div class="text-[11.5px] text-danger">+2 new today</div>
+        <div data-stat="open" class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">0</div>
+        <div data-stat="open-sub" class="text-[11.5px] text-danger">—</div>
       </div>
 
       <div class="min-h-[122px] rounded-xl bg-white px-5 py-[18px] shadow-sm">
@@ -137,8 +175,8 @@ IMPACTRA
           <div class="text-[10.5px] font-semibold uppercase leading-[1.5] tracking-[.06em] text-[#3a3f58]">Under Investigation</div>
           <span class="grid h-7 w-7 place-items-center rounded-lg bg-[#dfe8ff] text-brand"><svg class="ic"><use href="#i-clipboard"/></svg></span>
         </div>
-        <div class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">6</div>
-        <div class="text-[11.5px] text-muted">Avg turnaround 3.4 hrs</div>
+        <div data-stat="review" class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">0</div>
+        <div data-stat="review-sub" class="text-[11.5px] text-muted">Avg turnaround —</div>
       </div>
 
       <div class="min-h-[122px] rounded-xl bg-white px-5 py-[18px] shadow-sm">
@@ -146,13 +184,13 @@ IMPACTRA
           <div class="text-[10.5px] font-semibold uppercase leading-[1.5] tracking-[.06em] text-[#3a3f58]">Resolved (30d)</div>
           <span class="grid h-7 w-7 place-items-center text-ok"><svg class="ic"><use href="#i-check"/></svg></span>
         </div>
-        <div class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">14</div>
-        <div class="text-[11.5px] text-ok">94% compliance SLA</div>
+        <div data-stat="resolved" class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">0</div>
+        <div data-stat="resolved-sub" class="text-[11.5px] text-ok">—</div>
       </div>
 
       <div class="min-h-[122px] rounded-xl bg-white px-5 py-[18px] shadow-sm">
         <div class="flex items-start justify-between">
-          <div class="text-[10.5px] font-semibold uppercase leading-[1.5] tracking-[.06em] text-[#3a3f58]">Platform Health</div>
+          <div class="text-[10.5px] font-semibold leading-[1.5] tracking-[.06em] text-[#3a3f58] uppercase">Platform Health</div>
           <span class="grid h-7 w-7 place-items-center rounded-lg bg-ok-soft text-ok"><svg class="ic"><use href="#i-shield"/></svg></span>
         </div>
         <div class="mb-1 mt-1.5 text-[28px] font-bold tracking-tight">99.1%</div>
@@ -161,33 +199,36 @@ IMPACTRA
     </section>
 
     <!-- Reports table card -->
-    <section class="overflow-x-auto rounded-xl bg-white shadow-sm">
-      <div class="flex gap-1.5 px-[18px] pb-3.5 pt-[18px]">
-        <label class="flex h-10 w-[288px] items-center gap-2 rounded-lg bg-field px-3 text-muted">
+    <section class="overflow-hidden rounded-xl bg-white shadow-sm">
+      <div class="flex gap-1.5 px-[18px] pb-3.5 pt-[18px] flex-wrap">
+        <label class="flex h-10 w-full sm:w-[288px] items-center gap-2 rounded-lg bg-field px-3 text-muted">
           <svg class="ic"><use href="#i-search"/></svg>
           <input id="search" type="text" placeholder="Search reports by ID, user, organization..." class="flex-1 bg-transparent text-[12.5px] text-ink outline-none placeholder:text-muted" />
         </label>
-        <button class="grid h-10 w-[42px] place-items-center rounded-lg bg-field text-[#3a3f58]" aria-label="Filter">
+        <button id="filterBtn" type="button" class="relative grid h-10 w-[42px] place-items-center rounded-lg bg-field text-[#3a3f58] hover:bg-[#e0e3f6]" aria-label="Filter">
           <svg class="ic !h-[18px] !w-[18px]"><use href="#i-filter"/></svg>
+          <span id="filterDot" class="hidden absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-brand"></span>
         </button>
       </div>
 
-      <table class="w-full min-w-[820px] border-collapse">
-        <thead>
-          <tr class="bg-thead text-[10.5px] font-semibold uppercase tracking-[.07em] text-[#3a3f58]">
-            <th class="w-[110px] py-3 pl-4 text-center">ID</th>
-            <th class="py-3 pl-6 text-left">Reported Item</th>
-            <th class="py-3 text-center">Category</th>
-            <th class="py-3 text-left">Date</th>
-            <th class="py-3 text-center">Status</th>
-            <th class="py-3 pr-4 text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[820px] border-collapse">
+          <thead>
+            <tr class="bg-thead text-[10.5px] font-semibold uppercase tracking-[.07em] text-[#3a3f58]">
+              <th class="w-[110px] py-3 pl-4 text-center">ID</th>
+              <th class="py-3 pl-6 text-left">Reported Item</th>
+              <th class="py-3 text-center">Category</th>
+              <th class="py-3 text-left">Date</th>
+              <th class="py-3 text-center">Status</th>
+              <th class="py-3 pr-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
 
-      <div class="flex items-center justify-between px-[18px] pb-[18px] pt-4 text-xs text-[#2b3048]">
-        <div>Showing <b id="range" class="font-semibold">1-6</b> of <b id="total" class="font-semibold">8</b> reports</div>
+      <div class="flex items-center justify-between gap-3 px-[18px] pb-[18px] pt-4 text-xs text-[#2b3048] flex-wrap">
+        <div>Showing <b id="range" class="font-semibold">0</b> of <b id="total" class="font-semibold">0</b> reports</div>
         <div class="flex items-center gap-2" id="pager"></div>
       </div>
     </section>
@@ -198,111 +239,12 @@ IMPACTRA
         <h3 class="text-sm font-semibold">Priority Breakdown</h3>
         <svg class="ic !h-[18px] !w-[18px] text-[#3a3f58]"><use href="#i-loader"/></svg>
       </div>
-
-      <div class="mb-3.5">
-        <div class="mb-1.5 flex justify-between text-[11.5px]"><span>Urgent Safety / Harassment</span><b class="font-semibold text-danger">37%</b></div>
-        <div class="h-1.5 overflow-hidden rounded bg-field"><span class="block h-full w-[37%] rounded bg-danger-border"></span></div>
+      <div id="priorityList" class="space-y-3">
+        <p class="text-xs text-muted">Loading…</p>
       </div>
     </section>
   </main>
 </div>
 
-<script>
-  // ---- Data (replace with your API response) ----
-  const reports = [
-    { id: "R-2024-021", type: "user", title: "User: John Doe", sub: "ID: #USR-99214 • 3 previous notices", cat: "Inappropriate Behaviour", date: "12 Aug", status: "open" },
-    { id: "R-2024-020", type: "org", title: "Organization: Hope Foundation", sub: "Org Reg: #ORG-88421 • Registered NGO", cat: "Misleading information", date: "11 Aug", status: "review" },
-    { id: "R-2024-019", type: "opportunity", title: "Opportunity: Beach Cleanup", sub: "Location: Santa Monica Pier • 45 volunteers enrolled", cat: "Safety concern", date: "10 Aug", status: "open", urgent: true },
-    { id: "R-2024-018", type: "user", title: "User: Sarah K.", sub: "ID: #USR-77312 • Field volunteer", cat: "Harassment", date: "9 Aug", status: "resolved" },
-    { id: "R-2024-017", type: "org", title: "Organization: Youth for Change", sub: "Org Reg: #ORG-33104 • Youth Advocacy", cat: "Policy violation", date: "8 Aug 2024", status: "review" },
-    { id: "R-2024-016", type: "content", title: "Content: Event post", sub: "Public campaign announcement • Community feed", cat: "Inappropriate content", date: "7 Aug", status: "open", pill: true },
-    { id: "R-2024-015", type: "user", title: "User: Michael T.", sub: "ID: #USR-66120 • Team lead", cat: "Harassment", date: "6 Aug", status: "resolved" },
-    { id: "R-2024-014", type: "org", title: "Organization: Green Roots", sub: "Org Reg: #ORG-21877 • Environmental", cat: "Policy violation", date: "5 Aug", status: "open" },
-  ];
-
-  const icons = { user: "i-user", org: "i-building", opportunity: "i-heart", content: "i-doc" };
-
-  const statusBadge = {
-    open: `<span class="inline-flex items-center rounded-full bg-danger-soft px-2.5 py-1 text-[10.5px] font-semibold text-danger">Open</span>`,
-    review: `<span class="inline-flex items-center gap-1.5 rounded-2xl bg-[#dbe5ff] px-3 py-[7px] text-left text-[10.5px] font-semibold leading-tight text-[#1c3fa6]"><i class="h-1 w-1 rounded-full bg-[#1c3fa6]"></i><span>Under<br/>Review</span></span>`,
-    resolved: `<span class="inline-flex items-center rounded-full bg-ok-soft px-2.5 py-1 text-[10.5px] font-semibold text-ok-dark">Resolved</span>`,
-  };
-
-  const reviewBtn = `<button class="h-8 rounded-md bg-brand px-4 text-xs font-semibold text-white hover:bg-brand-dark">Review</button>`;
-  const viewBtn = `<button class="inline-flex h-8 items-center gap-2 rounded-md bg-field px-4 text-xs font-semibold hover:bg-[#e0e3f6]"><svg class="ic"><use href="#i-eye"/></svg>View</button>`;
-
-  const catChip = r => `<span class="inline-block max-w-[96px] border bg-white px-2 py-[5px] text-center text-[10.5px] font-medium leading-tight ${
-    r.pill ? "rounded-full" : "rounded-md"
-  } ${r.urgent ? "border-danger-border text-danger" : "border-[#8a93b8] text-ink"}">${r.cat}</span>`;
-
-  const idCell = id => {
-    const i = id.lastIndexOf("-");
-    return `${id.slice(0, i + 1)}<br/>${id.slice(i + 1)}`;
-  };
-
-  // ---- State ----
-  let page = 1, perPage = 6, query = "";
-
-  const rowsEl = document.getElementById("rows");
-  const rangeEl = document.getElementById("range");
-  const totalEl = document.getElementById("total");
-  const pagerEl = document.getElementById("pager");
-
-  function render() {
-    const q = query.toLowerCase();
-    const filtered = reports.filter(r => !q || `${r.id} ${r.title} ${r.sub} ${r.cat}`.toLowerCase().includes(q));
-    const pages = Math.max(1, Math.ceil(filtered.length / perPage));
-    page = Math.min(page, pages);
-    const start = (page - 1) * perPage;
-    const slice = filtered.slice(start, start + perPage);
-
-    rowsEl.innerHTML = slice.map(r => `
-      <tr class="border-b border-[#f1f2f9] last:border-0">
-        <td class="py-3 pl-9 pr-2 font-mono text-[11.5px] font-semibold leading-normal text-[#1c2036]">${idCell(r.id)}</td>
-        <td class="py-3 pl-6 pr-2">
-          <div class="flex items-center gap-2.5">
-            <span class="grid h-[30px] w-[30px] flex-none place-items-center rounded-lg bg-brand-soft text-[#1f3fa8]">
-              <svg class="ic"><use href="#${icons[r.type]}"/></svg>
-            </span>
-            <div>
-              <div class="text-[12.5px] font-semibold">${r.title}</div>
-              <div class="mt-0.5 text-[11px] text-muted">${r.sub}</div>
-            </div>
-          </div>
-        </td>
-        <td class="px-2 py-3 text-center">${catChip(r)}</td>
-        <td class="whitespace-nowrap px-2 py-3 text-xs text-[#2b3048]">${r.date.replace(" 2024", "<br/>2024")}</td>
-        <td class="px-2 py-3 text-center">${statusBadge[r.status]}</td>
-        <td class="py-3 pl-2 pr-4 text-center">${r.status === "open" ? reviewBtn : viewBtn}</td>
-      </tr>`).join("") || `<tr><td colspan="6" class="py-10 text-center text-muted">No reports found.</td></tr>`;
-
-    rangeEl.textContent = filtered.length ? `${start + 1}-${start + slice.length}` : "0";
-    totalEl.textContent = filtered.length;
-
-    const nav = "grid h-6 w-6 place-items-center rounded-md bg-field text-xs font-medium disabled:opacity-40";
-    pagerEl.innerHTML =
-      `<button class="${nav}" data-go="${page - 1}" ${page === 1 ? "disabled" : ""} aria-label="Previous"><svg class="ic !h-3 !w-3"><use href="#i-left"/></svg></button>` +
-      Array.from({ length: pages }, (_, i) => i + 1).map(n =>
-        `<button data-go="${n}" class="grid h-6 w-6 place-items-center rounded-md text-xs font-medium ${n === page ? "bg-brand text-white" : "bg-field"}">${n}</button>`).join("") +
-      `<button class="${nav}" data-go="${page + 1}" ${page === pages ? "disabled" : ""} aria-label="Next"><svg class="ic !h-3 !w-3"><use href="#i-right"/></svg></button>` +
-      `<select id="perPage" class="ml-3 h-[30px] w-[86px] appearance-none rounded-md bg-field bg-[length:10px] bg-[right_10px_center] bg-no-repeat pl-3 pr-7 text-xs"
-         style="background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23151a30' stroke-width='3'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E&quot;)">
-         ${[6, 12, 24].map(n => `<option value="${n}" ${n === perPage ? "selected" : ""}>${n} per page</option>`).join("")}
-       </select>`;
-  }
-
-  pagerEl.addEventListener("click", e => {
-    const b = e.target.closest("[data-go]");
-    if (b && !b.disabled) { page = +b.dataset.go; render(); }
-  });
-  pagerEl.addEventListener("change", e => {
-    if (e.target.id === "perPage") { perPage = +e.target.value; page = 1; render(); }
-  });
-  document.getElementById("search").addEventListener("input", e => {
-    query = e.target.value.trim(); page = 1; render();
-  });
-
-  render();
-</script>
 </body>
 </html>

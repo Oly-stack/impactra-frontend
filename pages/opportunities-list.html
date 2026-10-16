@@ -1,121 +1,376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opportunities | Impactra</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-      color: #1f2937;
-    }
-
-    header {
-      background: white;
-      padding: 20px 8%;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    .search {
-      width: 100%;
-      padding: 14px;
-      margin: 20px 0;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .card[hidden] {
-      display: none;
-    }
-
-    .card h2 {
-      font-size: 20px;
-    }
-
-    .card p {
-      line-height: 1.6;
-    }
-
-    .card a {
-      display: inline-block;
-      padding: 10px 16px;
-      background: #4f46e5;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-    }
-
-    .card a:hover {
-      background: #4338ca;
-    }
-
-    #empty {
-      margin-top: 20px;
-    }
-  </style>
-  <link rel="stylesheet" href="opportunities.css">
-  <script src="../API.js" defer></script>
-  <script src="opportunities.js" defer></script>
-</head>
-
-<body data-opportunity-page="list">
-
-  <header>
-    <strong>Impactra</strong>
-  </header>
-
-  <main>
-  <p id="flowStatus" class="flow-status" role="status" aria-live="polite" hidden></p>
-
-    <nav class="page-actions" aria-label="Opportunity navigation"><a href="../Dashboard.html">Dashboard</a><a href="create-opportunities-step-1.html">Create Opportunity</a></nav>
-    <h1>Explore Opportunities</h1>
-    <p>Discover opportunities to make an impact.</p>
-
-    <input
-      class="search"
-      id="search"
-      type="search"
-      placeholder="Search opportunities..."
-      aria-label="Search opportunities"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <title>Opportunities | Impactra</title>
+    <link rel="icon" href="../img/impactra-logo.jpeg" />
+    <link
+      rel="preload"
+      href="../assets/fonts/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="opportunities.css" />
+    <script src="../API.js" defer></script>
+    <script src="opportunity-workflow.js" defer></script>
+  </head>
+  <body data-opportunity-page="list">
+    <a class="skip-link" href="#mainContent">Skip to content</a>
+    <aside
+      class="workspace-sidebar"
+      id="workspaceSidebar"
+      aria-label="Workspace navigation"
     >
-
-    <section class="grid" id="opportunities" aria-label="Opportunities" aria-busy="true"></section>
-
-    <p id="empty" role="status" hidden>No matching opportunities found.</p>
-
-  </main>
-
-  <noscript><p>Please enable JavaScript to use the opportunity screens.</p></noscript>
-</body>
+      <a href="../Dashboard.html" class="brand"
+        ><img src="../images/logo2.png" alt="" width="28" height="28" /><span
+          >IMPACTRA</span
+        ></a
+      ><button
+        type="button"
+        class="icon-button sidebar-close"
+        id="closeMenu"
+        aria-label="Close navigation"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 6 12 12M6 18 18 6" />
+        </svg>
+      </button>
+      <nav class="nav-links" aria-label="Main">
+        <p class="nav-label">OPERATIONS</p>
+        <a href="../Dashboard.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+          ><span>Dashboard</span></a
+        ><a
+          href="opportunities-list.html"
+          class="nav-item active"
+          aria-current="page"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+          ><span>Opportunities</span></a
+        ><a href="../application.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"
+            /></svg
+          ><span>Applications</span></a
+        ><a href="../volunteer-profile.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+            />
+            <circle cx="9" cy="7" r="4" /></svg
+          ><span>Volunteers</span></a
+        ><a href="../contribution.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3v18h18M7 14l4-4 4 3 6-8" /></svg
+          ><span>Activities</span></a
+        ><a href="../impact.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m13 2-9 12h7l-1 8 10-12h-7z" /></svg
+          ><span>Impact</span></a
+        ><a href="Certificate.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="6" />
+            <path d="m8 13-1 9 5-3 5 3-1-9" /></svg
+          ><span>Certificates</span></a
+        ><button
+          type="button"
+          class="nav-item unavailable-nav"
+          data-unavailable="Messaging"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"
+            /></svg
+          ><span>Messages</span></button
+        ><a href="../report.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6M12 7h.01" /></svg
+          ><span>Report</span></a
+        ><a href="../settings.html" class="nav-item"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 3 2 3-1 1-3 3-1 2-3-2-2 1-3-2-3-3 1-3-2z"
+            /></svg
+          ><span>Settings</span></a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="nav-item logout-button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
+            /></svg
+          ><span>Log out</span>
+        </button>
+      </div>
+    </aside>
+    <button
+      type="button"
+      class="drawer-overlay"
+      id="drawerOverlay"
+      aria-label="Close navigation"
+      hidden
+    ></button>
+    <div class="workspace" id="workspace">
+      <header class="workspace-header">
+        <button
+          type="button"
+          class="icon-button mobile-menu"
+          id="openMenu"
+          aria-label="Open navigation"
+          aria-controls="workspaceSidebar"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg></button
+        ><span class="header-page-label">Opportunities</span>
+        <form
+          class="header-search"
+          action="opportunities-list.html"
+          role="search"
+        >
+          <button type="submit" aria-label="Search opportunities">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m16 16 5 5" />
+            </svg></button
+          ><label class="sr-only" for="workspaceSearch"
+            >Search opportunities</label
+          ><input
+            type="search"
+            id="workspaceSearch"
+            name="q"
+            placeholder="Search opportunities, volunteers..."
+          /><kbd aria-hidden="true">⌘K</kbd>
+        </form>
+        <div class="header-account">
+          <button
+            type="button"
+            class="notification-link"
+            data-unavailable="Notifications"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+              />
+            </svg></button
+          ><a
+            href="../settings.html"
+            class="account-link"
+            aria-label="Account settings"
+            ><span class="avatar" id="accountInitial" aria-hidden="true">N</span
+            ><img
+              id="accountAvatar"
+              class="account-avatar"
+              alt=""
+              width="32"
+              height="32"
+              hidden
+            /><span class="account-name" id="accountName">My account</span></a
+          >
+        </div>
+      </header>
+      <main class="page-content" id="mainContent" tabindex="-1">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="../Dashboard.html">Dashboard</a
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" /></svg
+          ><a href="opportunities-list.html">Opportunities</a>
+        </nav>
+        <div
+          class="flow-status"
+          id="flowStatus"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="page-heading">
+          <div>
+            <h1>Opportunities</h1>
+            <p>Manage your opportunities and bring your community together.</p>
+          </div>
+          <a href="create-opportunities-step-1.html" class="btn btn-primary"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" /></svg
+            >Create opportunity</a
+          >
+        </div>
+        <section class="stats-grid" aria-label="Opportunity summary">
+          <div class="panel stat-card">
+            <div>
+              <p class="stat-label">Total opportunities</p>
+              <p class="stat-value" id="totalCount">—</p>
+            </div>
+            <span class="stat-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" /></svg
+            ></span>
+          </div>
+          <div class="panel stat-card">
+            <div>
+              <p class="stat-label">Active opportunities</p>
+              <p class="stat-value" id="activeCount">—</p>
+            </div>
+            <span class="stat-icon green"
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m5 12 4 4L19 6" /></svg
+            ></span>
+          </div>
+          <div class="panel stat-card">
+            <div>
+              <p class="stat-label">Volunteer capacity</p>
+              <p class="stat-value" id="capacityCount">—</p>
+            </div>
+            <span class="stat-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                />
+                <circle cx="9" cy="7" r="4" /></svg
+            ></span>
+          </div>
+        </section>
+        <section class="panel list-panel" aria-label="Opportunity list">
+          <div class="list-toolbar">
+            <div class="status-tabs" role="group" aria-label="Filter by status">
+              <button
+                type="button"
+                class="status-tab"
+                data-status-filter="all"
+                aria-pressed="true"
+              >
+                All<span class="tab-count" id="allTabCount">—</span></button
+              ><button
+                type="button"
+                class="status-tab"
+                data-status-filter="active"
+                aria-pressed="false"
+              >
+                Active<span class="tab-count" id="activeTabCount"
+                  >—</span
+                ></button
+              ><button
+                type="button"
+                class="status-tab"
+                data-status-filter="draft"
+                aria-pressed="false"
+              >
+                Draft<span class="tab-count" id="draftTabCount">—</span></button
+              ><button
+                type="button"
+                class="status-tab"
+                data-status-filter="completed"
+                aria-pressed="false"
+              >
+                Completed<span class="tab-count" id="completedTabCount">—</span>
+              </button>
+            </div>
+            <div class="toolbar-controls">
+              <label class="list-search" for="search"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="10.5" cy="10.5" r="6.5" />
+                  <path d="m16 16 5 5" /></svg
+                ><span class="sr-only">Search opportunities</span
+                ><input
+                  type="search"
+                  id="search"
+                  placeholder="Search opportunities..." /></label
+              ><button
+                type="button"
+                class="btn btn-quiet filter-button"
+                id="filterToggle"
+                aria-expanded="false"
+                aria-controls="listFilters"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M7 12h10M10 18h4" /></svg
+                >Filter
+              </button>
+            </div>
+          </div>
+          <div class="filters" id="listFilters" hidden>
+            <div class="field">
+              <label class="field-label" for="categoryFilter">Category</label
+              ><select class="form-input" id="categoryFilter">
+                <option value="">All categories</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="locationFilter"
+                >Location type</label
+              ><select class="form-input" id="locationFilter">
+                <option value="">All locations</option>
+                <option value="in_person">In-person</option>
+                <option value="remote">Remote</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
+            <button
+              type="button"
+              class="btn btn-quiet filter-button"
+              id="clearFilters"
+            >
+              Clear filters
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table class="opportunity-table">
+              <caption class="sr-only">
+                Opportunities and their schedules, locations and status
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Opportunity</th>
+                  <th scope="col">Location</th>
+                  <th scope="col">Next shift</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="opportunities"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="empty" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" />
+            </svg>
+            <h2 id="emptyHeading">No opportunities yet</h2>
+            <p id="emptyMessage">
+              Create your first opportunity and invite volunteers to make a
+              difference.
+            </p>
+            <a
+              href="create-opportunities-step-1.html"
+              class="btn btn-primary"
+              id="emptyCreate"
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" /></svg
+              >Create opportunity</a
+            >
+          </div>
+          <div class="list-footer">
+            <span id="listSummary" aria-live="polite"
+              >Loading opportunities…</span
+            ><span id="listLimitNote"></span>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div id="toast-host" aria-live="polite"></div>
+  </body>
 </html>
