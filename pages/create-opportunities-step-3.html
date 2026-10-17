@@ -36,10 +36,6 @@
     }
   </style>
 
-  <!-- Load API first, then the workflow controller.
-       Both live in the same folder as this file. Do NOT prefix with "../" -->
-  <script src="API.js" defer></script>
-  <script src="opportunity-workflow.js" defer></script>
 </head>
 
 <body data-opportunity-page="step3">
@@ -84,10 +80,14 @@
   </main>
 
   <script>
-    // "Back to Details" — handled here so it doesn't depend on anything else
+    // "Back to Details
     document.querySelector("[data-back-to]")?.addEventListener("click", (e) => {
       window.location.href = e.currentTarget.dataset.backTo;
     });
   </script>
+
+  
+  <script src="../API.js"></script>
+  <script src="opportunity-workflow.js"></script>
 </body>
 </html>

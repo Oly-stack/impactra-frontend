@@ -179,7 +179,6 @@ const API = (() => {
 
   /* ORGANIZATION (NGO Admin)*/
 
-  /* Organization profile & setup */
   const organization = {
     /* POST /organization/profile-setup (multipart) */
     setupProfile: (formData) => post("/organization/profile-setup", formData),

@@ -13,7 +13,7 @@
       theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
     }
   </script>
-  <script src="API.js" defer></script>
+  <script src="../API.js" defer></script>
 </head>
 <body class="bg-[#f5f8ff] text-[#0f172a] font-sans antialiased min-h-screen flex flex-col justify-between">
 
@@ -93,5 +93,51 @@
       </div>
     </div>
   </main>
+  <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    /* Auth guard */
+    if (!window.API) {
+      console.error("[step3] API.js not loaded — check the <script src> path");
+      return;
+    }
+    if (!API.tokens.isAuthenticated) {
+      window.location.replace("login.html");
+      return;
+    }
+
+    /* Fetch the real org */
+    let org = null;
+    try {
+      const res = await API.organization.getProfile();
+      org = res?.organization || res?.data?.organization || res?.data;
+    } catch (err) {
+      if (err?.status === 404) {
+        /* No org yet → send back to setup */
+        window.location.replace("organization-profile-setup.html");
+        return;
+      }
+      console.warn("[step3] getProfile failed:", err);
+      return;
+    }
+
+    if (!org || !(org._id || org.id)) {
+      window.location.replace("organization-profile-setup.html");
+      return;
+    }
+
+    /* Fill in the real organization name */
+    const nameEl = document.querySelector("h3");
+    if (nameEl) nameEl.textContent = org.name || "Your Organization";
+
+    /* If the org is already approved, skip straight to step 4 */
+    const status = (org.verificationStatus || "pending").toLowerCase();
+    if (status === "verified") {
+      /* Small delay so the user sees the message, then go */
+      setTimeout(() => (window.location.href = "step4-approve.html"), 800);
+    }
+
+    console.log("[step3] org loaded:", org.name, "status:", status);
+  });
+</script>
 </body>
 </html>

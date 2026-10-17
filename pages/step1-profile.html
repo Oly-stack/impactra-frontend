@@ -21,6 +21,7 @@
         theme: { extend: { fontFamily: { sans: ["Inter", "sans-serif"] } } },
       };
     </script>
+    <script src="../API.js" defer></script>
   </head>
 
   <body
@@ -550,23 +551,33 @@ Green Route Initiative supports local communities through food distribution, edu
                 Upload official documents to verify your organisation.
               </p>
 
-              <div
-                class="border-2 border-dashed flex items-center justify-center flex-col border-blue-200/80 bg-blue-50/30 rounded-2xl p-6 text-center my-3"
-              >
-                <img
-                  src="/impactra-frontend/images/upload.png"
-                  class="mb-3 w-12 sm:w-14 h-auto max-w-full object-contain"
-                  alt=""
-                />
-                <p class="text-sm sm:text-base font-bold text-slate-800">
-                  Drag and drop files here, or
-                  <span class="text-blue-600 underline">click to upload</span>
-                </p>
-                <p class="text-slate-500 text-sm mt-1">
-                  Supports PDF, JPG, PNG (Max 5MB each)
-                </p>
-              </div>
+              <label
+  for="docsInput"
+  class="border-2 border-dashed flex items-center justify-center flex-col border-blue-200/80 bg-blue-50/30 rounded-2xl p-6 text-center my-3 cursor-pointer hover:bg-blue-50/60 transition"
+>
+  <img src="/impactra-frontend/images/upload.png" class="mb-3 w-12 sm:w-14 h-auto max-w-full object-contain" alt="" />
+  <p class="text-sm sm:text-base font-bold text-slate-800">
+    Drag and drop files here, or
+    <span class="text-blue-600 underline">click to upload</span>
+  </p>
+  <p class="text-slate-500 text-sm mt-1">
+    Supports PDF, JPG, PNG (Max 5MB each)
+  </p>
 
+  <input
+    type="file"
+    id="docsInput"
+    name="supportingDocuments"
+    accept="image/*,application/pdf"
+    multiple
+    class="sr-only"
+    onchange="document.getElementById('docsFileName').textContent = Array.from(this.files).map(f => f.name).join(', ') || 'No files selected';"
+  />
+
+  <p id="docsFileName" class="text-xs text-blue-600 font-semibold mt-2">
+    No files selected
+  </p>
+</label>
               <div
                 class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-center justify-between gap-3"
               >
@@ -603,35 +614,30 @@ Green Route Initiative supports local communities through food distribution, edu
                 <p class="text-sm text-slate-500">PNG/JPG, max 10MB</p>
               </div>
 
-              <div
-                class="flex items-center gap-3 bg-[#f5f7ff] mt-3 rounded-xl p-3 w-full"
-              >
-                <img
-                  src="/images/profile.png"
-                  class="w-12 h-12 sm:w-14 sm:h-14 object-contain shrink-0"
-                  alt=""
-                />
-                <div class="min-w-0 flex-1">
-                  <p
-                    class="text-sm sm:text-base font-semibold flex flex-wrap items-center gap-x-2"
-                  >
-                    <span class="truncate max-w-full"
-                      >greenroute-symbol-crest.jpg</span
-                    >
-                    <span class="font-semibold text-blue-600 text-sm"
-                      >Upload</span
-                    >
-                  </p>
-                  <p class="text-slate-500 mt-0.5 text-sm">
-                    Click or drag file to replace current logo
-                  </p>
-                </div>
-                <img
-                  src="/images/cancel.png"
-                  class="w-5 h-5 object-contain shrink-0"
-                  alt="Remove"
-                />
-              </div>
+              <label
+  for="logoInput"
+  class="flex items-center gap-3 bg-[#f5f7ff] mt-3 rounded-xl p-3 w-full cursor-pointer hover:bg-[#eef1ff] transition"
+>
+  <img src="/images/profile.png" class="w-12 h-12 sm:w-14 sm:h-14 object-contain shrink-0" alt="" />
+  <div class="min-w-0 flex-1">
+    <p class="text-sm sm:text-base font-semibold flex flex-wrap items-center gap-x-2">
+      <span id="logoFileName" class="truncate max-w-full">No file selected</span>
+      <span class="font-semibold text-blue-600 text-sm">Upload</span>
+    </p>
+    <p class="text-slate-500 mt-0.5 text-sm">
+      Click to select a logo
+    </p>
+  </div>
+
+  <input
+    type="file"
+    id="logoInput"
+    name="logo"
+    accept="image/*"
+    class="sr-only"
+    onchange="document.getElementById('logoFileName').textContent = this.files[0]?.name || 'No file selected';"
+  />
+</label>
             </div>
           </div>
         </div>
@@ -669,5 +675,72 @@ Green Route Initiative supports local communities through food distribution, edu
         </div>
       </form>
     </main>
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form[action='step2-review.html']");
+    if (!form) return;
+
+    /* Only target chips that are pills*/
+    const chips = Array.from(
+      document.querySelectorAll(".flex-wrap > span.rounded-full")
+    );
+
+    chips.forEach((chip) => {
+      const isCurrentlySelected = /bg-blue-600/.test(chip.className);
+      chip.style.cursor = "pointer";
+      chip.dataset.selected = isCurrentlySelected ? "true" : "false";
+
+      chip.addEventListener("click", () => {
+        const on = chip.dataset.selected === "true";
+        chip.dataset.selected = on ? "false" : "true";
+        chip.className = on
+          ? "bg-slate-100 text-slate-600 text-sm font-bold px-4 py-2 rounded-full"
+          : "bg-blue-600 text-white text-sm font-bold px-4 py-2 rounded-full";
+
+        /* Keep the "+" prefix showing only when the chip is unselected */
+        const base = chip.textContent.replace(/^\+\s*/, "").trim();
+        chip.textContent = on ? `+ ${base}` : base;
+      });
+    });
+
+    /* The backend only accepts these exact strings */
+    const VALID_FOCUS = [
+      "Community Support",
+      "Food Relief",
+      "Literacy",
+      "Emergency Health",
+      "Climate Action",
+    ];
+
+    form.addEventListener("submit", () => {
+      const el = (name) => form.elements[name]?.value?.trim() || "";
+
+      const focusAreas = chips
+        .filter((c) => c.dataset.selected === "true")
+        .map((c) => c.textContent.replace(/^\+\s*/, "").trim())
+        .filter((v) => VALID_FOCUS.includes(v));   /* drop anything invalid */
+
+      const draft = {
+        name:        el("orgName"),
+        email:       el("email"),
+        phone:       el("phone"),
+        website:     el("website"),
+        description: el("description"),
+        focusAreas,
+        location: {
+          cityCountry:   el("city"),
+          streetAddress: el("street"),
+          landmark:      el("landmark"),
+        },
+        registrationDetails: {
+          nin:                el("nin"),
+          registrationNumber: el("regNumber"),
+        },
+      };
+
+      sessionStorage.setItem("orgSetupDraft", JSON.stringify(draft));
+    });
+  });
+</script>
   </body>
 </html>

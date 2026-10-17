@@ -17,24 +17,23 @@
 </head>
 <body class="bg-[#f5f8ff] text-[#0f172a] font-sans antialiased min-h-screen flex items-center justify-center p-4">
 
-  <!-- Verification Card -->
   <div class="w-full max-w-md bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-xl shadow-blue-900/5 text-center">
-    
-    <!-- Email Icon  -->
+
     <div class="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mx-auto mb-5 shadow-sm">
       <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
       </svg>
     </div>
 
-    <!-- Title & Description -->
     <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Check your email</h1>
     <p class="text-slate-500 text-xs sm:text-sm leading-relaxed mb-8">
-      We sent a 6-digit verification code to <span class="font-bold text-slate-700" id="userEmail"></span>
+      We sent a 6-digit verification code to
+      <span class="font-bold text-slate-700" id="userEmail"></span>
     </p>
 
-    <!-- OTP Input Form -->
-    <form id="otpForm" action="login.html">
+    <!--form-->
+    <form id="otpForm" novalidate>
       <div class="flex justify-center gap-2 sm:gap-3 mb-8" id="otpInputs">
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" autofocus required />
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
@@ -44,16 +43,14 @@
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box w-11 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-extrabold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm" required />
       </div>
 
-      <!-- Action Button -->
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3.5 rounded-xl shadow-md shadow-blue-600/20 transition duration-150">
+      <button type="submit" id="verifyBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3.5 rounded-xl shadow-md shadow-blue-600/20 transition duration-150 disabled:opacity-70 disabled:cursor-not-allowed">
         Verify Email
       </button>
     </form>
 
-    <!-- Resend Footer -->
     <div class="mt-6 text-xs text-slate-500">
       <p>Didn't get the code?</p>
-      <button type="button" id="resendBtn" class="text-blue-600 font-bold hover:underline mt-1 focus:outline-none">
+      <button type="button" id="resendBtn" class="text-blue-600 font-bold hover:underline mt-1 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed">
         Resend code
       </button>
     </div>
@@ -61,278 +58,185 @@
   </div>
 
   <script>
-(() => {
-  "use strict";
+  document.addEventListener("DOMContentLoaded", () => {
+    "use strict";
 
-  /*  GUARDS  */
-  if (!window.API) {
-    console.error("[verify-email] API client not found. Load ../API.js first.");
-    return;
-  }
-
-  // If already signed in, skip the OTP screen entirely.
-  if (API.tokens.isAuthenticated) {
-    let existing = null;
-    try { existing = JSON.parse(sessionStorage.getItem("impactra_user") || "null"); } catch (_) {}
-    const dest = existing?.role === "platform_admin"
-      ? "../welcome-back.html"
-      : "../Dashboard.html";
-    window.location.replace(dest);
-    return;
-  }
-
-  /*  TOAST  */
-  function toast(message, variant = "default") {
-    let host = document.getElementById("toast-host");
-    if (!host) {
-      host = document.createElement("div");
-      host.id = "toast-host";
-      host.className =
-        "pointer-events-none fixed bottom-6 left-1/2 z-[95] flex -translate-x-1/2 flex-col items-center gap-2";
-      document.body.appendChild(host);
+    if (!window.API) {
+      console.error("[verify-email] API client not found. Check the ../API.js path.");
+      return;
     }
-    const palette = {
-      default: "bg-[#0F172A] text-white",
-      success: "bg-[#065F46] text-white",
-      error:   "bg-[#991B1B] text-white",
-      info:    "bg-[#1D4ED8] text-white",
-    };
-    const el = document.createElement("div");
-    el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
-    el.setAttribute("role", "status");
-    el.textContent = message;
-    host.appendChild(el);
-    setTimeout(() => {
-      el.style.transition = "opacity .25s ease, transform .25s ease";
-      el.style.opacity = "0";
-      el.style.transform = "translateY(8px)";
-      setTimeout(() => el.remove(), 260);
-    }, 2800);
-  }
 
-  /*  CONTEXT: email only (signup is always NGO now)  */
-  const urlParams  = new URLSearchParams(window.location.search);
-  const emailParam = urlParams.get("email");
-  const emailSpan  = document.getElementById("userEmail");
-
-  let displayEmail = emailParam;
-
-  if (!displayEmail) {
-    try {
-      const raw = sessionStorage.getItem("pendingUser");
-      if (raw) {
-        const pending = JSON.parse(raw);
-        if (pending?.email) displayEmail = pending.email;
+    /* TOAST */
+    function toast(message, variant = "default") {
+      let host = document.getElementById("toast-host");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "toast-host";
+        host.className =
+          "pointer-events-none fixed bottom-6 left-1/2 z-[95] flex -translate-x-1/2 flex-col items-center gap-2";
+        document.body.appendChild(host);
       }
-    } catch (err) {
-      console.warn("[verify-email] couldn't parse pendingUser:", err);
+      const palette = {
+        default: "bg-[#0F172A] text-white",
+        success: "bg-[#065F46] text-white",
+        error:   "bg-[#991B1B] text-white",
+        info:    "bg-[#1D4ED8] text-white",
+      };
+      const el = document.createElement("div");
+      el.className = `pointer-events-auto rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${palette[variant]}`;
+      el.textContent = message;
+      host.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .25s ease, transform .25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
     }
-  }
 
-  if (emailSpan) emailSpan.textContent = displayEmail || "your email address";
-
-  /*  CLEANUP  */
-  function clearSignupState() {
-    try {
-      sessionStorage.removeItem("pendingUser");
-      sessionStorage.removeItem("impactra_signup_email");
-    } catch (_) { /* ignore */ }
-  }
-
-  /*  ROUTING HELPER  */
-  function destinationFor(role) {
-    return role === "platform_admin"
-      ? "../welcome-back.html"
-      : "../Dashboard.html";
-  }
-
-  /*  OTP INPUTS  */
-  const inputs = Array.from(document.querySelectorAll(".otp-box"));
-
-  inputs.forEach((input, index) => {
-    input.addEventListener("input", () => {
-      input.value = input.value.replace(/[^0-9]/g, "");
-      if (input.value && index < inputs.length - 1) {
-        inputs[index + 1].focus();
-      }
-    });
-
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace" && !input.value && index > 0) {
-        inputs[index - 1].focus();
-      } else if (e.key === "ArrowLeft" && index > 0) {
-        inputs[index - 1].focus();
-      } else if (e.key === "ArrowRight" && index < inputs.length - 1) {
-        inputs[index + 1].focus();
-      }
-    });
-
-    input.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const pasted = ((e.clipboardData || window.clipboardData).getData("text") || "")
-        .replace(/[^0-9]/g, "")
-        .trim();
-      if (pasted.length === 6) {
-        pasted.split("").forEach((char, i) => {
-          if (inputs[i]) inputs[i].value = char;
-        });
-        inputs[inputs.length - 1].focus();
-      }
-    });
-  });
-
-  function getCode() {
-    return inputs.map((i) => i.value.trim()).join("");
-  }
-  function setOtpLoading(loading) {
-    inputs.forEach((i) => (i.disabled = loading));
-  }
-  function clearOtp() {
-    inputs.forEach((i) => (i.value = ""));
-    inputs[0]?.focus();
-  }
-
-  /*  VERIFY EMAIL  */
-  const form      = document.getElementById("otpForm");
-  const submitBtn = form?.querySelector('button[type="submit"]');
-
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    /* EMAIL DISPLAY */
+    const params    = new URLSearchParams(window.location.search);
+    const emailSpan = document.getElementById("userEmail");
+    let displayEmail = params.get("email");
 
     if (!displayEmail) {
-      toast("We don't know which email to verify. Please start over.", "error");
-      return;
-    }
-
-    const code = getCode();
-    if (code.length !== 6) {
-      toast("Please enter all 6 digits", "error");
-      inputs.find((i) => !i.value)?.focus();
-      return;
-    }
-
-    const original = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Verifying…";
-    setOtpLoading(true);
-
-    try {
-      const res = await API.post("/auth/verify-email", {
-        email: displayEmail,
-        code,
-      });
-
-      /*  Path A: backend returned a token → auto-login  */
-      const token = res?.token || res?.accessToken;
-      if (token) {
-        API.tokens.set({
-          accessToken: token,
-          refreshToken: res.refreshToken,
-        });
-
-        const user = res.user || res.data?.user || null;
-        if (user) {
-          try { sessionStorage.setItem("impactra_user", JSON.stringify(user)); } catch (_) {}
+      try {
+        const raw = sessionStorage.getItem("pendingUser");
+        if (raw) {
+          const pending = JSON.parse(raw);
+          if (pending?.email) displayEmail = pending.email;
         }
+      } catch (err) {
+        console.warn("[verify-email] couldn't parse pendingUser:", err);
+      }
+    }
 
-        clearSignupState();
-        toast("Welcome to IMPACTRA — redirecting…", "success");
+    if (emailSpan) emailSpan.textContent = displayEmail || "your email address";
 
-        // Route by the role the backend returned. Signups are NGO-only
-        const dest = destinationFor(user?.role);
-        setTimeout(() => (window.location.href = dest), 900);
+    /* OTP INPUTS */
+    const inputs = Array.from(document.querySelectorAll(".otp-box"));
+
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/[^0-9]/g, "");
+        if (input.value && index < inputs.length - 1) inputs[index + 1].focus();
+      });
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !input.value && index > 0) inputs[index - 1].focus();
+        else if (e.key === "ArrowLeft" && index > 0)            inputs[index - 1].focus();
+        else if (e.key === "ArrowRight" && index < inputs.length - 1) inputs[index + 1].focus();
+        else if (e.key === "Enter") { e.preventDefault(); form?.requestSubmit(); }
+      });
+      input.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const pasted = ((e.clipboardData || window.clipboardData).getData("text") || "")
+          .replace(/[^0-9]/g, "").trim();
+        if (pasted.length === 6) {
+          pasted.split("").forEach((c, i) => { if (inputs[i]) inputs[i].value = c; });
+          inputs[inputs.length - 1].focus();
+        }
+      });
+    });
+
+    const getCode  = () => inputs.map((i) => i.value.trim()).join("");
+    const clearOtp = () => { inputs.forEach((i) => (i.value = "")); inputs[0]?.focus(); };
+    const setOtpDisabled = (disabled) => inputs.forEach((i) => (i.disabled = disabled));
+
+    /* VERIFY EMAIL */
+    const form      = document.getElementById("otpForm");
+    const verifyBtn = document.getElementById("verifyBtn");
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!displayEmail) {
+        toast("We don't know which email to verify. Start over.", "error");
         return;
       }
 
-      /*  Path B: no token → send them to login  */
-      clearSignupState();
-      toast("Email verified! Please log in to continue.", "success");
-      setTimeout(() => {
-        window.location.href =
-          `login.html?email=${encodeURIComponent(displayEmail)}&verified=true`;
-      }, 1200);
-
-    } catch (err) {
-      console.error("[verify-email] verification failed:", err);
-
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = original;
-      setOtpLoading(false);
-      clearOtp();
-
-      const msg = err?.message || "Invalid or expired code";
-      const lower = msg.toLowerCase();
-      if (lower.includes("code") || lower.includes("invalid") || lower.includes("expired")) {
-        inputs.forEach((i) => {
-          i.classList.add("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-          setTimeout(() => {
-            i.classList.remove("border-[#F43F5E]", "ring-2", "ring-[#F43F5E]/20");
-          }, 2000);
-        });
+      const code = getCode();
+      if (code.length !== 6) {
+        toast("Please enter all 6 digits", "error");
+        inputs.find((i) => !i.value)?.focus();
+        return;
       }
 
-      toast(msg, "error");
-    }
-  });
+      const original = verifyBtn.innerHTML;
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = "Verifying…";
+      setOtpDisabled(true);
 
-  /*  RESEND CODE  */
-  const resendBtn = document.getElementById("resendBtn");
-  let resendCooldown = 0;
+      try {
+        await API.auth.verifyEmail(displayEmail, code);
 
-  resendBtn?.addEventListener("click", async () => {
-    if (resendCooldown > 0) return;
+        // Clear the pending signup stash — no longer needed
+        try { sessionStorage.removeItem("pendingUser"); } catch (_) {}
 
-    if (!displayEmail) {
-      toast("No email on file — please start over", "error");
-      return;
-    }
+        toast("Email verified — please log in", "success");
 
-    const originalHTML = resendBtn.innerHTML;
-    resendBtn.disabled = true;
-    resendBtn.textContent = "Sending…";
+        // Route to login; login.js reads ?verified=1 to prefill + show a hint
+        setTimeout(() => {
+          window.location.href =
+            `login.html?verified=1&email=${encodeURIComponent(displayEmail)}`;
+        }, 800);
 
-    try {
-      await API.post("/auth/resend-email", {
-        email: displayEmail,
-        purpose: "email_verification",
-      });
+      } catch (err) {
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = original;
+        setOtpDisabled(false);
+        clearOtp();
 
-      resendBtn.classList.remove("text-blue-600");
-      resendBtn.classList.add("text-emerald-600");
-      resendBtn.textContent = "Code sent!";
-      toast("A new code is on its way", "success");
-
-      resendCooldown = 60;
-      const tick = () => {
-        if (resendCooldown <= 0) {
-          resendBtn.disabled = false;
-          resendBtn.classList.remove("text-emerald-600");
-          resendBtn.classList.add("text-blue-600");
-          resendBtn.innerHTML = originalHTML;
-          return;
+        const msg = err?.message || "Invalid or expired code";
+        if (/code|invalid|expired/i.test(msg)) {
+          inputs.forEach((i) => {
+            i.classList.add("border-red-400", "ring-2", "ring-red-200");
+            setTimeout(() => i.classList.remove("border-red-400", "ring-2", "ring-red-200"), 2000);
+          });
         }
-        resendBtn.textContent = `Resend in ${resendCooldown}s`;
-        resendCooldown--;
-        setTimeout(tick, 1000);
-      };
-      tick();
+        toast(msg, "error");
+      }
+    });
 
-    } catch (err) {
-      resendBtn.disabled = false;
-      resendBtn.innerHTML = originalHTML;
-      toast(err?.message || "Couldn't resend the code", "error");
-    }
+    /* RESEND */
+    const resendBtn = document.getElementById("resendBtn");
+    let cooldown = 0;
+
+    resendBtn?.addEventListener("click", async () => {
+      if (cooldown > 0) return;
+      if (!displayEmail) {
+        toast("No email to resend to", "error");
+        return;
+      }
+
+      const original = resendBtn.textContent;
+      resendBtn.disabled = true;
+      resendBtn.textContent = "Sending…";
+
+      try {
+        await API.auth.resendEmail(displayEmail, "email_verification");
+        toast("A new code is on its way", "success");
+
+        cooldown = 30;
+        const tick = () => {
+          if (cooldown <= 0) {
+            resendBtn.disabled = false;
+            resendBtn.textContent = original;
+            return;
+          }
+          resendBtn.textContent = `Resend in ${cooldown}s`;
+          cooldown--;
+          setTimeout(tick, 1000);
+        };
+        tick();
+      } catch (err) {
+        resendBtn.disabled = false;
+        resendBtn.textContent = original;
+        toast(err?.message || "Couldn't resend code", "error");
+      }
+    });
+
+    inputs[0]?.focus();
   });
-
-  /*  GLOBAL 401  */
-  document.addEventListener("api:unauthorized", () => {
-    toast("Session expired — please sign in again", "error");
-    setTimeout(() => (window.location.href = "login.html"), 900);
-  });
-
-  /*  FOCUS FIRST OTP BOX  */
-  inputs[0]?.focus();
-})();
-</script>
+  </script>
 </body>
 </html>

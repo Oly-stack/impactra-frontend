@@ -418,7 +418,7 @@
       text-decoration: underline;
     }
   </style>
-  <script src="API.js" defer></script>
+  <script src="../API.js" defer></script>
 </head>
 <body>
 
@@ -556,6 +556,107 @@
 
     </div>
   </main>
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    if (!window.API || !API.tokens.isAuthenticated) {
+      window.location.replace("login.html");
+      return;
+    }
 
+    function formatDate(iso) {
+      if (!iso) return "—";
+      const d = new Date(iso);
+      if (isNaN(d)) return "—";
+      return d.toLocaleDateString("en-NG", { month: "long", day: "numeric", year: "numeric" })
+        + " • " + d.toLocaleTimeString("en-NG", { hour: "2-digit", minute: "2-digit", hour12: false }) + " UTC";
+    }
+
+    let org = null;
+    try {
+      const res = await API.organization.getProfile();
+      org = res?.organization || res?.data?.organization || res?.data;
+    } catch (err) {
+      if (err?.status === 404) {
+        window.location.replace("organization-profile-setup.html");
+        return;
+      }
+      alert(err?.message || "Couldn't load your organization");
+      return;
+    }
+
+    if (!org || !(org._id || org.id)) {
+      window.location.replace("organization-profile-setup.html");
+      return;
+    }
+
+    const status = (org.verificationStatus || "pending").toLowerCase();
+    const approved = status === "verified";
+
+    /* Fill real data */
+    const nameEl = document.querySelector(".entity-name");
+    if (nameEl) nameEl.textContent = org.name || "Unnamed Organization";
+
+    const metaVals = document.querySelectorAll(".entity-grid .meta-val");
+    if (metaVals[0]) metaVals[0].textContent =
+      `NGO - ${new Date(org.createdAt || Date.now()).getFullYear()} - ${(org._id || "").slice(-6).toUpperCase()}`;
+    if (metaVals[1]) metaVals[1].textContent =
+      formatDate(org.verifiedAt || org.approvedAt || org.updatedAt || org.createdAt);
+
+    /* Change page content based on REAL status */
+    const heading = document.querySelector(".card-heading");
+    const subtext = document.querySelector(".card-subtext");
+    const badge   = document.querySelector(".approved-badge");
+    const badgeIcon = document.querySelector(".check-icon-wrapper");
+    const accent  = document.querySelector(".accreditation-tag");
+    const dashBtn = document.querySelector(".btn-dashboard");
+
+    if (approved) {
+      /* Show the real "approved" state */
+      if (heading) heading.textContent = "Your NGO account is approved";
+      if (subtext) subtext.textContent = "Your organization has been approved. You can now access IMPACTRA's full suite of deployment, verification, and community impact tools.";
+      if (badge)   badge.innerHTML = `<span class="status-dot"></span> Approved`;
+      if (accent)  accent.textContent = "🛡 Official NGO Accreditation";
+    } else if (status === "rejected") {
+      if (heading) heading.textContent = "Your NGO account was not approved";
+      if (subtext) subtext.textContent = "Your accreditation was rejected. Please check your email for details, or contact support.";
+      if (badge) {
+        badge.innerHTML = `<span class="status-dot"></span> Rejected`;
+        badge.style.background = "#fee2e2";
+        badge.style.color = "#991b1b";
+      }
+      if (badgeIcon) {
+        badgeIcon.style.background = "#fee2e2";
+        badgeIcon.style.color = "#991b1b";
+        badgeIcon.innerHTML = `<svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>`;
+      }
+      if (dashBtn) {
+        dashBtn.style.opacity = "0.5";
+        dashBtn.style.pointerEvents = "none";
+      }
+    } else {
+      /* PENDING — right after setup */
+      if (heading) heading.textContent = "Your NGO profile is under review";
+      if (subtext) subtext.textContent = "We've received your organization details. Our team will review your submission and email you once a decision is made — usually within 1–2 business days.";
+      if (badge) {
+        badge.innerHTML = `<span class="status-dot"></span> Pending Review`;
+        badge.style.background = "#fef3c7";
+        badge.style.color = "#92400e";
+      }
+      if (badgeIcon) {
+        badgeIcon.style.background = "#fef3c7";
+        badgeIcon.style.color = "#92400e";
+        badgeIcon.innerHTML = `<svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+      if (accent) accent.textContent = "⏳ Awaiting Approval";
+      if (dashBtn) {
+        dashBtn.style.opacity = "0.5";
+        dashBtn.style.pointerEvents = "none";
+        dashBtn.setAttribute("aria-disabled", "true");
+      }
+    }
+
+    console.log("[step4] org status:", status, org);
+  });
+</script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>Impactra | Final Review</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="API.js" defer></script>
+    <script src="../API.js" defer></script>
   </head>
   <link
     rel="shortcut icon"
@@ -559,51 +559,138 @@
     <!-- JAVASCRIPT -->
 
     <script>
-      lucide.createIcons();
+  lucide.createIcons();
 
-      function editSection(section) {
-        alert("Connect this button to the " + section + " editing form.");
-      }
+  function editSection(section) {
+    /* Send them back to step 1 so they can fix whatever */
+    window.location.href = "step1-profile.html";
+  }
 
-      async function submitProfile() {
-        const submitBtn = document.querySelector(
-          'button[onclick="submitProfile()"]',
-        );
-        const originalText = submitBtn.innerHTML;
+  /* Populate the review page from the saved draft */
+  document.addEventListener("DOMContentLoaded", () => {
+    let draft = {};
+    try {
+      draft = JSON.parse(sessionStorage.getItem("orgSetupDraft") || "{}");
+    } catch (_) { /* ignore */ }
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = "Submitting...";
+    if (!draft.name) {
+      alert("No saved organization data — please fill out the profile form first.");
+      window.location.href = "step1-profile.html";
+      return;
+    }
 
-        try {
-          const profileData =
-            JSON.parse(sessionStorage.getItem("pendingUser")) || {};
+    /* Fill in the sections with real data */
+    const setText = (selector, value) => {
+      const el = document.querySelector(selector);
+      if (el && value) el.textContent = value;
+    };
 
-          if (window.API && API.ngo && API.ngo.submitProfile) {
-            await API.ngo.submitProfile(profileData);
-          } else {
-            // Fallback if API isn't set up yet
-            console.warn(
-              "API client not found or method missing. Simulating submit...",
-            );
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+    /* Organization name appears twice */
+    document.querySelectorAll(".entity-name, [data-org-name]").forEach((el) => {
+      el.textContent = draft.name || "—";
+    });
+
+    /* Find the labeled value pairs by their label text */
+    function fillByLabel(labelPrefix, value) {
+      if (!value) return;
+      const nodes = document.querySelectorAll("p");
+      for (const p of nodes) {
+        const t = p.textContent.trim().toUpperCase();
+        if (t.startsWith(labelPrefix.toUpperCase())) {
+          const valueEl = p.nextElementSibling;
+          if (valueEl) {
+            /* Keep icons, replace text */
+            const icon = valueEl.querySelector("i");
+            valueEl.textContent = "";
+            if (icon) valueEl.appendChild(icon);
+            valueEl.appendChild(document.createTextNode(" " + value));
           }
-
-          // 4. Handle Success -
-          alert("Profile submitted successfully! Awaiting admin review.");
-          window.location.href = "step3-reviewing.html";
-        } catch (error) {
-          // 5. Handle Errors
-          console.error("Submission failed:", error);
-          alert(
-            "Failed to submit profile: " +
-              (error.message || "Please try again later."),
-          );
-
-          // Re-enable the button so they can try again
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalText;
+          return;
         }
       }
-    </script>
+    }
+
+    fillByLabel("REGISTRATION NUMBER", draft.registrationDetails?.registrationNumber);
+    fillByLabel("ORGANIZATION NAME", draft.name);
+    fillByLabel("ORGANIZATION EMAIL", draft.email);
+    fillByLabel("PHONE NUMBER", draft.phone);
+    fillByLabel("OFFICIAL WEBSITE", draft.website);
+    fillByLabel("CITY & COUNTRY", draft.location?.cityCountry);
+    fillByLabel("STREET ADDRESS", draft.location?.streetAddress);
+    fillByLabel("LANDMARK", draft.location?.landmark);
+
+    /* Description block */
+    const descSection = document.querySelector(".rounded-lg.bg-\\[\\#f0f2ff\\] p.text-4");
+    if (descSection && draft.description) descSection.textContent = draft.description;
+
+    /* Focus areas */
+    if (Array.isArray(draft.focusAreas)) {
+      const chipRow = descSection?.parentElement?.querySelector(".flex-wrap");
+      if (chipRow) {
+        chipRow.innerHTML = draft.focusAreas
+          .map((a) => `<span class="rounded bg-indigo-100 px-2 py-1 text-[12px]">${a}</span>`)
+          .join("");
+      }
+    }
+
+    /* NIN masked already; keep as-is */
+  });
+
+  /* The actual submit */
+  async function submitProfile() {
+    const btn = document.querySelector('button[onclick="submitProfile()"]');
+    const original = btn ? btn.innerHTML : "";
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = "Submitting…";
+    }
+
+    try {
+      const draft = JSON.parse(sessionStorage.getItem("orgSetupDraft") || "{}");
+      if (!draft.name) throw new Error("No saved draft — go back to step 1");
+
+      if (!window.API) throw new Error("API client not loaded");
+      if (!API.tokens.isAuthenticated) {
+        window.location.replace("login.html");
+        return;
+      }
+
+      /* Build FormData exactly as the Postman spec expects */
+      const formData = new FormData();
+      formData.append("name",        draft.name || "");
+      formData.append("email",       draft.email || "");
+      formData.append("phone",       draft.phone || "");
+      formData.append("website",     draft.website || "");
+      formData.append("description", draft.description || "");
+      formData.append("focusAreas",  JSON.stringify(draft.focusAreas || []));
+      formData.append("location[cityCountry]",     draft.location?.cityCountry || "");
+      formData.append("location[streetAddress]",   draft.location?.streetAddress || "");
+      formData.append("location[landmark]",        draft.location?.landmark || "");
+      formData.append("registrationDetails[nin]",                draft.registrationDetails?.nin || "");
+      formData.append("registrationDetails[registrationNumber]", draft.registrationDetails?.registrationNumber || "");
+
+      /* Files — see the note below this code block */
+      // formData.append("logo", fileInput.files[0]);
+      // formData.append("supportingDocuments", fileInput.files[0]);
+
+      await API.organization.setupProfile(formData);
+
+      /* Clean up the draft — the org now exists on the backend */
+      sessionStorage.removeItem("orgSetupDraft");
+
+      alert("Profile submitted successfully! Your organization is now pending admin review.");
+      window.location.href = "step3-reviewing.html";
+
+    } catch (err) {
+      console.error("[step2] submit failed:", err);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+      const msg = err?.message || "Couldn't submit your profile";
+      alert("Submission failed: " + msg);
+    }
+  }
+</script>
   </body>
 </html>
